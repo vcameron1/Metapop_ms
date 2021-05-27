@@ -21,12 +21,18 @@ plot(x=E, y=1-e/c, ylim=c(0,1), type='l',
      lwd=lwd, yaxs="i", xaxs="i",
      yaxt='n', xaxt='n',
      cex.lab=2, cex.axis=1.5,
-     ylab=expression(Prevalence), xlab='Time')
+     ylab='', xlab='')
 lines(y=1-E-0.1, x=E, lwd=lwd, lty=2)
+
+# Axis titles
+title(ylab = "Prevalence",
+      xlab='Time',
+      cex.lab = 1.5, line = 1)
 
 # Box to frame the plot
 box(lwd=lwd) 
 
 # Close file
 dev.off()
+
 
