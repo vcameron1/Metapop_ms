@@ -4,10 +4,17 @@
 # date: 26/05/2021
 ####
 
-# Save plot in file
-png('../manuscript/img/concept_metapopEffect.png', width = 150, height = 150, units='mm', res = 700)
+# Dependencies
+library(ggplot2)
+source('2spMetapop_model.R')
 
-# Envrionemtal gradient
+# Parameters
+lwd = 4
+
+# Save plot in file
+png('../manuscript/img/concept_CorrTrophLvls.png', width = 150, height = 150, units='mm', res = 700)
+
+# Envrionmental gradient
 seq <- seq(0, 1, by=0.025)
 
 # Init data frame
@@ -23,13 +30,11 @@ for(resource in occupancy_df$resource){
 }
 
 # Plot
-library(ggplot2)
-
 ggplot(occupancy_df, aes(resource, consumer, fill= deltaOcc)) + 
   xlab('Resource environmental optimum')+
   ylab('Consumer environmental optimum')+
   geom_tile() +
-  colorspace::scale_fill_continuous_diverging() +
+  colorspace::scale_fill_continuous_diverging(p1=0.8, p2=1, l1=0.4) +
   coord_fixed(expand = c(0, 0)) +
   theme(axis.title=element_text(size=20),
         axis.text.y = element_blank(),
@@ -39,7 +44,9 @@ ggplot(occupancy_df, aes(resource, consumer, fill= deltaOcc)) +
         panel.grid.major = element_blank(), 
         panel.grid.minor = element_blank(),
         panel.border = element_rect(colour = "black", fill=NA, size=lwd)) +
-  geom_abline(linetype = "dashed")
+  geom_abline(linetype = "dashed") +
+  geom_vline(xintercept = 0.5) +
+  geom_hline(yintercept = 0.5)
 
 # Close file
 dev.off()
