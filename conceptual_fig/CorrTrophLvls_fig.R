@@ -5,18 +5,24 @@
 ####
 
 # Dependencies
-library(ggplot2)
-source('2spMetapop_model.R')
+source('./conceptual_fig//2spMetapop_model.R')
 
 # Parameters
 lwd = 4
+ftr=0.19
+pos <- list(c1=c(0.4,0.6),
+            c2=c(0.6,0.65),
+            c3=c(0.35,0.4),
+            c4=c(0.4,0.6))
+E <- seq(0,1, le=100)
 
 # Save plot in file
-png('../manuscript/img/concept_CorrTrophLvls.png', width = 150, height = 150, units='mm', res = 700)
+png('./manuscript/img/concept_CorrTrophLvls.png', width = 150, height = 150, units='mm', res = 700)
 
-# Envrionmental gradient
+# x y coordinates of the plot
 x <- y <- seq(0, 1, by=0.025)
 
+# Matrix to store prevalences
 z <- matrix(0, nrow = length(x), ncol = length(y))
 
 # Compute prevalences
@@ -33,29 +39,50 @@ for(resource in x){
 }
 
 # Plot
-par(pty = "s",par(pty = "s", mar=c(4.5,4.5,1,0)))
-lwd <- 4
+par(pty = "s", mar=c(3,3.5,1,1))
 
-## Center range on 0
+## Layout
+layout(matrix(c(1,2), nrow=1, ncol=2), widths=c(5,1), heights=5)
+#layout.show(2)
+
+## Center color range on 0
+cols <- hcl.colors(length(z), "Red-Green")
 max_abs <- max(abs(z))
 brk <- lattice::do.breaks(c(-max_abs, max_abs), length(c(z)))
+first_true <- which.max(brk > min(c(z)))
+last_true <- which.min(brk < max(c(z)))
+brk <- brk[1:(last_true +1)]
+cols <- cols[1:(last_true)]
+
 ## Plot
-image(z, col=hcl.colors(length(z), "Red-Green"), breaks = brk,
+image(z, col=cols, breaks = brk,
       lwd=lwd, yaxs="i", xaxs="i",
       yaxt='n', xaxt='n',
       cex.lab=2, cex.axis=1.5,
       ylab='', xlab='')
 abline(0, 1, lty=2)
+abline(h=0.5)
+abline(v=0.5)
+title(ylab = "Environmental optimum high",
+      xlab='Environmental optimum low',
+      cex.lab = 1.5, line = 1)
 box(lwd=lwd) 
+
+## Indicator plots
+plotimage(file = "./manuscript/img/concept_c1.png", size = 0.2, x=0.1, y=0.9, add = T)
+plotimage(file = "./manuscript/img/concept_c2.png", size = 0.2, x=0.6, y=0.9, add = T)
+plotimage(file = "./manuscript/img/concept_c3.png", size = 0.2, x=0.1, y=0.4, add = T)
+plotimage(file = "./manuscript/img/concept_c4.png", size = 0.2, x=0.6, y=0.4, add = T)
+
+
 ## Color scale
-par(mar=c(3,1,1,1))
-image.scale(z, col=hcl.colors(length(z), "Red-Green"))
+par(pty = "m", mar=c(8,1,8,3))
+image.scale(brk, col=cols, horiz=F)
+mtext(side = 3, line = 1, text = "Delta \noccupancy", font = 1)
 box()
 
 # Close file
 dev.off()
-
-
 
 
 
@@ -68,7 +95,8 @@ dev.off()
 #layout.show(4)
 
 image.scale <- function(z, zlim, col = heat.colors(12),
-                        breaks, horiz=TRUE, ylim=NULL, xlim=NULL, ...){
+                        breaks, horiz=TRUE, ylim=NULL, xlim=NULL,
+                        ylab='', xlab='', ...){
   if(!missing(breaks)){
     if(length(breaks) != (length(col)+1)){stop("must have one more break than colour")}
   }
@@ -91,7 +119,9 @@ image.scale <- function(z, zlim, col = heat.colors(12),
   if(!horiz){YLIM<-range(breaks); XLIM<-c(0,1)}
   if(missing(xlim)) xlim=XLIM
   if(missing(ylim)) ylim=YLIM
-  plot(1,1,t="n",ylim=ylim, xlim=xlim, xaxt=xaxt, yaxt=yaxt, xaxs="i", yaxs="i", ...)  
+  plot(1,1,t="n",ylim=ylim, xlim=xlim, axes = FALSE, xaxt=xaxt, yaxt=yaxt, xaxs="i", yaxs="i", ylab=ylab, xlab=xlab, ...)  
+  if(!horiz){axis(4, las=1)}
+  if(horiz){axis(2)}
   for(i in seq(poly)){
     if(horiz){
       polygon(poly[[i]], c(0,0,1,1), col=col[i], border=NA)
@@ -100,5 +130,77 @@ image.scale <- function(z, zlim, col = heat.colors(12),
       polygon(c(0,0,1,1), poly[[i]], col=col[i], border=NA)
     }
   }
+}
+
+
+#### Function to add image on top of plot ####
+
+plotimage <- function(file, x = NULL, y = NULL, size = 1, add = FALSE,
+                        angle = 0, pos = 0, bg = "lightgray", ...){
+  if (length(grep(".png", file)) > 0) { 
+    require("png")
+    img <- readPNG(file, native = TRUE)
+  }
+  if (length(grep(".tif", file)) > 0) { 
+    require("tiff")
+    img <- readTIFF(file, native = TRUE)
+  }
+  if (length(grep(".jp", file)) > 0) { 
+    require("jpeg")
+    img <- readJPEG(file, native = TRUE)
+  }
+     res <- dim(img)[2:1]
+
+  if (add) {
+    xres <- par()$usr[2] - par()$usr[1] 
+    yres <- par()$usr[4] - par()$usr[3] 
+    res <- c(xres, yres)
+  }else{
+    par(mar = c(1, 1, 1, 1), bg = bg, xaxs = "i", yaxs = "i")
+    dims <- c(0, max(res))
+    plot(0, type = "n", axes = F, xlim = dims, ann = F, ylim = dims,
+       ...)
+  }
+  if (is.null(x) && is.null(y)) {
+    if (pos == "center" || pos == 0) {
+      x <- par()$usr[1] + (par()$usr[2] - par()$usr[1])/2
+      y <- par()$usr[3] + (par()$usr[4] - par()$usr[3])/2
+    }
+    if (pos == "bottom" || pos == 1) {
+      x <- par()$usr[1] + (par()$usr[2] - par()$usr[1])/2
+      y <- par()$usr[3] + res[2] * size/2
+    }
+    if (pos == "left" || pos == 2) {
+      x <- par()$usr[1] + res[1] * size/2 
+      y <- par()$usr[3] + (par()$usr[4] - par()$usr[3])/2 
+    }
+    if (pos == "top" || pos == 3) {
+      x <- par()$usr[1] + (par()$usr[2] - par()$usr[1])/2
+      y <- par()$usr[4] - res[2] * size/2
+    }
+    if (pos == "right" || pos == 4) {
+      x <- par()$usr[2] - res[1] * size/2 
+      y <- par()$usr[3] + (par()$usr[4] - par()$usr[3])/2
+    }
+    if (pos == "bottomleft" || pos == 5) { 
+      x <- par()$usr[1] + res[1] * size/2 
+      y <- par()$usr[3] + res[2] * size/2
+    }
+    if (pos == "topleft" || pos == 6) {
+      x <- par()$usr[1] + res[1] * size/2 
+      y <- par()$usr[4] - res[2] * size/2
+    }
+    if (pos == "topright" || pos == 7) {
+      x <- par()$usr[2] - res[1] * size/2 
+      y <- par()$usr[4] - res[2] * size/2
+    }
+    if (pos == "bottomright" || pos == 8) { 
+      x <- par()$usr[2] - res[1] * size/2 
+      y <- par()$usr[3] + res[2] * size/2
+    }
+  }
+    xx <- res[1] * size/2
+    yy <- res[2] * size/2
+    rasterImage(img, x - xx, y - yy, x + xx, y + yy, angle = angle) 
 }
 
