@@ -11,30 +11,28 @@ source('./conceptual_fig/2spMetapop_model.R')
 png('./manuscript/img/concept_metapopEffect.png', width = 150, height = 150, units='mm', res = 700)
 
 # Set graphic parameters
-par(pty = "s",par(pty = "s", mar=c(4.5,4.5,1,0)))
+par(pty = "s",par(pty = "s", mar=c(3,3,1,0)))
 lwd <- 4
 
-# Environmetal gradient
-time <- 20
-Env <- seq(0.5, 1, le=time)
+# Constants
+e <- 0.1
+c <- 0.9
 
-# Compute consumer occ2upancy in 2 sp metapop model and single species model
-occ2 <- vector()
-occ1 <- vector()
-i=1
-for(E in Env){
-   occ2[i] <- consumerOcc(resOpt=0.5, consOpt=0.5, E=E)
-   occ1[i] <- consumerOcc(resOpt=0.5, consOpt=0.5, E=E, consumer=FALSE)
-   i = i + 1
-}
+# Environmetal gradient
+time <- 100
+Env <- seq(1, 0, le=time)
+
+# Parameters
+h <- Env
+A <- Env
 
 # Plot
-plot(x=1:time, y=occ2, ylim=c(0,max(occ2)+.1), type='l',
+plot(x=Env, y=h-(e/c), ylim=c(0,1), xlim = c(1,0),type='l',
      lwd=lwd, yaxs="i", xaxs="i",
      yaxt='n', xaxt='n',
      cex.lab=2, cex.axis=1.5,
      ylab='', xlab='')
-lines(y=occ1, x=1:time, lwd=lwd, lty=2)
+lines(x=Env, y=h-(e/(A^2*c)), lwd=lwd, lty=2)
 
 # Axis titles
 title(ylab = "Prevalence",
