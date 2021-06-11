@@ -26,23 +26,23 @@ consumerOcc <- function(resOpt=0.5, consOpt=0.5, E=0.5, consumer=TRUE){
   # Test
   ## Normal distribution
   # E <- seq(0,1,le=100)
-  # plot(dnorm(E, mean = resOpt, sd = 0.4), x=E) 
+  # plot(dnorm(E, mean = resOpt, sd = 0.15), x=E) 
   # points(dnorm(E, mean = consOpt, sd = 0.5), x=E)
   ## Quadratic function
   #plot(1-4*(E-resOpt)^2, x=E, ylim=c(0,1))
-  #points(0.8-3*(E-consOpt)^2, x=E, ylim=c(0,1))
+  #points(1-4*(E-consOpt)^2, x=E, ylim=c(0,1))
   ## Absolute value function
   #points(y=1 - 2*abs(E - consOpt), x=E)
 
   
   # Resource prevalence (Pr=1-e/c)
   Pr <- 1-4*(E-resOpt)^2 # Quadratic function
-    #dnorm(E, mean = resOpt, sd = 0.5) # Normal distribution
+    #dnorm(E, mean = resOpt, sd = 0.15) # Normal distribution
   
   # Consumer prevalence
-  Pc <- if(consumer){ Pr - (1 - (1 - 2*abs(E - consOpt)))}else{ 1 - 2*abs(E - consOpt)} # Absolute value function
-    #Pr - (1 - (0.8-3*(E-consOpt)^2)) # Quadratic function
-    #Pr-(1-dnorm(E, mean = consOpt, sd = 0.5)) # Normal distribution
+  Pc <- #if(consumer){ Pr - (1 - (1 - 2*abs(E - consOpt)))}else{ 1 - 2*abs(E - consOpt)} # Absolute value function
+    Pr - (1 - (1-4*(E-consOpt)^2)) # Quadratic function
+    #Pr-(1-dnorm(E, mean = consOpt, sd = 0.15)) # Normal distribution
   
   # return
   return <- c('Pconsumer' = Pc)

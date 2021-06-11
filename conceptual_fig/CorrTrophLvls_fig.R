@@ -4,85 +4,92 @@
 # date: 26/05/2021
 ####
 
-# Dependencies
-source('./conceptual_fig//2spMetapop_model.R')
+#### Function to generate CorrTrophLvls plot and colorscale ####
 
-# Parameters
-lwd = 4
-ftr=0.19
-pos <- list(c1=c(0.4,0.6),
-            c2=c(0.6,0.65),
-            c3=c(0.35,0.4),
-            c4=c(0.4,0.6))
-E <- seq(0,1, le=100)
-
-# Save plot in file
-png('./manuscript/img/concept_CorrTrophLvls.png', width = 150, height = 150, units='mm', res = 700)
-
-# x y coordinates of the plot
-x <- y <- seq(0, 1, by=0.025)
-
-# Matrix to store prevalences
-z <- matrix(0, nrow = length(x), ncol = length(y))
-
-# Compute prevalences
-i = 0
-for(resource in x){
-  i = i + 1
-  j = 0
-  for(consumer in y){
-    j = j + 1
-    occ1 <- consumerOcc(resOpt=resource, consOpt=consumer, E=0.5) 
-    occ2 <- consumerOcc(resOpt=resource, consOpt=consumer, E=0.6)
-    z[j, i] <- occ2 - occ1
+CorrTroph_plot <- function(){
+  # Dependencies
+  source('./conceptual_fig/2spMetapop_model.R')
+  source('./conceptual_fig/smallCorrTrophLvls_fig.R')
+  
+  # Genrate small plots
+  smallCorrTrophLvls_fig()
+  
+  # Parameters
+  lwd = 4
+  ftr=0.19
+  pos <- list(c1=c(0.4,0.6),
+              c2=c(0.6,0.65),
+              c3=c(0.35,0.4),
+              c4=c(0.4,0.6))
+  E <- seq(0,1, le=100)
+  
+  # x y coordinates of the plot
+  x <- y <- seq(0, 1, by=0.025)
+  
+  # Matrix to store prevalences
+  z <- matrix(0, nrow = length(x), ncol = length(y))
+  
+  # Compute prevalences
+  i = 0
+  for(resource in x){
+    i = i + 1
+    j = 0
+    for(consumer in y){
+      j = j + 1
+      occ1 <- consumerOcc(resOpt=resource, consOpt=consumer, E=0.5) 
+      occ2 <- consumerOcc(resOpt=resource, consOpt=consumer, E=0.6)
+      z[j, i] <- occ2 - occ1
+    }
   }
+  
+  
+  # Plot heatmap
+  png('./manuscript/img/concept_CorrTrophLvls.png', width = 150, height = 150, units='mm', res = 700)
+  par(pty = "s",par(pty = "s", mar=c(3,3,1,0)))
+  
+  ## Center color range on 0
+  cols <- hcl.colors(length(z), "Red-Green")
+  max_abs <- max(abs(z))
+  brk <- lattice::do.breaks(c(-max_abs, max_abs), length(c(z)))
+  first_true <- which.max(brk > min(c(z)))
+  last_true <- which.min(brk < max(c(z)))
+  brk <- brk[1:(last_true +1)]
+  cols <- cols[1:(last_true)]
+  
+  ## Plot
+  image(z, col=cols, breaks = brk,
+        lwd=lwd, yaxs="i", xaxs="i",
+        yaxt='n', xaxt='n',
+        cex.lab=2, cex.axis=1.5,
+        ylab='', xlab='')
+  abline(0, 1, lty=2)
+  abline(h=0.5)
+  abline(v=0.5)
+  title(ylab='High trophic level optimum',
+        xlab='Low trophic level optimum',
+        cex.lab = 1.5, line = 1)
+  box(lwd=lwd) 
+  
+  ## Indicator plots
+  plotimage(file = "./manuscript/img/concept_c1.png", size = 0.2, x=0.1, y=0.9, add = T)
+  plotimage(file = "./manuscript/img/concept_c2.png", size = 0.2, x=0.6, y=0.9, add = T)
+  plotimage(file = "./manuscript/img/concept_c3.png", size = 0.2, x=0.1, y=0.4, add = T)
+  plotimage(file = "./manuscript/img/concept_c4.png", size = 0.2, x=0.6, y=0.4, add = T)
+  
+  ## Close file
+  dev.off()
+  
+  
+  # Plot color scale
+  png('./manuscript/img/concept_ColorScale.png', width = 25, height = 100, units='mm', res = 700)
+  par(pty = "m", mar=c(5,1,5,3))
+  image.scale(brk, col=cols, horiz=F, cex=0.5)
+  mtext(side = 3, line = 1, text = "       Delta \n       occupancy", font = 1, cex=0.75)
+  box()
+  
+  ## Close file
+  dev.off()
 }
-
-# Plot
-par(pty = "s", mar=c(3,3.5,1,1))
-
-## Layout
-layout(matrix(c(1,2), nrow=1, ncol=2), widths=c(5,1), heights=5)
-#layout.show(2)
-
-## Center color range on 0
-cols <- hcl.colors(length(z), "Red-Green")
-max_abs <- max(abs(z))
-brk <- lattice::do.breaks(c(-max_abs, max_abs), length(c(z)))
-first_true <- which.max(brk > min(c(z)))
-last_true <- which.min(brk < max(c(z)))
-brk <- brk[1:(last_true +1)]
-cols <- cols[1:(last_true)]
-
-## Plot
-image(z, col=cols, breaks = brk,
-      lwd=lwd, yaxs="i", xaxs="i",
-      yaxt='n', xaxt='n',
-      cex.lab=2, cex.axis=1.5,
-      ylab='', xlab='')
-abline(0, 1, lty=2)
-abline(h=0.5)
-abline(v=0.5)
-title(ylab = "Environmental optimum high",
-      xlab='Environmental optimum low',
-      cex.lab = 1.5, line = 1)
-box(lwd=lwd) 
-
-## Indicator plots
-plotimage(file = "./manuscript/img/concept_c1.png", size = 0.2, x=0.1, y=0.9, add = T)
-plotimage(file = "./manuscript/img/concept_c2.png", size = 0.2, x=0.6, y=0.9, add = T)
-plotimage(file = "./manuscript/img/concept_c3.png", size = 0.2, x=0.1, y=0.4, add = T)
-plotimage(file = "./manuscript/img/concept_c4.png", size = 0.2, x=0.6, y=0.4, add = T)
-
-
-## Color scale
-par(pty = "m", mar=c(8,1,8,3))
-image.scale(brk, col=cols, horiz=F)
-mtext(side = 3, line = 1, text = "Delta \noccupancy", font = 1)
-box()
-
-# Close file
-dev.off()
 
 
 
@@ -96,7 +103,7 @@ dev.off()
 
 image.scale <- function(z, zlim, col = heat.colors(12),
                         breaks, horiz=TRUE, ylim=NULL, xlim=NULL,
-                        ylab='', xlab='', ...){
+                        ylab='', xlab='', cex=1, ...){
   if(!missing(breaks)){
     if(length(breaks) != (length(col)+1)){stop("must have one more break than colour")}
   }
@@ -120,7 +127,7 @@ image.scale <- function(z, zlim, col = heat.colors(12),
   if(missing(xlim)) xlim=XLIM
   if(missing(ylim)) ylim=YLIM
   plot(1,1,t="n",ylim=ylim, xlim=xlim, axes = FALSE, xaxt=xaxt, yaxt=yaxt, xaxs="i", yaxs="i", ylab=ylab, xlab=xlab, ...)  
-  if(!horiz){axis(4, las=1)}
+  if(!horiz){axis(4, las=1, cex=cex)}
   if(horiz){axis(2)}
   for(i in seq(poly)){
     if(horiz){
@@ -133,7 +140,7 @@ image.scale <- function(z, zlim, col = heat.colors(12),
 }
 
 
-#### Function to add image on top of plot ####
+#### Function to add image ####
 
 plotimage <- function(file, x = NULL, y = NULL, size = 1, add = FALSE,
                         angle = 0, pos = 0, bg = "lightgray", ...){
