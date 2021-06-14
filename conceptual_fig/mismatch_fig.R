@@ -28,11 +28,11 @@ mismatch_plot <- function(){
    
    # Distribution polygon
    mycol1 <- rgb(77, 77, 77, max = 255, alpha = 60)
-   polygon(x=c(0.31,1,1,0.31), y=c(0,0, 1, 1), col=mycol1, border=F)
+   polygon(x=c(0,0.31,0.31,0), y=c(0,0, 1, 1), col=mycol1, border=F)
    
    # New distribution polygon
    mycol2 <- rgb(77, 77, 77, max = 255, alpha = 80)
-   polygon(x=c(0.5,1,1,0.5), y=c(0,0, 1, 1), col=mycol2, border=F)
+   polygon(x=c(0,0.5,0.5,0), y=c(0,0, 1, 1), col=mycol1, border=F)
    
    # e/c curve
    curve((0.8 * x + 0.1), 0, 0.9, 100, add=T, lwd = lwd, col = 'darkorange')
@@ -47,7 +47,7 @@ mismatch_plot <- function(){
    arrows(0.313,0.35,0.69,0.35, lwd=4)
    
    # Text
-   text(0.07, 0.6, 'h', col='darkgreen', cex=1.5)
+   text(0.07, 0.6, 'R', col='darkgreen', cex=1.5)
    text(0.07, 0.23, 'e/c', col='darkorange', cex=1.5)
    
    # Box to frame the plot
