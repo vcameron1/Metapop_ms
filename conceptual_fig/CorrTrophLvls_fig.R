@@ -65,8 +65,8 @@ CorrTroph_plot <- function(){
   abline(0, 1, lty=2)
   abline(h=0.5)
   abline(v=0.5)
-  title(ylab='High trophic level optimum',
-        xlab='Low trophic level optimum',
+  title(ylab='High trophic level optimum (E)',
+        xlab='Low trophic level optimum (E)',
         cex.lab = 1.5, line = 1)
   box(lwd=lwd) 
   

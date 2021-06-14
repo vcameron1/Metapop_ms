@@ -14,6 +14,7 @@ smallCorrTrophLvls_fig <- function(){
                     c2=c(0.6,0.65),
                     c3=c(0.35,0.4),
                     c4=c(0.4,0.6))
+        E <- seq(0,1, le=100)
         
         
         #### c1 ####
