@@ -3,11 +3,10 @@ title: Intuitions from metapopulation theory using differential equations of a s
 author: Victor Cameron
 ---
 
-*Examination of the predictions of a simple two species metapopulation model can present dynamics that differ from widespread correlative approaches.*
-We show the complex distribution dynamics of a species based on a simple metapopulation resource–consumer system.
-
-*Consider a region where each local patch can be colonized by a resource and its consumer, given that the resource establishes first.*
-Ignoring dispersal limitations, a consumer ($P$) can colonize a local site if the habitat composed of environmental conditions ($E$) are adequate and resource ($R$) is present:
+*Examination of the predictions of a simple two species metapopulation model presents dynamics that differ from widespread correlative approaches.*
+Examination of the predictions of a simple two species metapopulation model presents dynamics that differ from widespread correlative approaches.
+We show the complexity arising in the distribution dynamics of a simple metapopulation resource–consumer system. 
+Consider a region where each local patch can be colonized by a resource ($R$) and its consumer ($P$), given that the resource establishes first and the abiotic environmental conditions ($E$) are adequate.
 
 $$
 \frac{dR}{dt} = c_{R}(E)R(1-R) - e_{R}(E)R
@@ -17,39 +16,40 @@ $$
 \frac{dP}{dt} = c_{P}(E)P(R(E)-P) - e_{P}(E)P
 $$
 
-Where $c$ is the colonization rate, $e$ is the extinction rate. Both $c$ and $e$ are species-specific demographic functions of the abiotic environment. 
-
-The conditions for consumer equilibrium in the landscape are described by the balance of resource availability and species characteristics:
+Where $c$ is the colonization rate and $e$ the extinction rate. Both are species-specific demographic functions of the abiotic environment. 
+A consumer persists in a balance between resource availability, colonization, and extinctions:
 
 $$
 P^{*} = R^{*} - \frac{e_{P}}{c_{P}}
 $$
 
-and its distribution limit is defined by $P^{*} = 0$, such that it is located where resource availability is balanced by the ratio of consumer extinction and colonization.
+and its distribution limit is defined by $P^{*} = 0$, such that it is located where resource availability is balanced by the ratio of extinction and colonization.
 
 
 *Resource mismatch effect on consumer distribution shift.*
-Fig 1A.
-Species may not all respond the same to environmental change. Many have limited dispersal and/or slow demography causing mismatch (extinction debt and colonisation credit).
-The range limit of a consumer is determined by the equilibrium of habitat availability and species-specific demographic rates.
-At equilibrium, the species distribution limits remain static on the environmental gradient and its distribution shift following environmental conditions.
-Resource mismatch results in the modification of resource availability to the consumer.
-Change in resource availability affects the position and the extent of the consumer's distribution at equilibrium, thus affecting its response to new conditions and distribution shift.
-In response, the abiotic conditions contained within the consumer distribution may change: the distribution may extend to novel conditions or contract. 
+Low trophic level mismatch affect top level distribution shift in abiotic environemntal conditions change scenario (Fig 1A).
+The top trophic level distribution represents environmental conditions where resource availability (R, green line) is supperior to its extinction to colonization ratio (e/c, orange line).
+At equilibrium, the abiotic conditions contained within a species distribution remain stable despite environmental change; the distribution shifts instanteneously (Fig 1A., shaded area).
+Resource environemntal mismatch (Fig 1A., arrow) results in the modification of resource availability to the consumer (Fig 1A., green dashed line).
+In result, the extent of the distribution and the position of the distribution limit of the top level species distribution is modified such that it shifts between the distribution of inital environmental conditions and that of the lower trophic level, thus affecting its response to new environemental conditions and distribution shift.
 
-*Non-linear response of occupancy (prevalence) with climate change in metapopulations contrasts with the linear response of a standard SDM.*
-Fig 1B.
-Linear (constant) shift of environmental conditions.
-SDMs assume distribution to remain within equilibrium abiotic environmental conditions and to respond instantaneously, therefore predicticting linerar changes in consumer prevalence.
-In contrast, the metapopulation approach is mechanistic. The modification of abiotic environmental conditions affects consumer distribution through combined effects on demographic performance and resource distribution. 
-Decrease in climate suitability dicrectly increases extinction and decreases colonization rates, but also reduces resource availability. With reduction in resource availability, extinction rates futher increase, hence projecting non-linear prevalence changes.
-If the spatial disposition of patches is added, the effect of reduction in habitat patch size, habitat patch extinction, and increase in inter-patch distance from abiotic conditions shifts further reduces the consumer's hability to reach all suitable locations (Hanski 2000). This loss of connectivity may not have an important effect at first while suitable habitat patches are abundant, but may increase as habitat availability decreases, supporting non-linear response of metapopulations to a constant abiotic environmental shift (Hanski 2000, Ovaskainen 2002).
+
+*Non-linear response of occupancy with climate change in metapopulations contrasts with the linear response of a standard SDM.*
+Under linear change in environmental conditions, non-linear response of occupancy with climate change in metapopulations contrasts with the linear response of a standard SDM (Fig 1B).
+SDMs assume distributions to remain within equilibrium abiotic environmental conditions and to respond instantaneously, therefore predicticting linerar changes in consumer prevalence (full line).
+In contrast, distribution change of the top trophic level from the metapopulation approach are projected from the combined effects of environmental conditions on demographic performance and resource distribution. 
+Imagine a landscape composed of a set of habitat patches with a gradient in abiotic environmental conditions. The contraction of the landscape's favorable environmental conditions here has two effects: first a reduction in resource availability from what follows a loss of suitable habitat area, increasing extinction rates.
+Both resource availability and habitat patch area being linked, the effect of environmental change is amplified.
+The amplification effect may not be important at first while suitable habitat is abundant, but increases as habitat availability decreases, supporting accelerated response of metapopulation persistence to a constant abiotic environmental shift (Hanski 2000, Ovaskainen 2002).
 
 *The effect of environmental change on lower trophic levels can propagate up and affect higher trophic levels.*
-Fig 1C.
-Environmental correlation between trophic levels corresponds to the concordance of performance between top and lower trophic levels for given environmental conditions.
-The effect of more favorable abiotic conditions to a top level species could be detrimental if the environment becomes less favorable for the lower trophic level.
-The consumer response to abiotic condition changes can be affected by the environmental correlation to its resource. 
-The correlation can change if the resource response is restricted and thus complexify the distribution dynamics of the consumer.
+The effect of more favorable abiotic conditions to a top level species could be detrimental if the environment becomes less favorable for the lower trophic levels (Fig. 1C).
+Here, top trophic level occupancy increases (green) as conditions change beneficiates both top and lower levels (2nd quadrant) or as one level beneficiates more than the other suffers (1st and 4rth quadrants).
+Perfect matching of both levels' environmental performance is represented by the dased line.  
+Because of the trophic interaction, the change in environmental performance of the lower trophic level has the potential to affect the resulting reponse of the top trophic species.
+
 
 *In regard to these intuitions, a metapopulation approach present projections of greater complexity and increased realism*
+
+![Intuitions from a two species metapopulation model.](./img/concept.png){ width=100% }
+Metapopulation models can easily be expanded to account for biotic interactions and landscape structure. These additions complexify the system's dynamics. (A) Resource mismatch affect consumer distribution shift. (B) Non-linear response of occupancy with climate change in metapopulations contrasts with the linear response of a standard SDM, and (C) The effect of environmental change on lower trophic levels can propagate up and affect higher trophic levels.
