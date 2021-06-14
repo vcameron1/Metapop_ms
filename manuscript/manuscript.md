@@ -6,10 +6,29 @@ author: Victor Cameron, Dominique Gravel
 ## Introduction
 
 *Expected environmental changes have motivated important advancements in distribution modeling.* 
-Current models mostly assume single species with restrictive assumptions for dispersal processes
+Climate change has already prompted species to shift their range toward higher latitudes and elevations (Parmesan 2006, Chen et al. 2011).
+The extent of species responses show important variation (Freeman 2018) which contrasts with projections from most common models.
+These are most often statistical models based on the relationship between abiotic conditions and current species distribution.
+They mostly assume single species with restrictive assumptions for dispersal processes.
+More mechanistic approaches are required to project species distribution and several calls have been made for process-based models (Fordham 2013, sUrban 2016).
+Unlike SDMs, few process-based models are currently used in management of species under climate change.
+
+
+Current models mostly assume single species with restrictive assumptions for dispersal processes.
 More mechanistic approaches are however required to project future species distribution and several calls have been made for process-based models (Urban 2016). → C’est beau le dire, mais ce n’est pas facile à faire
 
 *Review of some of the methods such as dynamic range models and forest gap models.*
+In regards to recent efforts, explicit modelling of the processes that underly distribution dynamics is challenging to implement (Hefley, 2017, Briscoe 2021).
+Process-based models such as dynamic range models and forest gap models relate species abundances to abiotic environmental conditions using population growth rate and dispersal.
+They take from niche theory in that environmental performance is driven by demographic rates, linking species distributions to population performance (Godsoe 2017).
+However, these are often difficult to parameterize, data demanding both in quantity and quality, and computationally intensive (Snell 2014). 
+Measuring growth rate is challenging (McGill 2012), and require very specific data on species response to abiotic conditions.
+Indeed, the data required for these models are rarely available (Urban 2016).
+Futhermore, we find in other situations that local dynamics are insufficient to explain large scale species distribution (Le Squin 2021).
+This suggests that processes at larger scales must be considered. 
+Such processes should include dispersal limitations, disturbances, biotic interactions, etc… (Urban 2016????).
+
+
 Process-based models are hard to do
 What they are : based on niche theory, positive growth rate 
 These are however data hungry and often hard to parameterize
@@ -17,21 +36,65 @@ In other situations, we find that local dynamics are insufficient to explain lar
 Conclusion from those is that processes at larger scales must be considered (e.g. dispersal limitations, disturbances etc…)
 
 *Another approach recently proposed is derived from metapopulation theory.*
-Review of Holt's theory
-Iberian lynx example
-Talluto' debt and credits
+Another approach recently proposed is derived from metapopulation theory.
+Like range dynamic models, metapopulation models relate demography to the geographical distribution of the niche (Holt 2009).
+In contrast to range dynamic models, metapopulation models rest on the assumption that distributions are influenced by the interaction of habitat availability, local extinction, and colonization dynamics (Holt 2000).
+The approach is perfectly suited to study distribution changes.
+**Holt 2000+2003+2009**
+Theoretical studies showed that a gradient in any of these three fundamental metapopulation precesses can lead to the establishment and shape distribution limits (Holt 2000).
+These processes are not only fundamental to the difinition of species distribution, but also to its dynamics. 
+Variation in the local population dynamics of a metapopulation model is a driver of distibution dynamics at larger scales. Environmental changes can affect the distribution dynamics and distribution limits shift (Holt 2003).
+
+For example, Fordham et al. (2013) used the metapopulation approach and environmental and prey availability projections to investigate the Iberian lynx distribution change according to different climate change and management scenarios. 
+
+The approach has also been used to investigate environmental equilibrium in tree species (Talluto 2017).
+The metapopulation model used showed that limitations in dispersal and slow demography caused mismatch between current tree species distribution and suitable climate. 
+Metapopulation models allow to study distribution dynamics and is not limited by novel environmental conditions.
+
+Metapopulation models are dynamic and not limited by new environmental conditions (Talluto 2017).
+
+
+
+Review of Holt's theory (work on distribution limits)
+Iberian lynx example : try to fill the gap in modelling approaches that accounts for biotic interactions in distribution projections
+Talluto' debt and credits (Savage and Vellend 2014, Talluto 2017)
+Projections not limited by novel climates
 
 *Metapopulation can easily be expanded to include more complexity, such as landscape heterogeneity and biotic interactions.*
+An approach based on metapopulation theory can easily be expanded to include more complexity, such as landscape heterogeneity and biotic interactions.
+The framework is flexible as the effect of dispersal and mechanisms acting on demography can simultaneously be taken into account in spatially explicit models.
+These spatially explicit models capture landscape heterogeneity effect on distribution dynamics trough modulation of the propagule pressure and ultimately the colonization of empty habitat patches.
+Habitat patch specific traits can be taken into account. For example, spatially explicit indicence functions take into acount habitat patch size and distance from other patches to influence extinction and colonization processes, and distribution dynamics (Hanski).
+The effect of other species on distribution dynamics have also be included into metapopulation models. 
+Studying the dynamics of Northeastern-American forests in response to climate warming, Vissault et al. (2020) showed that competition will play an important role in forests response.
+Long lived boreal species will prevent the establishment of temperate species despite being in unfavorable climatic conditions.
+Trophic interactions have also been explored in metapopulation models. Fordham et al. (2013) studied a two species system in context of environmental change where the predator's distribution was dependent on the previous establishment of its prey. 
+
+
+
+
+
 Spatially explicit incidence functions
 Competition and pre-emption in Vissault
-Trophic interactions
+Trophic interactions (Fordham 2013)
  
 *Objective of the paper. The purpose of this paper is to demonstrate the value of metapopulation model projections of distribution changes to support decision making and policy in rapidly changing environments.*
+The metapopulation approach is a valuable tool to simulate distribution change.
+Resulting models can include demographical and dispersal constraints, and biotic interactions. 
+It is desirable to include these effects into distribution models, especially because previous approaches have not managed to do it explicitely and parameterize it with data.
+Metapopulation models have the advantage of being less data demanding than previous models (Vissault 2020) while remaining simple and rooted in ecological theory (Holt 2009).
+Futhermore, data to parameterize them is available (Talluto 2017). 
+Time series of species occurence are now available for many species.
+
 une approche de métapopulation permet de le faire, en se basant sur la théorie, en ajoutant des contraintes démographiques, de dispersion et les interactions biotiques. Le tout en utilisant des données empiriques.
 
 *The model was inspired to simulate the Bicknell's thrush, a bird characteristic of species of interest to decision makers and policy (COSEWIC).*
-Distribution in a fragmented landscape
-Requirement of a particular type of habitat
+The model was inspired to simulate the Bicknell's thrush, a bird characteristic of species of interest to decision makers and policy (COSEWIC).
+We assess distribution change using abundances and transiant dynamics (Boulangeat 2018).
+We demonstrate the ability of a coupled metapopulation model to project for different climate scenarios the Bicknell's thrush distribution in Northestern America and the forest response.
+Bicknell's thrush breeding range is defined by cool climate, elevation and habitat type (Cadieux 2019). 
+This habitat specialist is found in a fragmented landscape composed of mountain tops dominated by boreal forest   (COSEWIC 2009).
+
 
 ## Methods
 
@@ -85,12 +148,16 @@ We have shown that metapopulation models are tools of value for conservation pra
 ## Figures
 
 *??? Box 1. Cartoon representation of the various effects of climate change on landscape suitability*
+Patch contraction
+Patch extinction
+dispersal limitation
+Connectivity reduction
 
 *Box 2. Integrating biotic interactions into metapopulation models.*
 (Intuitions from metapopulation theory using differential equations of a simple bottom-up model, with corresponding figures)
-	1.  Conceptual representation of resource mismatch effect on consumer distribution shift.
-	2. non-linear response of occupancy with climate change in metapopulations versus the linear response of a standard SDM
-	3. The effect of environmental change on lower trophic levels can propagate up and affect higher trophic levels.  the effect of more favorable abiotic conditions to a top level species could be detrimental if the environment becomes less favorable for the lower trophic level. Figure : change in prevalence of a top species (color) as a function of the optimal temperature of the lower trophic level (x axis) and the higher trophic level (y axis). 
+	1. Conceptual representation of resource mismatch effect on consumer distribution shift.
+	2. Non-linear response of occupancy with climate change in metapopulations versus the linear response of a standard SDM
+	3. The effect of environmental change on lower trophic levels can propagate up and affect higher trophic levels. The effect of more favorable abiotic conditions to a top level species could be detrimental if the environment becomes less favorable for the lower trophic level. Figure : change in prevalence of a top species (color) as a function of the optimal temperature of the lower trophic level (x axis) and the higher trophic level (y axis). 
 
 
 *Fig 2. Regional maps of initial and projected Bicknell's thrush distribution after 100 years of climate warming.*
