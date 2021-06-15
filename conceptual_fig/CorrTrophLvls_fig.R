@@ -83,7 +83,7 @@ CorrTroph_plot <- function(){
   # Plot color scale
   png('./manuscript/img/concept_ColorScale.png', width = 25, height = 100, units='mm', res = 700)
   par(pty = "m", mar=c(5,1,5,3))
-  image.scale(brk, col=cols, horiz=F, cex=0.5)
+  image.scale(brk, col=cols, horiz=F, cex=0.75)
   mtext(side = 3, line = 1, text = "       Delta \n       occupancy", font = 1, cex=0.75)
   box()
   
@@ -127,7 +127,7 @@ image.scale <- function(z, zlim, col = heat.colors(12),
   if(missing(xlim)) xlim=XLIM
   if(missing(ylim)) ylim=YLIM
   plot(1,1,t="n",ylim=ylim, xlim=xlim, axes = FALSE, xaxt=xaxt, yaxt=yaxt, xaxs="i", yaxs="i", ylab=ylab, xlab=xlab, ...)  
-  if(!horiz){axis(4, las=1, cex=cex)}
+  if(!horiz){axis(4, las=1, cex.axis=cex)}
   if(horiz){axis(2)}
   for(i in seq(poly)){
     if(horiz){
