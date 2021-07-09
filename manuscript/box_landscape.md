@@ -13,7 +13,7 @@ Metapopulation capacity gives the conditions for a species persistence given the
 
 In this regard, climate change can profoundly alter the landscape as experienced by species.
 When looking at local patches individually, climate warming alters the distribution of environmental conditions and causes elevational shifts of suitable climatic conditions.
-The consequence is patch size contraction or extinction of the smaller ones (Fig. 1).
+The consequence is patch size contraction or extinction of the smaller ones (n_{700}=55, n_{800}=35; Fig. 1).
 Larger patches can also become fragmented into smaller ones (Fig. 1).
 
 Not only smaller patches are assumed to support smaller population sizes, have superior extinction risks and produce fewer colonizers (Hanski 2000), but the loss and the fragmentation of patches alter species dispersal ability through the loss of connectivity (Pimm 2006, Huang 2020).

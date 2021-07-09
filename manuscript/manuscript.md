@@ -7,9 +7,9 @@ author: Victor Cameron, Dominique Gravel
 
 *Expected environmental changes have motivated important advancements in distribution modelling.* 
 Climate change has already prompted species to shift their range toward higher latitudes and elevations (Parmesan 2006, Chen et al. 2011).
-To protect ecosystems, we need to predict how communities will be affected to coordinate efficient conservation actions.
+To protect ecosystems, we need to predict how species distributions and communities will be affected.
 Commonly used models are most often statistical and based on the relationship between abiotic conditions and current species distribution.
-They present several limitations to their ability to model distribution dynamics while they mostly assume single species with restrictive assumptions for dispersal processes.
+They present several limitations in their ability to model distribution dynamics while they mostly assume single species with restrictive assumptions for dispersal processes.
 More flexible, but similar models have been proposed to study the role of spatial and biotic sources of complexity in shaping species distributions (j-SDMs; Pollock et al. 2014, Warton 2015).
 However, they lack grounding in theoretical ecology and present difficulties when extrapolated to new environmental conditions.
 Our current lack of knowledge and tools for the prediction of species distribution responses to environmental changes poses serious limitations on the efficiency of future conservation actions.
@@ -34,7 +34,7 @@ Such processes should include dispersal limitations, disturbances, biotic intera
 Another approach recently proposed is derived from metapopulation theory.
 Like range dynamic models, metapopulation models relate demography to the geographical distribution of the niche (Holt 2009).
 Both model families are mechanistic and share the advantage of not being limited by new environmental conditions.
-In contrast to range dynamic models, metapopulation models rest on the assumption that distributions result from the interaction of habitat availability, local extinction, and colonization dynamics (Holt 2000).
+In contrast to range dynamic models, metapopulation models rest on the assumption that distributions result from the interaction of habitat availability, local extinction, and colonization dynamics (Holt 1999).
 Indeed, distribution limits emerge and are shaped by a gradient in any of these three fundamental metapopulation processes (Holt 2000, talluto 2017).
 Furthermore, these processes are not only fundamental to the definition of species distribution in a metapopulation context, but also to its dynamics. 
 For example, species persistence to climate change may be affected by biotic and abiotic habitat suitability and its ability to occupy suitable habitat, such that distributions do not extend to all favorable abiotic environemntal conditions (Fordham 2013).
@@ -58,7 +58,7 @@ For example, metapopulation models have shown that competition in Northestern-Am
 Despite unfavorable conditions, long-lived boreal trees species could prevent the establishment of better adapted temperate species (Vissault 2020).
 Conversely, a two species metapopulation model has shown that prey availability may influence Iberian lynx persistence. 
 Trophic interactions affects habitat availability and extinction, thereby being of crutial importance in the context of climate change (Fordham 2013).
-Therefore, thse metapopulation approach allows for flexibility to include ecologically relevant factors in an ecologically intuitive manner.
+Therefore, the metapopulation approach allows for flexibility to include ecologically relevant factors in an ecologically intuitive manner.
 
  
 *Objective of the paper. The purpose of this paper is to demonstrate the value of metapopulation model projections of distribution changes to support decision-making and policy in rapidly changing environments.*
