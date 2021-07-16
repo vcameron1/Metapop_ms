@@ -3,6 +3,9 @@ title: Modelling distributions in rapidly changing environments using metapopula
 author: Victor Cameron, Dominique Gravel
 ---
 
+**DG** il faudra un peu de fine tuning pour pimper l'intro
+**DG** en discussion il faudra revenir sur les quelques études (courte revue de littérature) qui utilisent approche métapop. Revenir aussi sur le papier de Urban. 
+
 ## Introduction
 
 *Expected environmental changes have motivated important advancements in distribution modelling.* 
@@ -16,7 +19,7 @@ Our current lack of knowledge and tools for the prediction of species distributi
 While most current predictive approaches ignore important biological mechanisms, these mechanisms are known to play an important role in species distribution response to environmental change (Urban 2016).
 More mechanistic approaches are required to project species distribution and several calls have been made for process-based models (Fordham 2013, Urban 2016).
 While correlative SDMs are widely used in conservation planning (Guisan 2013), few process-based models are currently used in management of species under climate change.
-
+**DG** : peut-être réduire un peu l'importance de la critique sur la simplicité des modèles pour détailler davantage la proposition de Urban. Conclure sur le défi que représente le développeemnt de tels modèles, et de comment gérer la complexité. La théorie peut être une façon pour guider ce développement (Thuiller2013)
 
 *Review of some of the methods such as dynamic range models and forest gap models.*
 In regards to recent efforts, explicit modelling of the processes that underlie distribution dynamics are challenging to implement (Hefley, 2017, Briscoe 2021).
@@ -28,13 +31,16 @@ Indeed, the data required for these models are rarely available (Urban 2016).
 Furthermore, we find in other situations that local dynamics are insufficient to explain large-scale species distribution (Le Squin 2021).
 This suggests that processes at larger scales must be considered. 
 Such processes should include dispersal limitations, disturbances, biotic interactions, etc… (Urban 2016????, Stephan 2021).
-
+**DG** : la transition vers le spatial est akward
 
 *Another approach recently proposed is derived from metapopulation theory.*
 Another approach recently proposed is derived from metapopulation theory.
 Like range dynamic models, metapopulation models relate demography to the geographical distribution of the niche (Holt 2009).
 Both model families are mechanistic and share the advantage of not being limited by new environmental conditions.
-In contrast to range dynamic models, metapopulation models rest on the assumption that distributions result from the interaction of habitat availability, local extinction, and colonization dynamics (Holt 1999).
+**DG** : je ne comprends pas la phrase précédente
+Equilibrium distribution in dynamic range models is only limited by the availability of locally suitable environmental conditions.
+By contrast, metapopulation models rest on the assumption that distributions result from the interaction of habitat availability, local extinction, and colonization dynamics (Holt 2000).
+
 Indeed, distribution limits emerge and are shaped by a gradient in any of these three fundamental metapopulation processes (Holt 2000, talluto 2017).
 Furthermore, these processes are not only fundamental to the definition of species distribution in a metapopulation context, but also to its dynamics. 
 For example, species persistence to climate change may be affected by biotic and abiotic habitat suitability and its ability to occupy suitable habitat, such that distributions do not extend to all favorable abiotic environemntal conditions (Fordham 2013).
@@ -46,13 +52,17 @@ Metapopulation models capture processes of crutial importance from which emerge 
 
 
 *Metapopulation can easily be expanded to include more complexity, such as landscape heterogeneity and biotic interactions.*
+**DG** expression du statement
+We believe that metapopulation theory and its models may be an ideal framework for incoporating several elements complexity to range dynamics such as landscape heterogeneity, dispersal and biotic interactions.
+
 An approach based on metapopulation theory can easily be expanded to include more complexity, such as landscape heterogeneity and biotic interactions.
-The framework is flexible as the effect of dispersal and mechanisms acting on demography are simultaneously taken into account in spatially explicit models.
+The framework is flexible as the effect of dispersal and mechanisms acting on demography are simultaneously taken into account.
 These spatially explicit models can take habitat patch specific traits into account. 
 For example, metapopulation incidence models are discrete-time stochastic models that take into account habitat patch size and connectivity to other patches to independently influence extinction and colonization processes, and distribution dynamics at the patch-specific level (Hanski 1999).
 Distribution dynamics are also affected by biotic interactions (Wisz 2013).
 However, biotic interactions have previously been chalenging to model (Guilman 2010, Godsoe 2017).
 Theory predicts that biotic interactions affect the rate and extent of distribution changes through demography and dispersal (Svenning 2014).
+**DG** ce qui suit commence à répéter le contenu plus haut. Je prendrais plutôt le temps d'énumérer une série d'arguments qui rendent l'approche métapop si intéressante. Intuition théorique (Box1). Outils analytiques. Peuvent être étudiés à l'équilibre et pour la transition. Focus d'abord sur la distribution (présecne-absence), on peut intégrer ensuite abondance dans approche hiérarchique. 
 In this respect, metapopulation models are strongly rooted into theory (Talluto 2017).
 For example, metapopulation models have shown that competition in Northestern-American forests may delay the response of warm adapted species to climate warming. 
 Despite unfavorable conditions, long-lived boreal trees species could prevent the establishment of better adapted temperate species (Vissault 2020).
@@ -62,6 +72,8 @@ Therefore, the metapopulation approach allows for flexibility to include ecologi
 
  
 *Objective of the paper. The purpose of this paper is to demonstrate the value of metapopulation model projections of distribution changes to support decision-making and policy in rapidly changing environments.*
+**DG** merger ce paragraphe avec le précédent ?
+**DG** annoncer un peu plus le contenu / organisation du texte qui va suivre. 
 The metapopulation approach is a powerful and flexible tool to simulate distribution changes.
 Resulting models can include demographic and dispersal constraints, and biotic interactions which previous approaches have not managed to do explicitly while remaining accessible.
 Metapopulation models have the advantage of being parameterizable while being less data demanding than previous models (Vissault 2020) and remaining simple and rooted in ecological theory (Holt 2009).
@@ -73,6 +85,7 @@ To demonstrate the approach, we investigated the changes in the distribution of 
 
 
 *The model was inspired to simulate the Bicknell's thrush, a bird characteristic of species of interest to decision makers and policy (COSEWIC).*
+**DG** Mettre emphase surtout sur les éléments qui rendent la grive intéressants : associé aux sommets de montagne, structure naturellement en patch. Dépendance au climat et à l'habitat. Espèce à statut précaire. 
 The model was inspired to simulate the Bicknell's thrush, a bird characteristic of species of interest to decision makers and policy (COSEWIC).
 We assess distribution change using abundances and transiant dynamics (Boulangeat 2018).
 We demonstrate the ability of a coupled metapopulation model to project the Bicknell's thrush distribution in Northestern America and the forest response to different climate changes scenarios.
@@ -113,6 +126,13 @@ We derived three observations from metapopulation theory
 	3. importance of the correlation in the environmental response between trophic levels
 inspired by a real case scenario, we have shown how theory could be relevant to decision-making and policy.
 In this study, we did not consider a parametrized model for the Bicknell's thrush.
+
+*Cette approche est intéressante, mais a déjà commencée à être explorée: revue de littérature*
+Hanski --> théorie
+Araujo (Nature climate change, proceeding B., Talluto, Steve, State occupancy models (voir ref steve))
+Utilisation pour la conservation: nothern spotted howl
+Papillons (Hanski)
+À des incidences sur comment on conserve (milieu de la conservation inspiré par l'approche: connectivité)
 
 *Paragraph 2. habitat-abiotic mismatch*
 
