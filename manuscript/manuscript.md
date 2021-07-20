@@ -11,36 +11,36 @@ author: Victor Cameron, Dominique Gravel
 *Expected environmental changes have motivated important advancements in distribution modelling.* 
 Climate change has already prompted species to shift their range toward higher latitudes and elevations (Parmesan 2006, Chen et al. 2011).
 To protect ecosystems, we need to predict how species distributions and communities will be affected.
-Commonly used models are most often statistical and based on the relationship between abiotic conditions and current species distribution.
-They present several limitations in their ability to model distribution dynamics while they mostly assume single species with restrictive assumptions for dispersal processes.
-More flexible, but similar models have been proposed to study the role of spatial and biotic sources of complexity in shaping species distributions (j-SDMs; Pollock et al. 2014, Warton 2015).
-However, they lack grounding in theoretical ecology and present difficulties when extrapolated to new environmental conditions.
-Our current lack of knowledge and tools for the prediction of species distribution responses to environmental changes poses serious limitations on the efficiency of future conservation actions.
-While most current predictive approaches ignore important biological mechanisms, these mechanisms are known to play an important role in species distribution response to environmental change (Urban 2016).
-More mechanistic approaches are required to project species distribution and several calls have been made for process-based models (Fordham 2013, Urban 2016).
+Commonly used models are most often statistical and based on the relationship between abiotic conditions and current species distribution (Urban 2016).
+They present several limitations in their ability to model distribution dynamics while they mostly assume single species with restrictive assumptions for dispersal processes and present difficulties when extrapolated to novel environmental conditions.
+Our current lack of knowledge and tools for the prediction of species distribution responses to environmental changes poses serious limitations to our predictive abilites.
+While most current predictive approaches ignore important biological mechanisms, demography, dispersal, and biotic interactions play key roles in species response to environmental change ().
+In response, several calls have been made for models that incorporate the processes mediating species response (Fordham 2013, Urban 2016) and mechanistic approaches have been developped to increase the realism of projections.
+Species' biology response to environmental variables make them more robust when extrapolated to novel conditions and outperform correlative approached by minimizing the predictions' uncertainty that accumulates over time. 
 While correlative SDMs are widely used in conservation planning (Guisan 2013), few process-based models are currently used in management of species under climate change.
+Recently developped mechanistic models already improve projections, but more work is required to increase accuracy and usability.
+The challenge now lies in the development of models that are i) customizable to the context of specific species and communities and ii) integrate multiple processes and their interplay (Thuiller 2013, Urban 2016).
+We believe that a strong theoretical background is necessary to guide the development of approaches in order to balance the complexity and tractability of patrameter estimation (Thuiller 2013).
+
 **DG** : peut-être réduire un peu l'importance de la critique sur la simplicité des modèles pour détailler davantage la proposition de Urban. Conclure sur le défi que représente le développeemnt de tels modèles, et de comment gérer la complexité. La théorie peut être une façon pour guider ce développement (Thuiller2013)
 
 *Review of some of the methods such as dynamic range models and forest gap models.*
 In regards to recent efforts, explicit modelling of the processes that underlie distribution dynamics are challenging to implement (Hefley, 2017, Briscoe 2021).
-Process-based models such as dynamic range models and forest gap models relate species abundances to abiotic environmental conditions using population growth rate and dispersal.
-They have the advantage of being strongly rooted in ecological theory and take from niche theory in that environmental performance is driven by demographic rates, linking species distributions to population performance (Svenning 2014, Godsoe 2017).
-However, these are often difficult to parameterize, data demanding both in quantity and quality, and computationally intensive (Snell 2014). 
-Measuring growth rate is challenging (McGill 2012), and require very specific data on species response to abiotic conditions.
-Indeed, the data required for these models are rarely available (Urban 2016).
-Furthermore, we find in other situations that local dynamics are insufficient to explain large-scale species distribution (Le Squin 2021).
+Among approaches rooted in ecological theory, Dynamic range models successfully incorporate processes of demography and dispersal and improve the accuracy of species distribution projections (Briscoe 2021).
+They are based on the niche theory, predicting species to occur in the landscape for environmental conditions where positive growth rates are observed (Hutchinson 1957, Godsoe 2017).
+However, such models are often difficult to parameterize because measuring growth rate is challenging (McGill 2012), and require very specific data on species's biological response to abiotic conditions.
+Indeed, on top of being computationally intensive (Snell 2014), the data required for these models are rarely available (Urban 2016).
+Furthermore, we find in other situations that local growth rates dynamics on their own are insufficient to explain large-scale species distribution (Le Squin 2021).
 This suggests that processes at larger scales must be considered. 
 Such processes should include dispersal limitations, disturbances, biotic interactions, etc… (Urban 2016????, Stephan 2021).
+
 **DG** : la transition vers le spatial est akward
 
 *Another approach recently proposed is derived from metapopulation theory.*
 Another approach recently proposed is derived from metapopulation theory.
 Like range dynamic models, metapopulation models relate demography to the geographical distribution of the niche (Holt 2009).
-Both model families are mechanistic and share the advantage of not being limited by new environmental conditions.
-**DG** : je ne comprends pas la phrase précédente
 Equilibrium distribution in dynamic range models is only limited by the availability of locally suitable environmental conditions.
 By contrast, metapopulation models rest on the assumption that distributions result from the interaction of habitat availability, local extinction, and colonization dynamics (Holt 2000).
-
 Indeed, distribution limits emerge and are shaped by a gradient in any of these three fundamental metapopulation processes (Holt 2000, talluto 2017).
 Furthermore, these processes are not only fundamental to the definition of species distribution in a metapopulation context, but also to its dynamics. 
 For example, species persistence to climate change may be affected by biotic and abiotic habitat suitability and its ability to occupy suitable habitat, such that distributions do not extend to all favorable abiotic environemntal conditions (Fordham 2013).
@@ -52,17 +52,17 @@ Metapopulation models capture processes of crutial importance from which emerge 
 
 
 *Metapopulation can easily be expanded to include more complexity, such as landscape heterogeneity and biotic interactions.*
-**DG** expression du statement
 We believe that metapopulation theory and its models may be an ideal framework for incoporating several elements complexity to range dynamics such as landscape heterogeneity, dispersal and biotic interactions.
 
-An approach based on metapopulation theory can easily be expanded to include more complexity, such as landscape heterogeneity and biotic interactions.
 The framework is flexible as the effect of dispersal and mechanisms acting on demography are simultaneously taken into account.
 These spatially explicit models can take habitat patch specific traits into account. 
 For example, metapopulation incidence models are discrete-time stochastic models that take into account habitat patch size and connectivity to other patches to independently influence extinction and colonization processes, and distribution dynamics at the patch-specific level (Hanski 1999).
 Distribution dynamics are also affected by biotic interactions (Wisz 2013).
 However, biotic interactions have previously been chalenging to model (Guilman 2010, Godsoe 2017).
 Theory predicts that biotic interactions affect the rate and extent of distribution changes through demography and dispersal (Svenning 2014).
+
 **DG** ce qui suit commence à répéter le contenu plus haut. Je prendrais plutôt le temps d'énumérer une série d'arguments qui rendent l'approche métapop si intéressante. Intuition théorique (Box1). Outils analytiques. Peuvent être étudiés à l'équilibre et pour la transition. Focus d'abord sur la distribution (présecne-absence), on peut intégrer ensuite abondance dans approche hiérarchique. 
+
 In this respect, metapopulation models are strongly rooted into theory (Talluto 2017).
 For example, metapopulation models have shown that competition in Northestern-American forests may delay the response of warm adapted species to climate warming. 
 Despite unfavorable conditions, long-lived boreal trees species could prevent the establishment of better adapted temperate species (Vissault 2020).
@@ -86,11 +86,14 @@ To demonstrate the approach, we investigated the changes in the distribution of 
 
 *The model was inspired to simulate the Bicknell's thrush, a bird characteristic of species of interest to decision makers and policy (COSEWIC).*
 **DG** Mettre emphase surtout sur les éléments qui rendent la grive intéressants : associé aux sommets de montagne, structure naturellement en patch. Dépendance au climat et à l'habitat. Espèce à statut précaire. 
-The model was inspired to simulate the Bicknell's thrush, a bird characteristic of species of interest to decision makers and policy (COSEWIC).
+
+The model was inspired to simulate the Bicknell's thrush, a threatened bird characteristic of species of interest to decision makers and policy (COSEWIC).
+The Bicknel's thrush is found during its breeeding season on mountaintops doninated by dense coniferous forests and cool climate (COSEWIC, Cadieux 2019).
+By its nature, the structure of its distribution is patchy (Box ..).
+Interesting species to study because of its requirement for specific climatic and habitat conditions.
+
 We assess distribution change using abundances and transiant dynamics (Boulangeat 2018).
 We demonstrate the ability of a coupled metapopulation model to project the Bicknell's thrush distribution in Northestern America and the forest response to different climate changes scenarios.
-The Bicknell's thrush breeding range is defined by cool climates, elevation and habitat type (COSEWIC, Cadieux 2019). 
-This habitat specialist is found in a fragmented landscape composed of mountain tops dominated by stands of boreal forest, and connected through dispersal (COSEWIC 2009).
 
 
 ## Methods

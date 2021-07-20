@@ -23,7 +23,8 @@ P^{*} = R^{*} - \frac{e_{P}}{c_{P}}
 $$
 
 and its distribution limit is defined by $P^{*} = 0$, such that it is located where $R = \frac{e}{c}$. Thus, it occurs where resource availability is balanced by the ratio of extinction and colonization.
-**DG** une transition serait utile. Quelque chose du genre : Range limits over an environmental gradient are determined by the specific functions for colonization and extinction, along with the distribution of the resource over that gradient and the landscape configuration. We provide three examples below illustrating how metapopulation theory can reveal the complexity of range dynamics under climate warming.
+
+Range limits over an environmental gradient are determined by the specific functions for colonization and extinction, along with the distribution of the resource over that gradient and the landscape configuration. We provide three examples below illustrating how metapopulation theory can reveal the complexity of range dynamics under climate warming.
 
 *Resource mismatch effect on consumer distribution shift.*
 This implies that environmental mismatch of the lower trophic level - change of resource availability for given environmental conditions - affects top-level distribution shift in scenario of abiotic conditions change (Fig 1A).
@@ -35,13 +36,9 @@ Thus, the position of the top trophic level distribution limit can shift if the 
 
 
 *Non-linear response of occupancy with climate change in metapopulations contrasts with the linear response of a standard SDM.*
-**DG** transition ajoutée : 
 An implicit assumption of standard SDMs is that a reduction in suitable habitat availability translates into an equivalent reduction in species range (Thomas2004; Fig 1B; full line).). 
 Such reductions in suitable habitats may however precipitate the decline of a species in a metapopulation setting. 
-The consumer's equilibrium prevalence equation (equation 3) shows that non-linear response of prevalence can arise in metapopulations from a linear change in environmental conditions (Fig 1B).
-This prediction contrasts with the linear response of a standard SDM.
-SDMs assume distributions to remain within equilibrium abiotic environmental conditions and to respond instantaneously, therefore projecting linear changes in consumer prevalence (Fig 1B; full line).
-In contrast, distribution changes from the metapopulation approach are projected from the combined effects of new environmental conditions on demographic performance and on resource availability. 
+The consumer's equilibrium prevalence equation (equation 3) shows that non-linear response of prevalence can arise in metapopulations from a linear change in environmental conditions (Fig 1B); distribution changes from the metapopulation approach are projected from the combined effects of new environmental conditions on demographic performance and on resource availability. 
 Imagine a landscape composed of a set of habitat patches with a gradient in abiotic environmental conditions. The linear contraction of the landscape's favourable environmental conditions here has two effects: first a reduction in resource availability $R$ from what follows a loss of suitable habitat area ($A$), increases extinction rates $e$ ($e = \frac{e/A}$) (Hanski 2000).
 Resource availability and habitat patch area being correlated, the effect of environmental change on prevalence is amplified (Hanski 2000).
 The amplification effect may not be important at first while suitable habitat is abundant, but increases as habitat availability decreases, supporting an acceleration of metapopulation prevalence loss to a constant abiotic environmental shift (Hanski 2000, Ovaskainen 2002).
