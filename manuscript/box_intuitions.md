@@ -36,12 +36,14 @@ Thus, the position of the top trophic level distribution limit can shift if the 
 
 
 *Non-linear response of occupancy with climate change in metapopulations contrasts with the linear response of a standard SDM.*
-An implicit assumption of standard SDMs is that a reduction in suitable habitat availability translates into an equivalent reduction in species range (Thomas2004; Fig 1B; full line).). 
+An implicit assumption of standard SDMs is that a reduction in suitable habitat availability translates into an equivalent reduction in species range (Thomas2004; Fig 1B; full line). 
 Such reductions in suitable habitats may however precipitate the decline of a species in a metapopulation setting. 
 The consumer's equilibrium prevalence equation (equation 3) shows that non-linear response of prevalence can arise in metapopulations from a linear change in environmental conditions (Fig 1B); distribution changes from the metapopulation approach are projected from the combined effects of new environmental conditions on demographic performance and on resource availability. 
-Imagine a landscape composed of a set of habitat patches with a gradient in abiotic environmental conditions. The linear contraction of the landscape's favourable environmental conditions here has two effects: first a reduction in resource availability $R$ from what follows a loss of suitable habitat area ($A$), increases extinction rates $e$ ($e = \frac{e/A}$) (Hanski 2000).
-Resource availability and habitat patch area being correlated, the effect of environmental change on prevalence is amplified (Hanski 2000).
-The amplification effect may not be important at first while suitable habitat is abundant, but increases as habitat availability decreases, supporting an acceleration of metapopulation prevalence loss to a constant abiotic environmental shift (Hanski 2000, Ovaskainen 2002).
+Imagine a landscape composed of a set of habitat patches with a gradient in abiotic environmental conditions. 
+The linear contraction of the landscape's favourable environmental conditions here has two effects: first a reduction in resource availability $R$ from what follows a loss of suitable habitat area ($A$), increases extinction rates $e$ ($e = \frac{e/A}$) (Hanski 2000).
+With climate warming, the resource availability is reduced, and the loss of habitat area begins to amplify the impact of environmental change to a non-linear response of species.
+As habitat and resource availability loss occur together, it means that populations sizes are reduced, increasing local population extinction risk.
+The amplification effect may not be important at first while suitable habitat is abundant and local extinctions low, but increases as habitat availability decreases, supporting an acceleration of metapopulation prevalence loss to a constant abiotic environmental shift (Hanski 2000, Ovaskainen 2002).
 
 *The effect of environmental change on lower trophic levels can propagate up and affect higher trophic levels.*
 The net effect of more favourable abiotic conditions to a top-level species could nonetheless be detrimental if the environment becomes less favourable to the lower trophic levels (Fig. 1C).

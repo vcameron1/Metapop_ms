@@ -3,9 +3,10 @@ title: Various effects of climate change on landscape suitability
 author: Victor Cameron
 ---
 
-Consider a metapopulation as a population of populations connected by dispersal.
+Consider a metapopulation as a population of populations connected by dispersal where the landscape in which it occurs is composed of a set of suitable and unsuitable habitat patches.
 Metapopulation are perfeclty suited to caracterize fragmented distributions.
-The suitability of a heterogeneous landscape can be defined as its ability to support persistence of a species which is determined by local patch abiotic and biotic environmental factors, but also by the species’ ability to occupy suitable patches.
+Metapopulation theory predicts that heterogeneous landscape can support the long term persistence of a species' metapopulation if a sufficient fraction of habitat patches are remains occupied at all time. 
+This means that the equilibrium is dynamic as occupied patches can change, and is affected by local patch abiotic and biotic suitability, and also by the species’ ability to occupy suitable patches.
 Thus, species persistence, and landscape suitability, are functions of local environmental conditions and landscape connectivity.
 
 We can use metapopulation theory to measure the landscape's ability to sustain a metapopulation. 
