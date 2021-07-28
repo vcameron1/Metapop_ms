@@ -1,0 +1,317 @@
+---
+title: "Point process species distribution model with `mapSpecies`"
+author: "F. Guillaume Blanchet"
+date: "March 2019"
+output:
+  rmarkdown::html_vignette:
+    fig_caption: yes
+    self_contained: true
+    keep_html: yes
+    keep_md: yes
+vignette: |
+  %\VignetteIndexEntry{Single species point process speices distribution modelling}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+  %\usepackage[utf8]{inputenc}
+bibliography: biblio.bib
+---
+
+```{r, echo=FALSE, message=FALSE, results='hide', purl=FALSE}
+knitr::opts_chunk$set(cache=F,fig.width=5,fig.height=5,dpi=125,
+                      root.dir = '/Users/victorcameron/Documents/Git/Metapop_ms')
+set.seed(123)
+```
+
+# Introduction
+
+This particular vignette was written to explain how to build point process species distribution models using `mapSpecies`. In essence, this vignette shows how to use the `ppSpace` function and a few helper functions to build models. 
+
+The modelling approach implemented in the `ppSpace` function is essentially a specialized wrapper around the `INLA` R package so that it can be easier to construct point process models as they were presented by @simpson_going_2016. 
+
+To illustrate how the models are constructed, the *Tinamus solitarius* data, available in the `bossMaps`, will be used.
+
+# Load R package for the analysis
+
+```{r, message = FALSE, warning=FALSE}
+# Workaround inability to install package from GitHub
+setwd("~/Documents/Git/Metapop_ms/mapSpecies/")
+devtools::load_all()
+library(mapSpecies)
+```
+
+# Data
+
+# REwrite this section based on the new data used
+
+The data used here comes from @borcard_environmental_1994. For the purpose of this illustration, substrate density and water content (the two continuous variables) have been interpolated across the sampling area with kriging while the class variables were reconstructed from Figure 1 of @borcard_environmental_1994. These data are all available in `mite.envRaster` a `RasterStack`. As for the species data, the sampled coordinates and the species abundances available in the `vegan` R package were organized in a `SpatialPointDataFrame` and are available in `mite.spdf`.
+
+## Species data
+
+```{r}
+# Load species data
+GRBI <- readxl::read_excel("../data/RAPPORT QO_SOS-POP SCF_GRBI.xlsx", sheet = 2)
+```
+
+## Environmental data
+
+```{r}
+# Environmental data
+climatePresent <- readRDS("../data/bioclim_sQ.RDS")
+climatePresent <- raster::stack(climatePresent)
+
+# Elevation data
+elevation <- readRDS("../data/elev_sQ.RDS")
+```
+
+
+Note that if some explanatory variables are factors, to preserve there structure as factors, a `RasterStack` needs to be used because a `RasterBrick` will convert the data into a matrix and the factor level information will be lost.
+
+## Sampling region
+
+For our illustration, let's also build a `SpatialPolygons` outlining the sampling area. This will become handy for a few steps when performing the analysis.
+
+```{r}
+# Crop GRBI presence data
+GRBI <- GRBI[GRBI$LONGITUDE>=xmin(elevation) & 
+               GRBI$LONGITUDE<=xmax(elevation) & 
+               GRBI$LATITUDE>=ymin(elevation) & 
+               GRBI$LATITUDE<=ymax(elevation),]
+```
+
+### Format predictor
+
+Combine explanatory variables into a rasterstack
+
+```{r}
+explana_dat <- raster::stack(climatePresent, elevation)
+names(explana_dat[[which(names(explana_dat)==names(elevation))]]) <- "elevation"
+```
+
+Null predictor for purely spatial model
+
+```{r}
+#values(explana_dat) <- 0
+#explana_dat <- explana_dat[[c(1,2)]]
+```
+
+Test with scaled predictors
+```{r}
+values(explana_dat) <- scale(values(explana_dat))
+```
+
+
+Build spatialPolygons and use those to select GRBI points within the region of interest
+
+```{r}
+# Build SpatialPolygons
+rasterForPoly <- explana_dat[[1]]
+values(rasterForPoly) <- ifelse(is.na(values(rasterForPoly)), NA, 1)
+spacePoly <- rasterToPolygons(rasterForPoly, dissolve = TRUE)
+
+# Focus only on the occurences that fall into the survey regions
+GRBI_points <- SpatialPoints(cbind(GRBI$LONGITUDE, GRBI$LATITUDE),
+                                  proj4string = spacePoly@proj4string)
+
+# Sneak peek at the data
+plot(explana_dat[[20]])
+points(GRBI_points, pch=19, cex = 0.2)
+```
+
+## Building the mesh
+
+The core of the analyses carried out in this document will be performed using the `ppSpace` function. The first step that needs to be carried out to use this function (and thus to construct a spatially constrained model) is to build a Delaunay triangulation, a mesh, that will serve as a basis to construct the spatial component of the model through an SPDE approach. 
+
+Properly choosing the structure of the mesh is essential for the model estimation to be carried out properly. Detailed explanation on the dos and don'ts of constructing a mesh is presented in section 1.3 of the  [R-INLA tutorial on SPDE models](http://inla.r-inla-download.org/r-inla.org/tutorials/spde/html/). For a quick overview, take a look at the *mesh* vignette.
+
+For our illustration, let's use the following mesh.
+
+```{r}
+regionBorder <- extent(spacePoly)
+xyBasis <- rbind(cbind(c(xmin(spacePoly),xmax(spacePoly),
+                         xmin(spacePoly),xmax(spacePoly)),
+                       c(ymin(spacePoly),ymax(spacePoly), 
+                         ymax(spacePoly),ymin(spacePoly))),
+                 coordinates(GRBI_points))
+Mesh <- inla.mesh.2d(loc.domain = xyBasis,
+                     max.edge = 0.5,
+                     min.angle = 20,
+                     cutoff = 0.5,
+                     offset = c(2,1),
+                     crs = crs(spacePoly))
+```
+
+```{r, fig.width = 3, fig.height=3}
+par(mar = c(1,1,1,1))
+plot(Mesh, main = "", asp = 1)
+points(coordinates(GRBI_points), pch = 19, col = "red")
+# Number of edges in the mesh
+Mesh$n
+```
+
+## Organizing the explanatory variables
+
+To build a model with `ppSpace` explanatory variables value need to be gathered for all edges of the mesh, even the ones outside the sampling region. This is important to prevent edge effect problems that may arise in model such as the one used here.
+
+The function `explanaMesh` is design to gather this information. In addition, the resulting object includes the `Raster*` of explanatory variable(s) and the mesh.
+
+Note that running the `explanaMesh` function may take a bit of time. 
+
+```{r}
+# explana <- explanaMesh(sPoly = spacePoly, 
+#                        mesh = Mesh, 
+#                        X = explana_dat[[1]])
+explana <- explanaMesh(sPoly = spacePoly, 
+                       mesh = Mesh)
+```
+
+## Calculating weights associated to each edges of the mesh
+
+The approach proposed by @simpson_going_2016 suggest that a dual mesh diagram should be used to calculate the area around each edge and use this area as weight for the whole sampling region. For the mesh we constructed above the dual mesh looks likes this
+
+```{r, echo=FALSE, fig.width = 3, fig.height=6, fig.cap="Figure 1 : The dual mesh (blue) is constructed by joining the centroids triangles of the Delaunay triangulation (grey) and the middle of each vertex."}
+dMesh <- mapSpecies:::inla.mesh.dual(Mesh)
+par(mar = c(1,1,1,1))
+plot(Mesh, asp = 1, main = "")
+plot(dMesh, border = "blue", add = TRUE)
+```
+
+Note that the dual mesh shows some similarity with a Voronoï diagram. 
+
+To calculate the area of the cell associated to each mesh edge, we need to use the `ppWeight` function.
+
+```{r, warning=FALSE}
+weight <- ppWeight(sPoly = spacePoly, mesh = Mesh)
+```
+
+By taking a look at the calculated weights, it can be noticed that some weights are equal to 0. This is because the associated cells are completely outside the sampling area.
+
+## Building the model
+
+Now that all the pieces are constructed we can estimate the model using `ppSpace`. 
+
+Note that, we included the argument `control.compute`, an argument from INLA, to compute a Watanabe-Akaike information criterion (WAIC). Usually, the WAIC is used to compare different models, however here it was included simply to show that `ppSpace` will pass additional arguments to the `inla` function. 
+
+What is important to be aware at this point is that `ppSpace` is essentially a specialized wrapper around the `inla` function of the R package `INLA`. As such, all arguments that can be passed to `inla` can be passed to `ppSpace`.
+
+A particularity of `ppSpace` is that in the formula, the response variable has to be `y`.
+
+Below two models were estimated with the sole difference that one was estimated using the argument `many = TRUE`. The idea here is to show the differences in results but also in speed. 
+
+```{r, warning = FALSE}
+# Spatial model
+modelPP <- ppSpace(y ~ 0, sPoints = GRBI_points,
+                   explanaMesh = explana,
+                   ppWeight = weight,
+                   control.compute = list(waic = TRUE))
+modelPPmany <- ppSpace(y ~ 0, sPoints = GRBI_points,
+                   explanaMesh = explana,
+                   ppWeight = weight,
+                   many = TRUE,
+                   control.compute = list(waic = TRUE))
+
+modelPPmany <- ppSpace(y ~ ., sPoints = GRBI_points,
+                   explanaMesh = explana,
+                   ppWeight = weight,
+                   many = TRUE,
+                   control.compute = list(waic = TRUE))
+modelPP <- modelPPmany
+```
+
+## Studying the estimated parameters
+
+Although one of the main interest of species distribution models is to estimate and predict the distribution of species, it is also relevant and important to study the estimated parameters to better understand the importance of the considered explanatory variable in structuring the distribution of the species. We can study these parameters using the `summary` function
+ 
+```{r}
+summary(modelPP) 
+```
+
+To see the differences between `modelPP` and  `modelPPmany`, lets focus on the estimated coefficients and the time it took to perform the estimation
+
+```{r}
+# Estimated coefficients
+summary(modelPP)$coefficients
+summary(modelPPmany)$coefficients
+# Running time
+summary(modelPP)$runningTime
+summary(modelPPmany)$runningTime
+```
+
+## Plot environment relationship
+
+```{r}
+summary(modelPP)$coefficients["Intercept",1]
+summary(modelPP)$coefficients[2,1]
+
+curve(summary(modelPP)$coefficients["elevation",1]*x + summary(modelPP)$coefficients["Intercept",1], 0, max(values(elevation)),
+      xlab = "Elevation (m)", ylab = "Intensity", main = "Intensity-environment relationship")
+
+pred <- "bio8"
+curve(summary(modelPP)$coefficients[pred,1]*x + summary(modelPP)$coefficients["Intercept",1], min(values(explana_dat[[pred]]), na.rm=T), max(values(explana_dat[[pred]]), na.rm=T),
+      xlab = pred, ylab = "Intensity", main = "Intensity-environment relationship")
+```
+
+As can be seen the model parameters are different but the time it took to run the model is reduced because the parameter estimation had to be done at a smaller number of locations.
+
+## Species distribution map
+
+To get a good idea of the quality of the map resulting from the model, in addition of plotting the average model, it can be valuable to also plot the standard deviation or a 95% confidence interval around the model. All of these maps can be constructed using `mapSpace`.
+
+```{r}
+#--------------------------
+# Construct prediction maps
+#--------------------------
+# Mean
+mapMean <- mapSpace(modelPP,
+                    dims = dim(explana_dat)[1:2],
+                    type = "mean",
+                    sPoly = spacePoly)
+# Standard deviation
+mapSd <- mapSpace(modelPP,
+                    dims = dim(explana_dat)[1:2],
+                    type = "sd",
+                    sPoly = spacePoly)
+# Lower boundary of the 95% confidence interval
+map.025 <- mapSpace(modelPP,
+                    dims = dim(explana_dat)[1:2],
+                    type = "0.025quant",
+                    sPoly = spacePoly)
+# Upper boundary of the 95% confidence interval
+map.975 <- mapSpace(modelPP,
+                    dims = dim(explana_dat)[1:2],
+                    type = "0.975quant",
+                    sPoly = spacePoly)
+#--------------------------------------
+# Cut raster with polygon of the region
+#--------------------------------------
+mapMaskMean <- mask(mapMean, spacePoly)
+mapMaskSd <- mask(mapSd, spacePoly)
+mapMask.025 <- mask(map.025, spacePoly)
+mapMask.975 <- mask(map.975, spacePoly)
+```
+
+```{r,  fig.width = 6, fig.height=8}
+# Colour to use for the maps
+colo <- colorRampPalette(c("grey90", "steelblue4", 
+                           "steelblue2", "steelblue1", 
+                           "gold", "red1", "red4"))(200)
+par(mfrow = c(2,2), mar = c(1,1,5,8))
+plot(mapMaskMean, col = colo, zlim = c(0, 50),
+     axes = FALSE, box = FALSE, main = "Mean")
+points(coordinates(GRBI_points), pch = 19, cex = 0.2)
+plot(mapMaskSd, col = colo,  zlim = c(0, 50),
+     axes = FALSE, box = FALSE, main = "Sd")
+points(coordinates(GRBI_points), pch = 19, cex = 0.2)
+plot(mapMask.025, col = colo,  zlim = c(0, 50),
+     axes = FALSE, box = FALSE, main = "2.5%")
+points(coordinates(GRBI_points), pch = 19, cex = 0.2)
+plot(mapMask.975, col = colo,  zlim = c(0, 50),
+     axes = FALSE, box = FALSE, main = "97.5")
+points(coordinates(GRBI_points), pch = 19, cex = 0.2)
+```
+
+By studying the mean distribution we can infer the distribution of the species in the study area, but by accounting for the standard deviation and the 95% confidence interval, we can also gain some knowledge about the area where we have high (or low) confidence in the prediction. 
+
+Note that the map presents an intensity rather than a probability of occurrence.
+
+
+# References
