@@ -103,10 +103,13 @@ Our simulations show that a metapopulation approach provides projections with 1)
 **DG** Mettre emphase surtout sur les éléments qui rendent la grive intéressants : associé aux sommets de montagne, structure naturellement en patch. Dépendance au climat et à l'habitat. Espèce à statut précaire. 
 
 The model was inspired to simulate the Bicknell's thrush, a threatened bird characteristic of species of interest to decision makers and policy (COSEWIC).
-The Bicknell's thrush has a highly restricted breeding range in Canada that is considered to be vulnerable to climate warming, and for which the thrush's survival is considerend threatened ().
-As a habitat specialist with specific climate requirements, it is found during its breeeding season on mountaintops doninated by dense coniferous forests and cool climate (COSEWIC, Cadieux 2019).
-By its nature, the structure of its distribution is patchy (Box ..).
-We demonstrate the ability of a coupled metapopulation model to project the Bicknell's thrush distribution in Northestern America and the forest response to different climate changes scenarios.
+The Bicknell's thrush is found during its breeeding season on mountaintops doninated by dense coniferous forests and cool climate (COSEWIC, Cadieux 2019).
+Unfavorable climatic conditions are predicted to increase at the edges of boreal forest patches with the warming of climate and the lag in boreal species response [BOX, COSEWIC, @vissault_slow_2020].
+With preferences for habitats and specific climate requirements, the Bicknell's thrush is a good example of a species with a fragmented distribution structure.
+As a result, its breeding range is highly restricted in Canada.
+Climate change could therefore pose a major threat to the persistence of the Bicknell's thrush in Canada.
+In the following sections, we demonstrate the ability of a coupled metapopulation model to project the Bicknell's thrush distribution in Northestern America and the forest response to different climate changes scenarios.
+
 
 
 ## Methods
@@ -144,22 +147,29 @@ inspired by a real case scenario, we have shown how theory could be relevant to 
 In this study, we did not consider a parametrized model for the Bicknell's thrush.
 
 *Cette approche est intéressante, mais a déjà commencée à être explorée: revue de littérature*
-Metapopulation models have been used for distribution change problems in multiple contexts (), but have rarely been used to manage the complexity arising from biotic interactions and dispersal in context of environmental changes.
-Some aspects have been explored; 
-metapopulation persistence, habitat destruction, non-equilibrium dynamics, predator-prey interactions
+Many studies have investigated distribution change using metapopulation theory [@fordham_adapted_2013,@Schnell_estimating_2013,@talluto_extinction_2017,@huang_using_2019], but much fewer to manage the complexity arising from biotic interactions and dispersal in context of rapid environmental change.
+Some aspects have however been explored, starting with the development of the theoretical basis for metapopulation dynamics on heterogenous landscapes. 
+Spatially realistic metapopulation theory has allowed modelling of distribution dynamics in species living in fragmented landscapes[@hanski_metapopulation_1998,@hanski_habitat_1999,@hanski_metapopulation_2000,@hanski_spatially_2001].
+The coupling of spatially explicit metapopulation model with dynamic climate change represent a significant conceptual advancement toward increasingly realistic projections [@anderson_dynamics_2009].
+The approach reveal distribution dynamics that other methods fail to capture, demonstrating the importance of moving toward approaches intergrating dynamic processes.
+The simulation study of the Iberian lynx distribution is the first study to consider the interplay of climate change and trophic interactions using a metapopulation approach [@fordham_adapted_2013].
+It showed that these factors could be explicitely considered together, exhibiting distribution dynamics of greater complexity and realism.
+Moreover, the use of the metapopulation approach has made possible the study of non-equilibrium dynamics in species distributions by the scaling of local processes at the entire distribution [@talluto_extinction_2017].
+Recently, the approach was extended to non-equilibrium dynamics of distribution shift in response to climate warming, highliting the role of competition while modeling only demography and dispersal [@vissault_slow_2020]. 
+The metapopulation framework that we propose here builds on these previous developments to andvance toward simultaneously projecting changes in demography and dispersal in response to climate change and the multi-species effects of biotic interactions on the distribution of species.
 
-Use of the metapopulation theory to inform conservation goes as far back as 1985 (Shaffer 1985) for species with patchy population structure and has since been further developed to account for specific spatial and population dynamics (Hanski&Simberloff1997, Fordham 2013, Huang 2020). 
-The metapop concept is now ubiquitous in conservation: the theory has brought the idea of ecological corridors for one example (spatial configuration of the habitat), habitat fragmentation/destruction/isolation and species long-term persistence (dispersal), assisted migration/translocations (colonization rates), habitat quality improvement (redicing extinction rates), habitat restoration (habitat availability)
-its applications are seen in (Harrison 1994)
+The use of the metapopulation theory to inform conservation goes as far back as 1985 (Shaffer 1985) for species with patchy population structure and has since been further developed to account for specific spatial and population dynamics (Hanski&Simberloff1997, Fordham 2013, Huang 2020). 
+In response to exploitation pressure from the logging compagnies and an extinction risk increasing rapidly, a spatially explicit metapopulation model was used to define the amount of prestine forest habitat needed to assure the survival of the northern spotted owl (*Strix occidentalis caurina*) in North-ouestern United-States (Shaffer 1985, Lamberson 1994).
+More recently, the incidence function model (IFM) has been used to study the large scale population dynamics of the Glanville fritillary (*Meliteae cinxia*) who's distribution has shrunk in Europe to become highly fragmented.
+The application of the IFM to the fritillary case study demonstrates the value of the metapopulation approach in describing the distribution dynamics of the species while being strongly rooted in theory and simple enough to be parameterized using available ecological data [@hanski_metapopulation_1999].
+
+Metapopulation theory and models affect how conservation priorities are defined at a variety of scales.
+The conservation of ecological corridors is the current focus of important initiatives worldwide [CorridorAppalachien,NCC,WesternWildwayNetworkPriorityCorridorProject] while habitat fragmentation is a criterion of threat for the IUCN Red List [IUCN].
+Metapopulation theory predicts the scaling of extinction risk with increasing habitat isolation, something other non spatially explicit approaches do not do.
+Equally, assisted colonization and habitat restoration are put forward as means to support species persistence by increasing respectively colonization rates and habitat availability [@Ricciardi_assisted_2009,@willis_assisted_2009,@fordham_adapted_2013].
 Metapopulation theory main contribution to conservation ecology has been to direct attention on the effect of spatial configuration of the landscape on species persistence. 
-For example, in response to exploitation pressure from the logging compagnies and an extinction risk increasing rapidly, the approach has contributed to define the amount of prestine forest habitat needed to assure the survival of the northern spotted owl (*Strix occidentalis caurina*) in north-ouestern United States. (Shaffer 1985, Lamberson 1994).
-The developped spatially explicit metapopulation model has shown that species occupancy increased with suitability and size of habitat clusters and the planned habitat conservation areas should be composed of 15-30% of preserved forests and large enough for 15-25 pairs of this habitat specialist (Lamberson 1994).
-Perhaps the most extensively studied system using metapopulation theory is the Glanville fritillary (*Meliteae cinxia*) (Hanski...).
-Using the incidence fonction model which has the particularity of scaling the extinction risk to patch area and colonization probability with immigration rate, Hanski (1999) has analysed the population dynamics. 
-The strength of the model is related to its spatially realistic nature and its simplicity which allows its parametrisation using ecological data.
 
-Examples: Nothern owl; Glanvile fritillary
-Application to environmental change issues: Araujo, talluto, vissault
+
 
 Hanski --> théorie
 Araujo (Nature climate change, proceeding B., Talluto, Steve, State occupancy models (voir ref steve))
