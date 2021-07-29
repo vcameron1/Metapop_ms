@@ -1,0 +1,48 @@
+title: "Using metapopulation approach for projection of distributions in rapidly changing environments"
+running_title: "Projecting distribution using metapopulation approach"
+abstract: ""
+keywords:
+    - "Climate change"
+    - "Distribution"
+    - "Range dynamics"
+    - "Transient dynamics"
+    - "Metapopulation"
+highlights:
+    - ""
+supporting-files:
+  - "suppInfo"
+language: "en"
+license: "CC-BY"
+github-repo: "vcameron1/Metapop_ms"
+bibliography: "https://doc.ielab.usherbrooke.ca/index.php/s/SZGp0vuS1GVLVK8/download"
+zenodoDOI: ""
+google-analytics: ""
+
+authors:
+    - affiliations: [1, 2]
+      email: victor.cameron@usherbrooke.ca
+      familyname: Cameron
+      givennames: Victor
+      orcid: 
+      corresponding: 
+    - affiliations: [1, 2]
+      email: Dominique.Gravel@USherbrooke.ca
+      familyname: Gravel
+      givennames: Dominique
+      orcid: 0000-0002-4498-7076
+
+affiliations:
+    - index: 1
+      name: Département de biologie, Université de Sherbrooke, Sherbrooke, Québec, Canada
+    - index: 2
+      name: Québec Centre for Biodiversity Sciences, McGill University, Montréal, Québec, Canada
+
+acknowledgments: ""
+data_availability: "The code, figures, and manuscript are stored as a research compendium at [https://github.com/vcameron1/Metapop_ms](https://github.com/vcameron1/Metapop_ms)."
+funding: "This research was supported by the BIOS² NSERC CREATE program."
+authorship: ""
+conflicts-of-interest: "The authors declare no conflict of interest."
+
+link-citations: true
+figures-at-end: false
+double-blind: false
