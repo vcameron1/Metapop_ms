@@ -1,0 +1,103 @@
+%!TEX TS-program = xelatex
+\documentclass[11pt]{article}
+\usepackage{geometry}
+\geometry{verbose,letterpaper,tmargin=2.2cm,bmargin=2.2cm,lmargin=2.2cm,rmargin=2.2cm}
+\usepackage[doublespacing]{setspace}
+
+% fonts
+$if(fontfamily)$
+\usepackage[$for(fontfamilyoptions)$$fontfamilyoptions$$sep$,$endfor$]{$fontfamily$}
+$else$
+\usepackage{lmodern}
+$endif$
+
+% authors and affiliations
+\usepackage{authblk}
+\renewcommand\Authfont{\scshape\normalsize}
+\renewcommand\Affilfont{\itshape\small}
+
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+$if(title-meta)$
+  pdftitle={$title-meta$},
+$endif$
+$if(authors)$
+  pdfauthor={$for(authors)$$authors.givennames$~$authors.familyname$$sep$ and $endfor$},
+$endif$
+$if(language)$
+  pdflang={$language$},
+$endif$
+$if(subject)$
+  pdfsubject={$subject$},
+$endif$
+$if(keywords)$
+  pdfkeywords={$for(keywords)$$keywords$$sep$, $endfor$},
+$endif$
+colorlinks=true,
+allcolors=[rgb]{0,0.4,0.5},
+pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+
+\begin{document}
+
+$if(title)$
+\title{$title$$if(thanks)$\thanks{$thanks$}$endif$}
+$endif$
+
+$if(subtitle)$
+\subtitle{$subtitle$}
+$endif$
+
+$for(authors)$
+\author[$for(authors.affiliations)$$authors.affiliations$$sep$,$endfor$]{$authors.givennames$~$authors.familyname$$if(authors.corresponding)$\thanks{Corresponding author: $authors.email$}$endif$}
+$endfor$
+
+$for(affiliations)$
+\affil[$affiliations.index$]{$affiliations.name$}
+$endfor$
+
+\date{$date$}
+
+% print all title page only if not double-blind
+$if(title)$
+\maketitle
+$if(running_title)$
+\small{{\bf Running title}: $running_title$}\\\\
+$endif$
+$if(supporting-files)$
+\small{{\bf Supporting information}: Additional supporting information can be found $for(supporting-files)$\href{https://willvieira.github.io/ms_STM-managed/$supporting-files$.pdf}{here}$sep$, $endfor$.}\\\\
+$endif$
+$if(acknowledgments)$
+\small{{\bf Acknowledgments}: $acknowledgments$}\\\\
+$endif$
+$if(data_availability)$
+\small{{\bf Data availability}: $data_availability$}\\\\
+$endif$
+$if(funding)$
+\small{{\bf Funding}: $funding$}\\\\
+$endif$
+$if(authorship)$
+\small{{\bf Authorship}: $authorship$}\\\\
+$endif$
+$if(conflicts-of-interest)$
+\small{{\bf Conflicts of interest}: $conflicts-of-interest$}\\\\
+$endif$
+$if(highlights)$
+\small{{\bf Highlights}:\vspace{-1.5em}
+\begin{itemize}
+  $for(highlights)$
+    \item $highlights$
+  $endfor$
+\end{itemize}}
+$endif$
+$if(abstract)$
+\begin{abstract}
+$abstract$
+\end{abstract}
+$endif$
+$endif$
+$if(keywords)$
+\hspace{1cm}\small{{\bf Keywords}: $for(keywords)$$keywords$$sep$, $endfor$}
+$endif$
+
+\end{document}

@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="$language$" dir="ltr">
+   <head>
+      <meta charset="utf-8">
+      <title>$title$</title>
+      <script src="https://hypothes.is/embed.js" async></script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <!--fonts-->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha256-l85OmPOjvil/SOvVt3HnSSjzF1TUMyT9eV0c2BzEGzU=" crossorigin="anonymous" />
+      <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,600|Source+Sans+Pro:300,300i,400,400i,600,600i&display=swap&subset=greek" rel="stylesheet">
+      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+      <link rel="stylesheet" href="https://cdn.rawgit.com/jpswalsh/academicons/master/css/academicons.min.css">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.11.1/tocbot.css">
+      <script src="https://cdn.jsdelivr.net/npm/walkway.js/src/walkway.min.js"></script>
+      <style>
+         h1.title {
+            font-size: 38px;
+            text-align: center;
+         }
+
+         h4.author {
+            font-size: 18px;
+            text-align: center;
+         }
+
+         body {
+         font-size: 18px;
+         font-family: "Source Sans Pro", sans-serif;
+         }
+         body b,
+         body strong {
+         font-weight: 600;
+         }
+         body code,
+         body pre {
+         font-family: "Source Code Pro", monospace;
+         }
+         .container {
+         display: block !important;
+         margin: 0px auto;
+         padding: 3em;
+         max-width: 1000px;
+         }
+         header {
+         background-color: #f8f8f8;
+         }
+         header h1 {
+         margin-top: 1em;
+         padding-left: 0.5em;
+         }
+         a {
+         text-decoration: none;
+         color: #00667F;
+         }
+         a:hover {
+         color: #2a6496;
+         }
+         article p {
+         line-height: 150%;
+         color:#131313;
+         }
+         article.container {
+         max-width: 800px;
+         }
+         d-appendix {
+         font-size: 16px;
+         line-height: 1.3;
+         padding-left: 18px;
+         border: 1px solid rgba(0,0,0,0.1);
+         background: rgba(0, 0, 0, 0.02);
+         padding: 10px 18px;
+         color: rgba(150, 150, 150, 1);
+         overflow: hidden;
+         margin-top: -10px;
+         word-wrap: break-word;
+         display: block;
+         }
+         /* columns for appendix */
+         .row {
+         display: flex;
+         margin-left: -65px;
+         }
+         /* Create two equal columns that sits next to each other */
+         .rightColumn {
+         flex: 10%;
+         padding: 5px;
+         height: auto; /* Should be removed. Only for demonstration */
+         font-weight: 200;
+         margin-right: 110px;
+         }
+         .leftColumn {
+         padding: 5px;
+         width: 150px;
+         height: auto; /* Should be removed. Only for demonstration */
+         }
+         article h1 {
+         margin-top: 2em;
+         border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+         font-weight: 400;
+         }
+         article h2 {
+         margin-top: 1em;
+         margin-bottom: 0px;
+         padding-bottom: 0px;
+         font-weight: 400;
+         }
+         article h3 {
+         font-weight: 400;
+         }
+         .citation {
+         border-bottom: 1px #00667F;
+         }
+         figure {
+         font-size: 85%;
+         color: #767e79;
+         margin: 2em 0;
+         line-height: 1.3;
+         text-align: center;
+         }
+         figure img {
+         max-width: 100%;
+         }
+         figure figcaption {
+         text-align: left;
+         padding: 1em;
+         }
+         figure figcaption span {
+         color: #6c7670;
+         font-weight: 600;
+         }
+         nav.artifacts {
+         text-align: center;
+         background-color: #edefee;
+         padding-top: 5px;
+         padding-bottom: 9px;
+         }
+         .creators .creator {
+         margin-bottom: 0.5em;
+         padding-left: 1em;
+         }
+         .creators .creator .author {
+            display: inline-block;
+            color: #859089;
+            padding-bottom: 1em;
+         }
+         .creators .creator .affiliation {
+            display: inline-block;
+            color: #859089;
+            line-height: 1.4;
+            font-size: 85%;
+         }
+         .creators .creator .author {
+         color: #1e201f;
+         font-weight: 600;
+         }
+         .creators .creator .orcid {
+         padding-left: 2em;
+         font-family: "Source Code Pro", monospace;
+         float: right;
+         }
+         summary {
+         padding-top: 2em;
+         padding-left: 1em;
+         padding-right: 3em;
+         line-height: 1.3;
+         }
+         summary::before {
+         content: "Abstract";
+         font-weight: 600;
+         }
+         /* Reference when hover */
+         .tooltip-inner{
+         max-width:750px;
+         font-size: 90%;
+         text-align: left;
+         line-height: 1.5;
+         padding:0.8rem;
+         background-color:rgb(245, 245, 245);
+         border-radius: 10px;
+         }
+         .fade{
+         opacity:0;
+         transition:opacity .15s linear
+         }
+         .fade.show{
+         opacity:1
+         }
+         .footer {
+         display: none;
+         position: fixed;
+         left: 20px;
+         bottom: 8px;
+         width: 100%;
+         text-align: left;
+         font-size: 84%;
+         font-weight: 100;
+         line-height: 0px;
+         }
+         footer.a:hover{
+         color:rgb(172, 203, 72)
+         }
+         #myBtn {
+         display: none;
+         position: fixed;
+         bottom: 10px;
+         right: 30px;
+         z-index: 99;
+         border: none;
+         outline: none;
+         background-color: transparent;
+         color: gray;
+         cursor: pointer;
+         padding: 15px;
+         border-radius: 10px;
+         font-size: 18px;
+         }
+         #myBtn:hover {
+         background-color: rgb(245, 245, 245); /* Add a dark-grey background on hover */
+         }
+         .arrowTop{
+         display: none;
+         position: fixed;
+         top: 20px;
+         right: 40px;
+         z-index: 99;
+         }
+      </style>
+   </head>
+   <body>
+      <header>
+         <section class="container">
+            <h1>$title$</h1>
+            <section class="creators">
+            <div class="creator">
+               $for(authors)$
+                  <div class="author">$authors.givennames$ $authors.familyname$</div>
+                  <div class="affiliation"><sup>
+                     $for(authors.affiliations)$
+                        $authors.affiliations$$sep$,
+                     $endfor$
+                  </sup></div>
+                  $if(authors.orcid)$
+                     <a style="font-size: 1.2em; color: rgb(172, 203, 72);"  href='https://orcid.org/$authors.orcid$' target="_blank";">
+                        <i class="ai ai-orcid"></i>
+                     </a>
+                  $endif$
+                  $if(authors.corresponding)$
+                     <a style="font-size: 1em; color: #00667F;" href = "mailto: $authors.email$">
+                        <i class="fas fa-envelope"></i>
+                     </a>
+                  $endif$
+                  &nbsp;
+               $endfor$
+               <br>
+               $for(affiliations)$
+                  <div class="affiliation"><sup>$affiliations.index$</sup> $affiliations.name$</div><br>
+               $endfor$
+            </div>
+            </section>
+            <summary>
+               $abstract$
+            </summary>
+         </section>
+      </header>
+
+      <nav class="artifacts">
+         <p style="font-size: 15px; color:rgb(155, 154, 154);line-height: 0%; padding-bottom: 4px;">Generated with ☕using the <a style="color:rgb(100, 100, 100);"  href='#' target="_blank";">research-compendium-template</a></p>
+         <a href="https://github.com/$github-repo$" title="Github repo" target="_blank"><img src="https://img.shields.io/badge/write-github-blue.svg" /></a>
+         <a href="manuscript.pdf" title="Github repo" target="_blank"><img src="https://img.shields.io/badge/read-pdf-green.svg" /></a>
+         <a href="manuscript.docx" title="Github repo" target="_blank"><img src="https://img.shields.io/badge/read-docx-yellow.svg" /></a>
+         $if(zenodoDOI)$
+         <a href="https://zenodo.org/badge/latestdoi/$zenodoDOI$" title="Github repo" target="_blank"><img src="https://zenodo.org/badge/$zenodoDOI$.svg" /></a>
+         $endif$
+      </nav>
+
+      <article class="container">
+         $body$
+      </article>
+
+      <button onclick="topFunction(300)" id="myBtn" title="Go to top"><i class="fas fa-chevron-up"></i></button>
+
+      <d-appendix>
+         <sections class="container">
+            $if(supporting-files)$
+            <div class="row">
+               <div class="leftColumn">
+                  <p>Supporting information</p>
+               </div>
+               <div class="rightColumn">
+                  <p>Additional supporting information can be found $for(supporting-files)$<a href="https://willvieira.github.io/ms_STM-managed/$supporting-files$.html">here</a>$sep$, $endfor$.</p>
+               </div>
+            </div>
+            $endif$
+            $if(acknowledgments)$
+            <div class="row">
+               <div class="leftColumn"> 
+                  <p>Acknowledgments</p>
+               </div>
+               <div class="rightColumn">
+                  <p>$acknowledgments$</p>
+               </div>
+            </div>
+            $endif$
+            $if(data_availability)$
+            <div class="row">
+               <div class="leftColumn">
+                  <p>Data availability</p>
+               </div>
+               <div class="rightColumn">
+                  <p>$data_availability$</p>
+               </div>
+            </div>
+            $endif$
+            $if(funding)$
+            <div class="row">
+               <div class="leftColumn">
+                  <p>Funding</p>
+               </div>
+               <div class="rightColumn">
+                  <p>$funding$</p>
+               </div>
+            </div>
+            $endif$
+            $if(authorship)$
+            <div class="row">
+               <div class="leftColumn">
+                  <p>Authorship</p>
+               </div>
+               <div class="rightColumn">
+                  <p>$authorship$</p>
+               </div>
+            </div>
+            $endif$
+            $if(conflicts-of-interest)$
+            <div class="row">
+               <div class="leftColumn">
+                  <p>Conflicts of interest</p>
+               </div>
+               <div class="rightColumn">
+                  <p>$conflicts-of-interest$</p>
+               </div>
+            </div>
+            $endif$
+            <div class="row">
+               <div class="leftColumn">
+                  <p>References</p>
+               </div>
+                  <div class="rightColumn", id = 'newrefs'>
+               </div>
+            </div>
+         </sections>
+      </d-appendix>
+
+      <svg class="arrowTop" id="arrowTop" xmlns="http://www.w3.org/2000/svg" width="98" height="80"><g fill="none" stroke="#00667F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10"><path d="M2.012 47.458c2.254-15.748 7.447-21.81 23.566-21.434 22.829.533 36.483-4.221 53.935-19.566"/><path d="M80.435 14.297c-.592-4.348 2.294-7.566 2.554-11.755-2.997 1.132-9.175 3.154-12.46 2.399"/></g><text x="0" y="65" fill="#00667F" font-family="Chalkduster" font-size="16">Click here!</text></svg>
+      
+      </div>
+      <div class="footer">
+         <p><a onMouseOver="this.style.color='#00667F'"onMouseOut="this.style.color='grey'" style='color:grey' href="https://twitter.com/intent/tweet?text=$title$%20https://github.com/$github-repo$"" target="_blank"><i class="fab fa-twitter"></i> Tweet this page</a></p>
+         <p><a onMouseOver="this.style.color='#00667F'"onMouseOut="this.style.color='grey'" style='color:grey' href="https://github.com/$github-repo$/issues" target="_blank"><i class="fas fa-exclamation-circle"></i> Report issues</a></p>
+         <p><a onMouseOver="this.style.color='#00667F'"onMouseOut="this.style.color='grey'" style='color:grey' href="javascript:void(0)" onclick="openAnnotate()"><i class="fas fa-comments"></i> Leave a comment</a></p>
+      </div>
+
+   </body>
+   <script type="text/javascript" src="https://code.jquery.com/jquery-latest.min.js"></script>
+   <script type="text/javascript">
+      // Remove References h1
+      document.getElementById("references").remove();
+      // Move the references from body to appendix
+      var theNewRefs = document.getElementById("newrefs");
+      var theRefs = document.getElementById("refs");
+      theNewRefs.appendChild(theRefs);
+   </script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/less.js/3.9.0/less.min.js" ></script>
+   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+   <script>
+      document.querySelectorAll('[role="doc-biblioref"]').forEach(function (el){
+
+         // get info from reference (to be used in tittle of hover)
+         var refID = el.href.replace(/.*#ref-/, '');
+         var ref = document.getElementById('ref-'.concat(refID));
+         // Title
+         if(/“(.*?)”/g.test(ref.textContent)) {
+            var title = ref.textContent.match(/“(.*?)”/g)[0];
+            title = title.replace(/“/, '').replace(/”/, '').replace(/\./, '');
+         } else {
+            var title = ref.querySelector('em').textContent;
+            var journal = '';
+         }
+         // Journal
+         if(typeof journal == "undefined" & ref.querySelector('em') != null) {
+            var journal = ref.querySelector('em').textContent;
+         }
+         // DOI
+         if(ref.querySelector('a') != null) {
+            var DOI = ref.querySelector('a').textContent;
+            title = "<a href='" + DOI + "' target='_blank';>" + title + "</a>"
+         }
+         // Year
+         uglyYear = ref.textContent.match(/\. \d{4}\./g)[0];
+         var year = uglyYear.replace(/\. /, '').replace(/\./, '');
+         // Authors
+         var re = new RegExp ('(.*?)' + uglyYear, 'g');
+         var authors = ref.textContent.match(re)[0].replace(uglyYear, '').replace(/\s\s+/g, '');
+
+         // Create reference "title" content
+         var refTitle = "<b>" + title + "</b><br>" + authors + "<br>" +
+                        (journal == "" ? "" : journal + ", " ) +
+                        year;
+
+         // add "Tooltips" attributes to the link tag
+         el.setAttribute("data-toggle", "tooltip");
+         el.setAttribute("data-html", "true");
+         el.setAttribute("data-placement", "bottom");
+         el.setAttribute("title", refTitle);
+
+         // remove link href to references
+         el.removeAttribute("href");
+      });
+   </script>
+   <script>
+      $$(function () {
+         $$('[data-toggle="tooltip"]').tooltip({delay: {show: 300, hide: 500}})
+      })
+   </script>
+   <script>
+      $$(window).scroll(function() {
+         if ($$(this).scrollTop()>300)
+         {
+            $$('.footer').show(1000);
+         }
+         else
+         {
+            $$('.footer').hide(1000);
+         }
+      });
+   </script>
+   <script>
+      //Get the button: (and the footer too)
+      mybutton = document.getElementById("myBtn");
+
+      // When the user scrolls down 20px from the top of the document, show the button
+      window.onscroll = function() {scrollFunction()};
+
+      function scrollFunction() {
+         if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+            mybutton.style.display = "block";
+         } else {
+            mybutton.style.display = "none";
+         }
+      }
+
+      function topFunction (duration) {
+         // cancel if already on top
+         if (document.scrollingElement.scrollTop === 0) return;
+
+         const totalScrollDistance = document.scrollingElement.scrollTop;
+         let scrollY = totalScrollDistance, oldTimestamp = null;
+
+         function step (newTimestamp) {
+            if (oldTimestamp !== null) {
+                  // if duration is 0 scrollY will be -Infinity
+                  scrollY -= totalScrollDistance * (newTimestamp - oldTimestamp) / duration;
+                  if (scrollY <= 0) return document.scrollingElement.scrollTop = 0;
+                  document.scrollingElement.scrollTop = scrollY;
+            }
+            oldTimestamp = newTimestamp;
+            window.requestAnimationFrame(step);
+         }
+         window.requestAnimationFrame(step);
+      };
+   </script>
+   <script>
+      // animation of top arrow
+      var svg = new Walkway({
+         selector: '#arrowTop',
+         duration: '500',
+         // can pass in a function or a string like 'easeOutQuint'
+         easing: function (t) {
+            return t * t;
+         }
+      });
+   </script>
+      <script>
+         function openAnnotate() {
+            // Sleeping function
+            var delay = ( function() {
+               var timer = 0;
+               return function(callback, ms) {
+                  clearTimeout (timer);
+                  timer = setTimeout(callback, ms);
+               };
+            })();
+
+            // first change display of arrow to block (none by defaut)
+            var arrow = document.getElementById("arrowTop");
+            arrow.style.display = "block";
+
+            // create animation
+            svg.draw();
+
+            // wait 2 secs until remove arrow
+            delay(function(){
+               arrow.style.display = "none";
+            }, 2000 );
+         }
+   </script>
+   <!-- Global site tag (gtag.js) - Google Analytics -->
+   <script async src="https://www.googletagmanager.com/gtag/js?id=$google-analytics$"></script>
+   <script>
+   window.dataLayer = window.dataLayer || [];
+   function gtag(){dataLayer.push(arguments);}
+   gtag('js', new Date());
+
+   gtag('config', '$google-analytics$');
+   </script>
+</html>
