@@ -49,17 +49,20 @@ The data used here comes from @borcard_environmental_1994. For the purpose of th
 
 ```{r}
 # Load species data
-GRBI <- readxl::read_excel("../data/RAPPORT QO_SOS-POP SCF_GRBI.xlsx", sheet = 2)
+GRBI <- readxl::read_excel("../data_raw/RAPPORT QO_SOS-POP SCF_GRBI.xlsx", sheet = 2)
 ```
 
 ## Environmental data
 
 ```{r}
-# Environmental data
-climatePresent <- readRDS("../data/bioclim_sQ.RDS")
+# Environmental
+climatePresent <- readRDS("../data_clean/bioclim_sQ.RDS")
 
-# Elevation data
-elevation <- readRDS("../data/elev_sQ.RDS")
+# Elevation
+elevation <- readRDS("../data_clean/elev_sQ.RDS")
+
+# Forest cover
+forestCover <- readRDS("../data_clean/forestCover_sQ.RDS")
 ```
 
 Note that if some explanatory variables are factors, to preserve there structure as factors, a `RasterStack` needs to be used because a `RasterBrick` will convert the data into a matrix and the factor level information will be lost.
@@ -81,14 +84,15 @@ GRBI <- GRBI[GRBI$LONGITUDE>=xmin(elevation) &
 Combine explanatory variables into a rasterstack
 
 ```{r}
-explana_dat <- raster::stack(climatePresent, elevation)
+explana_dat <- raster::stack(climatePresent, elevation, forestCover)
+rm(c("climatePresent", "elevation", "forestCover"))
 names(explana_dat[[names(elevation)]]) <- "elevation"
 ```
 
 
 Test with scales predictors
 ```{r}
-values(climatePresent) <- scale(values(climatePresent))
+values(explana_dat[[1:19]]) <- scale(values(explana_dat[[1:19]]))
 ```
 
 
