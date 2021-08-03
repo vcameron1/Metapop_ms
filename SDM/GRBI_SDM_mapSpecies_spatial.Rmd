@@ -49,18 +49,51 @@ The data used here comes from @borcard_environmental_1994. For the purpose of th
 
 ```{r}
 # Load species data
-GRBI <- readxl::read_excel("../data/RAPPORT QO_SOS-POP SCF_GRBI.xlsx", sheet = 2)
+GRBI <- readxl::read_excel("../data_raw/RAPPORT QO_SOS-POP SCF_GRBI.xlsx", sheet = 2)
 ```
 
-## Environmental data
+## Clean species data
+
+```{r}
+# Select one observation/ occurence per PRÉCISION == "S"
+GRBI2 <- GRBI[GRBI$PRÉCISION == "S",]
+
+# Remove recordings of absences
+GRBI2 <- GRBI2[GRBI2$O_CODEATLA != "0",]
+
+# Select presence in habitat, 
+GRBI2 <- GRBI2[GRBI2$O_CODEATLA == c("H"),]
+
+# One observation per coordinate per year
+annee <- unique(GRBI2$ANNEE)
+coords <- unique()
+
+# One observation per relevé
+GRBI2 <- aggregate(cbind(LATITUDE, LONGITUDE, ANNEE) ~ `No RELEVÉ SOS-POP`, data = GRBI2, FUN = mean)
+
+
+
+
+
+
+plot(GRBI2$LONGITUDE, GRBI2$LATITUDE)
+table(GRBI2$LATITUDE)
+table(GRBI2$LONGITUDE)
+GRBI=GRBI2
+```
+
+
+## Data
 
 ```{r}
 # Environmental data
-climatePresent <- readRDS("../data/bioclim_sQ.RDS")
-climatePresent <- raster::stack(climatePresent)
+climatePresent <- readRDS("../data_clean/bioclim_sQ.RDS")
 
 # Elevation data
-elevation <- readRDS("../data/elev_sQ.RDS")
+elevation <- readRDS("../data_clean/elev_sQ.RDS")
+
+# Forest cover
+forestCover <- readRDS("../data_clean/forestCover_sQ.RDS")
 ```
 
 
@@ -83,20 +116,14 @@ GRBI <- GRBI[GRBI$LONGITUDE>=xmin(elevation) &
 Combine explanatory variables into a rasterstack
 
 ```{r}
-explana_dat <- raster::stack(climatePresent, elevation)
+explana_dat <- raster::stack(climatePresent, elevation, forestCover)
 names(explana_dat[[which(names(explana_dat)==names(elevation))]]) <- "elevation"
 ```
 
-Null predictor for purely spatial model
-
-```{r}
-#values(explana_dat) <- 0
-#explana_dat <- explana_dat[[c(1,2)]]
-```
-
 Test with scaled predictors
+
 ```{r}
-values(explana_dat) <- scale(values(explana_dat))
+values(explana_dat[[1:19]]) <- scale(values(explana_dat[[1:19]]))
 ```
 
 
@@ -104,7 +131,7 @@ Build spatialPolygons and use those to select GRBI points within the region of i
 
 ```{r}
 # Build SpatialPolygons
-rasterForPoly <- explana_dat[[1]]
+rasterForPoly <- elevation
 values(rasterForPoly) <- ifelse(is.na(values(rasterForPoly)), NA, 1)
 spacePoly <- rasterToPolygons(rasterForPoly, dissolve = TRUE)
 
@@ -113,7 +140,7 @@ GRBI_points <- SpatialPoints(cbind(GRBI$LONGITUDE, GRBI$LATITUDE),
                                   proj4string = spacePoly@proj4string)
 
 # Sneak peek at the data
-plot(explana_dat[[20]])
+plot(explana_dat[[21]])
 points(GRBI_points, pch=19, cex = 0.2)
 ```
 
@@ -157,11 +184,9 @@ The function `explanaMesh` is design to gather this information. In addition, th
 Note that running the `explanaMesh` function may take a bit of time. 
 
 ```{r}
-# explana <- explanaMesh(sPoly = spacePoly, 
-#                        mesh = Mesh, 
-#                        X = explana_dat[[1]])
 explana <- explanaMesh(sPoly = spacePoly, 
-                       mesh = Mesh)
+                       mesh = Mesh, 
+                       X = explana_dat)
 ```
 
 ## Calculating weights associated to each edges of the mesh
@@ -199,22 +224,41 @@ Below two models were estimated with the sole difference that one was estimated 
 
 ```{r, warning = FALSE}
 # Spatial model
-modelPP <- ppSpace(y ~ 0, sPoints = GRBI_points,
+modelPPmany1 <- ppSpace(y ~ 0, sPoints = GRBI_points,
                    explanaMesh = explana,
                    ppWeight = weight,
+                   many = TRUE,
                    control.compute = list(waic = TRUE))
-modelPPmany <- ppSpace(y ~ 0, sPoints = GRBI_points,
+modelPPmany2 <- ppSpace(y ~ 0, sPoints = GRBI_points,
                    explanaMesh = explana,
                    ppWeight = weight,
+                   prior.range = c(0.2, 0.5),
+                   prior.sigma = c(0.05, 0.01),
+                   many = TRUE,
+                   control.compute = list(waic = TRUE))
+modelPPmany3 <- ppSpace(y ~ 0, sPoints = GRBI_points,
+                   explanaMesh = explana,
+                   ppWeight = weight,
+                   prior.range = c(0.2, 0.01),
+                   prior.sigma = c(0.05, 0.01),
+                   many = TRUE,
+                   control.compute = list(waic = TRUE))
+modelPPmany4 <- ppSpace(y ~ 0, sPoints = GRBI_points,
+                   explanaMesh = explana,
+                   ppWeight = weight,
+                   prior.range = c(0.02, 0.01),
+                   prior.sigma = c(0.05, 0.01),
+                   many = TRUE,
+                   control.compute = list(waic = TRUE))
+modelPPmany5 <- ppSpace(y ~ 0, sPoints = GRBI_points,
+                   explanaMesh = explana,
+                   ppWeight = weight,
+                   prior.range = c(0.5, 0.01),
+                   prior.sigma = c(0.05, 0.01),
                    many = TRUE,
                    control.compute = list(waic = TRUE))
 
-modelPPmany <- ppSpace(y ~ ., sPoints = GRBI_points,
-                   explanaMesh = explana,
-                   ppWeight = weight,
-                   many = TRUE,
-                   control.compute = list(waic = TRUE))
-modelPP <- modelPPmany
+modelPP <- modelPPmany1
 ```
 
 ## Studying the estimated parameters
@@ -222,7 +266,12 @@ modelPP <- modelPPmany
 Although one of the main interest of species distribution models is to estimate and predict the distribution of species, it is also relevant and important to study the estimated parameters to better understand the importance of the considered explanatory variable in structuring the distribution of the species. We can study these parameters using the `summary` function
  
 ```{r}
+waic <- sapply(mget(paste0("modelPPmany", 1:5)), function(x) x$waic$waic)
+names(waic) <- paste0("model", 1:5)
+waic
+
 summary(modelPP) 
+modelPPmany$waic$waic
 ```
 
 To see the differences between `modelPP` and  `modelPPmany`, lets focus on the estimated coefficients and the time it took to perform the estimation
@@ -242,7 +291,7 @@ summary(modelPPmany)$runningTime
 summary(modelPP)$coefficients["Intercept",1]
 summary(modelPP)$coefficients[2,1]
 
-curve(summary(modelPP)$coefficients["elevation",1]*x + summary(modelPP)$coefficients["Intercept",1], 0, max(values(elevation)),
+curve(summary(modelPP)$coefficients["elevation",1]*x + summary(modelPP)$coefficients["Intercept",1], 0, max(values(explana_dat[["elevation"]]), na.rm = TRUE),
       xlab = "Elevation (m)", ylab = "Intensity", main = "Intensity-environment relationship")
 
 pred <- "bio8"
