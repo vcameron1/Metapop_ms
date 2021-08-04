@@ -62,11 +62,44 @@ GRBI2 <- GRBI[GRBI$PRÉCISION == "S",]
 GRBI2 <- GRBI2[GRBI2$O_CODEATLA != "0",]
 
 # Select presence in habitat, 
-GRBI2 <- GRBI2[GRBI2$O_CODEATLA == c("H"),]
+#GRBI2 <- GRBI2[GRBI2$O_CODEATLA == c("H"),]
 
 # One observation per coordinate per year
 annee <- unique(GRBI2$ANNEE)
-coords <- unique()
+annee <- annee[annee >= 2000]
+GRBI2$lat <- round(GRBI2$LATITUDE, 2)
+GRBI2$lon <- round(GRBI2$LONGITUDE, 2)
+
+GRBI3 <- data.frame()
+for(i in sort(annee)){
+  for(j in unique(GRBI2$lat)){
+    for(k in unique(GRBI2$lon)){
+      obs <- which(GRBI2$ANNEE == i &
+                     GRBI2$lat == j &
+                     GRBI2$lon == k)
+      
+      if(length(obs)>0) GRBI3 <- rbind(GRBI3,GRBI2[obs[1],])
+    }
+  }
+  cat(i, ": complété\n")
+}
+sunflowerplot(GRBI3$LONGITUDE, GRBI3$LATITUDE)
+sunflowerplot(round(GRBI3$LONGITUDE,1), round(GRBI3$LATITUDE,1))
+
+# One observation per coordinate
+GRBI2$lat <- round(GRBI2$LATITUDE, 2)
+GRBI2$lon <- round(GRBI2$LONGITUDE, 2)
+
+GRBI4 <- data.frame()
+for(j in unique(GRBI2$lat)){
+  for(k in unique(GRBI2$lon)){
+    obs <- which(GRBI2$lat == j & GRBI2$lon == k)
+      
+    if(length(obs)>0) GRBI4 <- rbind(GRBI4,GRBI2[obs[1],])
+  }
+}
+sunflowerplot(GRBI4$LONGITUDE, GRBI4$LATITUDE)
+GRBI=GRBI4
 
 # One observation per relevé
 GRBI2 <- aggregate(cbind(LATITUDE, LONGITUDE, ANNEE) ~ `No RELEVÉ SOS-POP`, data = GRBI2, FUN = mean)
@@ -76,10 +109,11 @@ GRBI2 <- aggregate(cbind(LATITUDE, LONGITUDE, ANNEE) ~ `No RELEVÉ SOS-POP`, dat
 
 
 
-plot(GRBI2$LONGITUDE, GRBI2$LATITUDE)
-table(GRBI2$LATITUDE)
-table(GRBI2$LONGITUDE)
+sunflowerplot(GRBI3$LONGITUDE, GRBI3$LATITUDE)
+sort(table(GRBI3$LATITUDE))
+sort(table(GRBI3$LONGITUDE))
 GRBI=GRBI2
+GRBI=GRBI3
 ```
 
 
@@ -116,6 +150,12 @@ GRBI <- GRBI[GRBI$LONGITUDE>=xmin(elevation) &
 Combine explanatory variables into a rasterstack
 
 ```{r}
+
+# # Speed up computing time
+# elevation <- raster::aggregate(elevation, fact = 4)
+# explana_dat <- raster::stack(elevation)
+
+# Full data
 explana_dat <- raster::stack(climatePresent, elevation, forestCover)
 names(explana_dat[[which(names(explana_dat)==names(elevation))]]) <- "elevation"
 ```
@@ -131,7 +171,8 @@ Build spatialPolygons and use those to select GRBI points within the region of i
 
 ```{r}
 # Build SpatialPolygons
-rasterForPoly <- elevation
+#rasterForPoly <- elevation
+rasterForPoly <- raster::aggregate(elevation, fact = 8) # Speed up computing time
 values(rasterForPoly) <- ifelse(is.na(values(rasterForPoly)), NA, 1)
 spacePoly <- rasterToPolygons(rasterForPoly, dissolve = TRUE)
 
@@ -266,8 +307,8 @@ modelPP <- modelPPmany1
 Although one of the main interest of species distribution models is to estimate and predict the distribution of species, it is also relevant and important to study the estimated parameters to better understand the importance of the considered explanatory variable in structuring the distribution of the species. We can study these parameters using the `summary` function
  
 ```{r}
-waic <- sapply(mget(paste0("modelPPmany", 1:5)), function(x) x$waic$waic)
-names(waic) <- paste0("model", 1:5)
+waic <- sapply(mget(paste0("modelPPmany", 1:2)), function(x) x$waic$waic)
+names(waic) <- paste0("model", 1:2)
 waic
 
 summary(modelPP) 
