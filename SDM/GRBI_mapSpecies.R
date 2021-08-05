@@ -10,8 +10,10 @@
 set.seed(123)
 
 # Load mapSpecies package locally
-devtools::load_all("../mapSpecies/")
+devtools::load_all("./mapSpecies/")
 library(mapSpecies)
+
+library(raster)
 
 
 # 1 - Load data -----------------------------------------------------------
@@ -75,7 +77,7 @@ GRBI <- GRBI[GRBI$LONGITUDE>=xmin(elevation) &
 
 
 # Combine explanatory variables into a rasterStack*
-explana_dat <- raster::stack(climatePresent, elevation, forestCover)
+explana_dat <- stack(climatePresent, elevation, forestCover)
 names(explana_dat[[which(names(explana_dat) == names(elevation))]]) <- "elevation"
 
 # Build spatialPolygons and use those to select GRBI points within the region of interest
