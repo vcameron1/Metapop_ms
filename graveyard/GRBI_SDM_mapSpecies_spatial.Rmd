@@ -171,8 +171,8 @@ Build spatialPolygons and use those to select GRBI points within the region of i
 
 ```{r}
 # Build SpatialPolygons
-#rasterForPoly <- elevation
-rasterForPoly <- raster::aggregate(elevation, fact = 8) # Speed up computing time
+rasterForPoly <- elevation
+#rasterForPoly <- raster::aggregate(elevation, fact = 8) # Speed up computing time
 values(rasterForPoly) <- ifelse(is.na(values(rasterForPoly)), NA, 1)
 spacePoly <- rasterToPolygons(rasterForPoly, dissolve = TRUE)
 
