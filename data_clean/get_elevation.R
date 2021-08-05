@@ -24,20 +24,20 @@ url <- "https://biogeo.ucdavis.edu/data/worldclim/v2.1/base/wc2.1_30s_elev.zip"
 
 # Directories and files
 dir <- "./data_raw/"
-destFile <- paste0(dir, "wc2.1_30s_elev.tif")
+destFile <- paste0(dir, "wc2.1_30s_elev.zip")
 
 # Download file
-download.file(url, destFile, method='curl')
+download.file(url, destFile)
 
 # Unzip file
-#unzip(destFile[1], exdir = dir)
+unzip(destFile[1], exdir = dir)
 
 
 # 2 - Import data ---------------------------------------------------------
 
 
 # Import data
-elev <- raster::raster("./data/wc2.1_30s_elev.tif")
+elev <- raster::raster("./data_raw/wc2.1_30s_elev.tif")
 
 
 # 3 - Crop elevation map to south of Quebec -------------------------------
@@ -71,3 +71,4 @@ saveRDS(elev, "./data_clean/elev_sQ.RDS")
 
 # Remove all downloaded files to free memory space
 unlink(destFile, recursive = TRUE)
+unlink("./data_raw/wc2.1_30s_elev.tif", recursive = TRUE)

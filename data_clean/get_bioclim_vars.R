@@ -24,10 +24,10 @@ url <- "https://biogeo.ucdavis.edu/data/worldclim/v2.1/base/wc2.1_30s_bio.zip"
 
 # Directories and files
 dir <- "./data_raw/"
-destFile <- paste0(dir, "wc2.zip")
+destFile <- paste0(dir, "wc2.1_30s_bio.zip")
 
 # Download file
-download.file(url, destFile, method='curl')
+download.file(url, destFile)
 
 # Unzip file
 unzip(destFile[1], exdir = dir)
@@ -86,4 +86,5 @@ saveRDS(bioclim, "./data_clean/bioclim_sQ.RDS")
 
 
 # Remove all downloaded files to free memory space
+unlink(destFile, recursive = TRUE)
 unlink("./data/wc2", recursive = TRUE)
