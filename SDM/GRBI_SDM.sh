@@ -7,4 +7,4 @@
 #SBATCH --mail-user=victor.cameron@usherbrooke.ca
 #SBATCH --mail-type=ALL
 
-Rscript SDM/GRBI_SDM.R
+Rscript SDM/GRBI_mapSpecies.R
