@@ -59,6 +59,10 @@ for(i in 1:nvar){
   
   # Crop map to south of Qc
   assign(paste0("bio", i), raster::crop(get(paste0("bio", i)), e))
+    
+  # Increase resolution of raster*
+  # Split raster cells into 4 smaller cells (~25000m2)
+  assign(paste0("bio", i), raster::disaggregate(get(paste0("bio", i)), fact = 4))
 }
 
 
@@ -69,20 +73,13 @@ bioclim <- raster::stack(mget(paste0("bio", 1:nvar)))
 rm(list = paste0("bio", 1:nvar))
 
 
-# 5 - Increase resolution of raster* --------------------------------------
-
-
-# Split raster cells into 4 smaller cells (~250m2)
-bioclim <- raster::disaggregate(bioclim, fact=4)
-
-
-# 6 - Save bioclimatic variables ------------------------------------------
+# 5 - Save bioclimatic variables ------------------------------------------
 
 
 saveRDS(bioclim, "./data_clean/bioclim_sQ.RDS")
 
 
-# 7 - Remove downloaded files to save memory space ------------------------
+# 6 - Remove downloaded files to save memory space ------------------------
 
 
 # Remove all downloaded files to free memory space
