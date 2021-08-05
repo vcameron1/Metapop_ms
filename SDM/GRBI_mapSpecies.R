@@ -41,8 +41,8 @@ GRBI <- GRBI[GRBI$PRÉCISION == "S",]
 # Remove recordings of absences
 GRBI <- GRBI[GRBI$O_CODEATLA != "0",]
 
-# Select presence in habitat, 
-GRBI <- GRBI[GRBI$O_CODEATLA == c("H"),]
+# Select presence in habitat 
+#GRBI <- GRBI[GRBI$O_CODEATLA == c("H"),]
 
 # Select one observation per coordinate per year (after 2000)
 annee <- unique(GRBI$ANNEE)
