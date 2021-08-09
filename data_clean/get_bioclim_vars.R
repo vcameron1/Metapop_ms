@@ -30,14 +30,14 @@ destFile <- paste0(dir, "wc2.1_30s_bio.zip")
 download.file(url, destFile)
 
 # Unzip file
-unzip(destFile[1], exdir = dir)
+unzip(destFile[1])
 
 
 # 2 - Verify files within downloaded folder -------------------------------
 
 
 # Variables downloaded
-file <- dir("./data/wc2")
+file <- dir("./data_raw/wc2.1_30s_bio")
 
 
 
@@ -55,7 +55,7 @@ e <- raster::extent(c(xmin, xmax, ymin, ymax)) # LatLong limits
 
 # Import all bioclimatic variables
 for(i in 1:nvar){
-  assign(paste0("bio", i), raster::raster(paste0("./data/wc2/", file[i])))
+  assign(paste0("bio", i), raster::raster(paste0("./data_raw/wc2.1_30s_bio/", file[i])))
   
   # Crop map to south of Qc
   assign(paste0("bio", i), raster::crop(get(paste0("bio", i)), e))
@@ -84,4 +84,4 @@ saveRDS(bioclim, "./data_clean/bioclim_sQ.RDS")
 
 # Remove all downloaded files to free memory space
 unlink(destFile, recursive = TRUE)
-unlink("./data/wc2", recursive = TRUE)
+unlink("./data_raw/wc2.1_30s_bio", recursive = TRUE)
