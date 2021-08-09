@@ -7,13 +7,8 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,
-                      cache = TRUE,
-                      cache.path = "./cache/",
-                      cache.extra = tools::md5sum('~/Documents/Git/Metapop_ms/SDM/results/explana_dat.RDS'),
                       warning = FALSE, 
-                      message = FALSE,
-                      cache.lazy = FALSE
-                      )
+                      message = FALSE)
 ```
 
 
@@ -23,14 +18,14 @@ knitr::opts_chunk$set(echo = TRUE,
 set.seed(123)
 
 # Load mapSpecies package locally
-devtools::load_all("~/Documents/Git/Metapop_ms/mapSpecies/")
+devtools::load_all("../../mapSpecies/")
 library(mapSpecies)
 
 library(raster)
 
-spacePoly <- readRDS("spacePoly.RDS")
-explana_dat <- readRDS("explana_dat.RDS")
-GRBI_points <- readRDS("GRBI_points.RDS")
+spacePoly <- readRDS("../spacePoly.RDS")
+explana_dat <- readRDS("../explana_dat.RDS")
+GRBI_points <- readRDS("../GRBI_points.RDS")
 ```
 
 
@@ -40,16 +35,16 @@ GRBI_points <- readRDS("GRBI_points.RDS")
 
 
 # Load GRBI data
-GRBI <- readxl::read_excel("./data_raw/RAPPORT QO_SOS-POP SCF_GRBI.xlsx", sheet = 2)
+GRBI <- readxl::read_excel("../../data_raw/RAPPORT QO_SOS-POP SCF_GRBI.xlsx", sheet = 2)
 
 # Environmental data
-climatePresent <- readRDS("./data_clean/bioclim_sQ.RDS")
+climatePresent <- readRDS("../../data_clean/bioclim_sQ.RDS")
 
 # Elevation data
-elevation <- readRDS("./data_clean/elev_sQ.RDS")
+elevation <- readRDS("../../data_clean/elev_sQ.RDS")
 
 # Forest cover
-forestCover <- readRDS("./data_clean/forestCover_sQ.RDS")
+forestCover <- readRDS("../../data_clean/forestCover_sQ.RDS")
 
 
 # 2 - Clean GRBI data -----------------------------------------------------
@@ -118,14 +113,11 @@ xyBasis <- rbind(cbind(c(xmin(spacePoly),xmax(spacePoly),
                          ymax(spacePoly),ymin(spacePoly))),
                  coordinates(GRBI_points))
 Mesh <- inla.mesh.2d(loc.domain = xyBasis,
-                     max.edge = 0.5,
+                     max.edge = 0.7,
                      min.angle = 20,
                      cutoff = 0.5,
                      offset = c(2,1),
                      crs = crs(spacePoly))
-
-# Number of edges in the mesh
-cat("\nThere are ", Mesh$n, " edges in the mesh\n")
 
 
 # 4 - Organize the explanatory variables ----------------------------------
@@ -135,7 +127,6 @@ explana <- explanaMesh(sPoly = spacePoly,
                        mesh = Mesh, 
                        X = explana_dat)
 ```
-
 
 
 ## Spatial model
@@ -216,16 +207,251 @@ points(coordinates(GRBI_points), pch = 19, cex = 0.2)
 ```
 
 
+## Full model
+
+All predictors with the spatial effect and preselected priors.
+
+```{r spatial, eval=FALSE}
+# Spatial model
+modelPP <- ppSpace(y ~ ., sPoints = GRBI_points,
+                    explanaMesh = explana,
+                    ppWeight = weight,
+                    many = TRUE,
+                    control.compute = list(waic = TRUE))
+```
+
+```{r import model 1, echo=FALSE}
+modelPP <- readRDS("./modelPP.RDS")
+```
+
+```{r saptial summary, echo=FALSE}
+summary(modelPP) 
+```
+
+```{r spatial map build, echo=FALSE}
+#--------------------------
+# Construct prediction maps
+#--------------------------
+# Mean
+mapMean <- mapSpace(modelPP,
+                    dims = dim(explana_dat)[1:2],
+                    type = "mean",
+                    sPoly = spacePoly)
+# Standard deviation
+mapSd <- mapSpace(modelPP,
+                    dims = dim(explana_dat)[1:2],
+                    type = "sd",
+                    sPoly = spacePoly)
+# Lower boundary of the 95% confidence interval
+map.025 <- mapSpace(modelPP,
+                    dims = dim(explana_dat)[1:2],
+                    type = "0.025quant",
+                    sPoly = spacePoly)
+# Upper boundary of the 95% confidence interval
+map.975 <- mapSpace(modelPP,
+                    dims = dim(explana_dat)[1:2],
+                    type = "0.975quant",
+                    sPoly = spacePoly)
+#--------------------------------------
+# Cut raster with polygon of the region
+#--------------------------------------
+mapMaskMean <- mask(mapMean, spacePoly)
+mapMaskSd <- mask(mapSd, spacePoly)
+mapMask.025 <- mask(map.025, spacePoly)
+mapMask.975 <- mask(map.975, spacePoly)
+
+```
+
+
+```{r spatial map 1, echo=FALSE}
+
+# Colour to use for the maps
+colo <- colorRampPalette(c("grey90", "steelblue4", 
+                           "steelblue2", "steelblue1", 
+                           "gold", "red1", "red4"))(200)
+par(mfrow = c(2,2), mar = c(1,1,5,8))
+plot(mapMaskMean, col = colo, zlim = c(0, 100),
+     axes = FALSE, box = FALSE, main = "Mean")
+points(coordinates(GRBI_points), pch = 19, cex = 0.2)
+plot(mapMaskSd, col = colo,  zlim = c(0, 100),
+     axes = FALSE, box = FALSE, main = "Sd")
+points(coordinates(GRBI_points), pch = 19, cex = 0.2)
+plot(mapMask.025, col = colo,  zlim = c(0, 100),
+     axes = FALSE, box = FALSE, main = "2.5%")
+points(coordinates(GRBI_points), pch = 19, cex = 0.2)
+plot(mapMask.975, col = colo,  zlim = c(0, 100),
+     axes = FALSE, box = FALSE, main = "97.5")
+points(coordinates(GRBI_points), pch = 19, cex = 0.2)
+```
+
+
+## Full model without elevation
+
+No predictors other than the spatial effect with preselected priors.
+
+```{r spatial, eval=FALSE}
+formu <- as.formula(paste("y", paste0(names(explana_dat)[names(explana_dat) != "elevation"], collapse = "+"), sep = "~"))
+# Spatial model
+modelPPnoElev <- ppSpace(formu, 
+             sPoints = GRBI_points,
+             explanaMesh = explana,
+             ppWeight = weight,
+             many = TRUE,
+             control.compute = list(waic = TRUE))
+
+```
+
+```{r import model 1, echo=FALSE}
+modelPPnoElev <- readRDS("./modelPPnoElev.RDS")
+```
+
+```{r saptial summary, echo=FALSE}
+summary(modelPPnoElev) 
+```
+
+```{r spatial map build, echo=FALSE}
+#--------------------------
+# Construct prediction maps
+#--------------------------
+# Mean
+mapMean <- mapSpace(modelPPnoElev,
+                    dims = dim(explana_dat)[1:2],
+                    type = "mean",
+                    sPoly = spacePoly)
+# Standard deviation
+mapSd <- mapSpace(modelPPnoElev,
+                    dims = dim(explana_dat)[1:2],
+                    type = "sd",
+                    sPoly = spacePoly)
+# Lower boundary of the 95% confidence interval
+map.025 <- mapSpace(modelPPnoElev,
+                    dims = dim(explana_dat)[1:2],
+                    type = "0.025quant",
+                    sPoly = spacePoly)
+# Upper boundary of the 95% confidence interval
+map.975 <- mapSpace(modelPPnoElev,
+                    dims = dim(explana_dat)[1:2],
+                    type = "0.975quant",
+                    sPoly = spacePoly)
+#--------------------------------------
+# Cut raster with polygon of the region
+#--------------------------------------
+mapMaskMean <- mask(mapMean, spacePoly)
+mapMaskSd <- mask(mapSd, spacePoly)
+mapMask.025 <- mask(map.025, spacePoly)
+mapMask.975 <- mask(map.975, spacePoly)
+
+```
+
+
+```{r spatial map 1, echo=FALSE}
+
+# Colour to use for the maps
+colo <- colorRampPalette(c("grey90", "steelblue4", 
+                           "steelblue2", "steelblue1", 
+                           "gold", "red1", "red4"))(200)
+par(mfrow = c(2,2), mar = c(1,1,5,8))
+plot(mapMaskMean, col = colo, zlim = c(0, 100),
+     axes = FALSE, box = FALSE, main = "Mean")
+points(coordinates(GRBI_points), pch = 19, cex = 0.2)
+plot(mapMaskSd, col = colo,  zlim = c(0, 100),
+     axes = FALSE, box = FALSE, main = "Sd")
+points(coordinates(GRBI_points), pch = 19, cex = 0.2)
+plot(mapMask.025, col = colo,  zlim = c(0, 100),
+     axes = FALSE, box = FALSE, main = "2.5%")
+points(coordinates(GRBI_points), pch = 19, cex = 0.2)
+plot(mapMask.975, col = colo,  zlim = c(0, 100),
+     axes = FALSE, box = FALSE, main = "97.5")
+points(coordinates(GRBI_points), pch = 19, cex = 0.2)
+```
+
+
+## Climate only model
+
+Forest cover predictors and the spatial effect with preselected priors.
+
+```{r forest interaction, eval=FALSE}
+formu <- as.formula(paste("y", paste0(paste0("bio", 1:19), collapse = "+"), sep = "~"))
+# Spatial model
+modelPPclim <- ppSpace(formu, 
+                    sPoints = GRBI_points,
+                    explanaMesh = explana,
+                    ppWeight = weight,
+                    many = TRUE,
+                    control.compute = list(waic = TRUE))
+```
+
+
+```{r import model 2, echo=FALSE}
+modelPP <- readRDS("./modelPPclim.RDS")
+```
+
+```{r forest interaction summary, echo=FALSE}
+summary(modelPP) 
+```
+
+```{r forest interaction map build, echo=FALSE}
+#--------------------------
+# Construct prediction maps
+#--------------------------
+# Mean
+mapMean <- mapSpace(modelPP,
+                    dims = dim(explana_dat)[1:2],
+                    type = "mean",
+                    sPoly = spacePoly)
+# Standard deviation
+mapSd <- mapSpace(modelPP,
+                    dims = dim(explana_dat)[1:2],
+                    type = "sd",
+                    sPoly = spacePoly)
+# Lower boundary of the 95% confidence interval
+map.025 <- mapSpace(modelPP,
+                    dims = dim(explana_dat)[1:2],
+                    type = "0.025quant",
+                    sPoly = spacePoly)
+# Upper boundary of the 95% confidence interval
+map.975 <- mapSpace(modelPP,
+                    dims = dim(explana_dat)[1:2],
+                    type = "0.975quant",
+                    sPoly = spacePoly)
+#--------------------------------------
+# Cut raster with polygon of the region
+#--------------------------------------
+mapMaskMean <- mask(mapMean, spacePoly)
+mapMaskSd <- mask(mapSd, spacePoly)
+mapMask.025 <- mask(map.025, spacePoly)
+mapMask.975 <- mask(map.975, spacePoly)
+```
+
+
+```{r forest interaction map 1, echo=FALSE}
+# Colour to use for the maps
+colo <- colorRampPalette(c("grey90", "steelblue4", 
+                           "steelblue2", "steelblue1", 
+                           "gold", "red1", "red4"))(200)
+par(mfrow = c(2,2), mar = c(1,1,5,8))
+plot(mapMaskMean, col = colo, zlim = c(0, 100),
+     axes = FALSE, box = FALSE, main = "Mean")
+points(coordinates(GRBI_points), pch = 19, cex = 0.2)
+plot(mapMaskSd, col = colo,  zlim = c(0, 100),
+     axes = FALSE, box = FALSE, main = "Sd")
+points(coordinates(GRBI_points), pch = 19, cex = 0.2)
+plot(mapMask.025, col = colo,  zlim = c(0, 100),
+     axes = FALSE, box = FALSE, main = "2.5%")
+points(coordinates(GRBI_points), pch = 19, cex = 0.2)
+plot(mapMask.975, col = colo,  zlim = c(0, 100),
+     axes = FALSE, box = FALSE, main = "97.5")
+points(coordinates(GRBI_points), pch = 19, cex = 0.2)
+```
+
 
 ## Forest cover interaction model
 
 Forest cover predictors and the spatial effect with preselected priors.
 
-*Done with max.edge = 0.7*
-
 ```{r forest interaction, eval=FALSE}
 # Spatial model
-modelPPspatial <- ppSpace(y ~ type_couv*cl_haut + type_couv*cl_dens, sPoints = GRBI_points,
+modelPPforest <- ppSpace(y ~ type_couv*cl_haut + type_couv*cl_dens, sPoints = GRBI_points,
                     explanaMesh = explana,
                     ppWeight = weight,
                     many = TRUE,
@@ -235,6 +461,84 @@ modelPPspatial <- ppSpace(y ~ type_couv*cl_haut + type_couv*cl_dens, sPoints = G
 
 ```{r import model 2, echo=FALSE}
 modelPP <- readRDS("./modelPPForest.RDS")
+```
+
+```{r forest interaction summary, echo=FALSE}
+summary(modelPP) 
+```
+
+```{r forest interaction map build, echo=FALSE}
+#--------------------------
+# Construct prediction maps
+#--------------------------
+# Mean
+mapMean <- mapSpace(modelPP,
+                    dims = dim(explana_dat)[1:2],
+                    type = "mean",
+                    sPoly = spacePoly)
+# Standard deviation
+mapSd <- mapSpace(modelPP,
+                    dims = dim(explana_dat)[1:2],
+                    type = "sd",
+                    sPoly = spacePoly)
+# Lower boundary of the 95% confidence interval
+map.025 <- mapSpace(modelPP,
+                    dims = dim(explana_dat)[1:2],
+                    type = "0.025quant",
+                    sPoly = spacePoly)
+# Upper boundary of the 95% confidence interval
+map.975 <- mapSpace(modelPP,
+                    dims = dim(explana_dat)[1:2],
+                    type = "0.975quant",
+                    sPoly = spacePoly)
+#--------------------------------------
+# Cut raster with polygon of the region
+#--------------------------------------
+mapMaskMean <- mask(mapMean, spacePoly)
+mapMaskSd <- mask(mapSd, spacePoly)
+mapMask.025 <- mask(map.025, spacePoly)
+mapMask.975 <- mask(map.975, spacePoly)
+```
+
+
+```{r forest interaction map 1, echo=FALSE}
+# Colour to use for the maps
+colo <- colorRampPalette(c("grey90", "steelblue4", 
+                           "steelblue2", "steelblue1", 
+                           "gold", "red1", "red4"))(200)
+par(mfrow = c(2,2), mar = c(1,1,5,8))
+plot(mapMaskMean, col = colo, zlim = c(0, 100),
+     axes = FALSE, box = FALSE, main = "Mean")
+points(coordinates(GRBI_points), pch = 19, cex = 0.2)
+plot(mapMaskSd, col = colo,  zlim = c(0, 100),
+     axes = FALSE, box = FALSE, main = "Sd")
+points(coordinates(GRBI_points), pch = 19, cex = 0.2)
+plot(mapMask.025, col = colo,  zlim = c(0, 100),
+     axes = FALSE, box = FALSE, main = "2.5%")
+points(coordinates(GRBI_points), pch = 19, cex = 0.2)
+plot(mapMask.975, col = colo,  zlim = c(0, 100),
+     axes = FALSE, box = FALSE, main = "97.5")
+points(coordinates(GRBI_points), pch = 19, cex = 0.2)
+```
+
+
+## Interaction elevation~climate model
+
+All predictors plus climate and elevation interaction and the spatial effect with preselected priors.
+
+```{r forest interaction, eval=FALSE}
+# Spatial model
+formu <- as.formula(paste(paste("y", paste0(names(explana_dat), collapse = "+"), sep = "~"), " + elevation:bio1"))
+modelPPelevBio <- ppSpace(formu,
+                    explanaMesh = explana,
+                    ppWeight = weight,
+                    many = TRUE,
+                    control.compute = list(waic = TRUE))
+```
+
+
+```{r import model 2, echo=FALSE}
+modelPP <- readRDS("./modelPPelevBio.RDS")
 ```
 
 ```{r forest interaction summary, echo=FALSE}
