@@ -150,7 +150,7 @@ modelPPspatial <- readRDS("./modelPPspatial.RDS")
 summary(modelPPspatial) 
 ```
 
-```{r spatial map build, echo=FALSE}
+```{r spatialMapBuild, echo=FALSE}
 #--------------------------
 # Construct prediction maps
 #--------------------------
@@ -185,7 +185,7 @@ mapMask.975 <- mask(map.975, spacePoly)
 ```
 
 
-```{r spatial map 1, echo=FALSE}
+```{r spatialMap1, echo=FALSE}
 
 # Colour to use for the maps
 colo <- colorRampPalette(c("grey90", "steelblue4", 
@@ -211,8 +211,8 @@ points(coordinates(GRBI_points), pch = 19, cex = 0.2)
 
 All predictors with the spatial effect and preselected priors.
 
-```{r spatial, eval=FALSE}
-# Spatial model
+```{r full, eval=FALSE}
+# Full model
 modelPP <- ppSpace(y ~ ., sPoints = GRBI_points,
                     explanaMesh = explana,
                     ppWeight = weight,
@@ -228,7 +228,7 @@ modelPP <- readRDS("./modelPP.RDS")
 summary(modelPP) 
 ```
 
-```{r spatial map build, echo=FALSE}
+```{r fullMapBuild, echo=FALSE}
 #--------------------------
 # Construct prediction maps
 #--------------------------
@@ -263,7 +263,7 @@ mapMask.975 <- mask(map.975, spacePoly)
 ```
 
 
-```{r spatial map 1, echo=FALSE}
+```{r fullMap1, echo=FALSE}
 
 # Colour to use for the maps
 colo <- colorRampPalette(c("grey90", "steelblue4", 
@@ -289,9 +289,9 @@ points(coordinates(GRBI_points), pch = 19, cex = 0.2)
 
 No predictors other than the spatial effect with preselected priors.
 
-```{r spatial, eval=FALSE}
+```{r noElev, eval=FALSE}
 formu <- as.formula(paste("y", paste0(names(explana_dat)[names(explana_dat) != "elevation"], collapse = "+"), sep = "~"))
-# Spatial model
+# SpatnoElevial model
 modelPPnoElev <- ppSpace(formu, 
              sPoints = GRBI_points,
              explanaMesh = explana,
@@ -309,7 +309,7 @@ modelPPnoElev <- readRDS("./modelPPnoElev.RDS")
 summary(modelPPnoElev) 
 ```
 
-```{r spatial map build, echo=FALSE}
+```{r noElevMapBuild, echo=FALSE}
 #--------------------------
 # Construct prediction maps
 #--------------------------
@@ -344,7 +344,7 @@ mapMask.975 <- mask(map.975, spacePoly)
 ```
 
 
-```{r spatial map 1, echo=FALSE}
+```{r noElevMap1, echo=FALSE}
 
 # Colour to use for the maps
 colo <- colorRampPalette(c("grey90", "steelblue4", 
@@ -370,9 +370,9 @@ points(coordinates(GRBI_points), pch = 19, cex = 0.2)
 
 Forest cover predictors and the spatial effect with preselected priors.
 
-```{r forest interaction, eval=FALSE}
+```{r clim, eval=FALSE}
 formu <- as.formula(paste("y", paste0(paste0("bio", 1:19), collapse = "+"), sep = "~"))
-# Spatial model
+# clim model
 modelPPclim <- ppSpace(formu, 
                     sPoints = GRBI_points,
                     explanaMesh = explana,
@@ -450,7 +450,7 @@ points(coordinates(GRBI_points), pch = 19, cex = 0.2)
 Forest cover predictors and the spatial effect with preselected priors.
 
 ```{r forest interaction, eval=FALSE}
-# Spatial model
+# Forest interaction model
 modelPPforest <- ppSpace(y ~ type_couv*cl_haut + type_couv*cl_dens, sPoints = GRBI_points,
                     explanaMesh = explana,
                     ppWeight = weight,
@@ -526,8 +526,8 @@ points(coordinates(GRBI_points), pch = 19, cex = 0.2)
 
 All predictors plus climate and elevation interaction and the spatial effect with preselected priors.
 
-```{r forest interaction, eval=FALSE}
-# Spatial model
+```{r elevBio, eval=FALSE}
+# elevBio model
 formu <- as.formula(paste(paste("y", paste0(names(explana_dat), collapse = "+"), sep = "~"), " + elevation:bio1"))
 modelPPelevBio <- ppSpace(formu,
                     explanaMesh = explana,
