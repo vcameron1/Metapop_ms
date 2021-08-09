@@ -120,8 +120,30 @@ f250 <- f250[,c("type_couv","cl_dens","cl_haut","feuillet","geom")]
 # Required by fasterize::fasterize()
 couvCode <- unique(f250$type_couv[!is.na(f250$type_couv)])
 f250$type_couv <- sapply(f250$type_couv, function(char) match(char, couvCode))
+#=====
+# Résineux: R -> 1
+# Feuillu:  F -> 2
+# Mélangé:  M -> 3
+#=====
+
 f250$cl_dens <- sapply(f250$cl_dens, function(char) match(char, toupper(letters)))
+#=====
+# A: >80%   -> 1
+# B: 60-80% -> 2
+# C: 40-60% -> 3
+# D: 25-40% -> 4
+#=====
+
 f250$cl_haut <- as.numeric(f250$cl_haut)
+#=====
+# 1: >22m
+# 2: 17-22m
+# 3: 12-17m
+# 4: 7-12m
+# 5: 7-4m
+# 6: 2-4m
+# " ": <2m
+#=====
 
 # Rasterize forest cover data
 #forestCover <- raster::rasterize(f250, r) # Too long
