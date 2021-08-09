@@ -142,7 +142,7 @@ modelPPspatial <- ppSpace(y ~ 0, sPoints = GRBI_points,
                     control.compute = list(waic = TRUE))
 ```
 
-```{r import model 1, echo=FALSE}
+```{r import model modelPPspatial, echo=FALSE}
 modelPPspatial <- readRDS("./modelPPspatial.RDS")
 ```
 
@@ -220,11 +220,11 @@ modelPP <- ppSpace(y ~ ., sPoints = GRBI_points,
                     control.compute = list(waic = TRUE))
 ```
 
-```{r import model 1, echo=FALSE}
+```{r import model modelPP, echo=FALSE}
 modelPP <- readRDS("./modelPP.RDS")
 ```
 
-```{r saptial summary, echo=FALSE}
+```{r full summary, echo=FALSE}
 summary(modelPP) 
 ```
 
@@ -301,11 +301,11 @@ modelPPnoElev <- ppSpace(formu,
 
 ```
 
-```{r import model 1, echo=FALSE}
+```{r import model modelPPnoElev, echo=FALSE}
 modelPPnoElev <- readRDS("./modelPPnoElev.RDS")
 ```
 
-```{r saptial summary, echo=FALSE}
+```{r modelPPnoElev summary, echo=FALSE}
 summary(modelPPnoElev) 
 ```
 
@@ -382,15 +382,15 @@ modelPPclim <- ppSpace(formu,
 ```
 
 
-```{r import model 2, echo=FALSE}
+```{r import model modelPPclim, echo=FALSE}
 modelPP <- readRDS("./modelPPclim.RDS")
 ```
 
-```{r forest interaction summary, echo=FALSE}
+```{r modelPPclim summary, echo=FALSE}
 summary(modelPP) 
 ```
 
-```{r forest interaction map build, echo=FALSE}
+```{r modelPPclim map build, echo=FALSE}
 #--------------------------
 # Construct prediction maps
 #--------------------------
@@ -424,7 +424,7 @@ mapMask.975 <- mask(map.975, spacePoly)
 ```
 
 
-```{r forest interaction map 1, echo=FALSE}
+```{r modelPPclim map 1, echo=FALSE}
 # Colour to use for the maps
 colo <- colorRampPalette(c("grey90", "steelblue4", 
                            "steelblue2", "steelblue1", 
@@ -459,7 +459,7 @@ modelPPforest <- ppSpace(y ~ type_couv*cl_haut + type_couv*cl_dens, sPoints = GR
 ```
 
 
-```{r import model 2, echo=FALSE}
+```{r import model modelPPForest, echo=FALSE}
 modelPP <- readRDS("./modelPPForest.RDS")
 ```
 
@@ -537,15 +537,15 @@ modelPPelevBio <- ppSpace(formu,
 ```
 
 
-```{r import model 2, echo=FALSE}
+```{r import model modelPPelevBio, echo=FALSE}
 modelPP <- readRDS("./modelPPelevBio.RDS")
 ```
 
-```{r forest interaction summary, echo=FALSE}
+```{r modelPPelevBio summary, echo=FALSE}
 summary(modelPP) 
 ```
 
-```{r forest interaction map build, echo=FALSE}
+```{r modelPPelevBio map build, echo=FALSE}
 #--------------------------
 # Construct prediction maps
 #--------------------------
@@ -579,7 +579,7 @@ mapMask.975 <- mask(map.975, spacePoly)
 ```
 
 
-```{r forest interaction map 1, echo=FALSE}
+```{r modelPPelevBio map 1, echo=FALSE}
 # Colour to use for the maps
 colo <- colorRampPalette(c("grey90", "steelblue4", 
                            "steelblue2", "steelblue1", 
