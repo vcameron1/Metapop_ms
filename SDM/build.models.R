@@ -28,13 +28,13 @@ build.models <- function(){
   forestCover <- readRDS("./data_clean/forestCover_sQ.RDS")
   
   # explanatory variables
-  explana_dat <- readRDS("./explana_dat.RDS")
+  explana_dat <- readRDS("./SDM/explana_dat.RDS")
   
   # spacePoly
-  spacePoly <- readRDS("./spacePoly.RDS")
+  spacePoly <- readRDS("./SDM/spacePoly.RDS")
   
   # explana
-  explana <- readRDS("./explana.RDS")
+  explana <- readRDS("./SDM/explana.RDS")
   
   # 2 - Clean GRBI data -----------------------------------------------------
   
