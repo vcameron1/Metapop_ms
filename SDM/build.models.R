@@ -83,30 +83,12 @@ build.models <- function(){
   # Select GRBI points within the region of interest
   GRBI_points <- SpatialPoints(cbind(GRBI$LONGITUDE, GRBI$LATITUDE),
                                proj4string = spacePoly@proj4string)
-  
-  
-  # 3 - Build the mesh ------------------------------------------------------
-  
-  # Building the mesh
-  regionBorder <- extent(spacePoly)
-  xyBasis <- rbind(cbind(c(xmin(spacePoly),xmax(spacePoly),
-                           xmin(spacePoly),xmax(spacePoly)),
-                         c(ymin(spacePoly),ymax(spacePoly), 
-                           ymax(spacePoly),ymin(spacePoly))),
-                   coordinates(GRBI_points))
-  Mesh <- inla.mesh.2d(loc.domain = xyBasis,
-                       max.edge = 0.5,
-                       min.angle = 20,
-                       cutoff = 0.5,
-                       offset = c(2,1),
-                       crs = crs(spacePoly))
-  
-  
+    
   
   # 5 - Calculate weights associated to each edges of the mesh --------------
   
   
-  weight <- ppWeight(sPoly = spacePoly, mesh = Mesh)
+  weight <- ppWeight(sPoly = spacePoly, mesh = explana$mesh)
   
   
   # 6 - Buid the models -----------------------------------------------------
