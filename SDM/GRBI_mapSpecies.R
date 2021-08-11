@@ -81,7 +81,7 @@ explana_dat <- stack(climatePresent, elevation, forestCover)
 names(explana_dat[[which(names(explana_dat) == names(elevation))]]) <- "elevation"
 
 # Build spatialPolygons and use those to select GRBI points within the region of interest
-rasterForPoly <- elevation
+rasterForPoly <- raster::aggregate(elevation, fact = 8) # Speed up computing time
 values(rasterForPoly) <- ifelse(is.na(values(rasterForPoly)), NA, 1)
 spacePoly <- rasterToPolygons(rasterForPoly, dissolve = TRUE)
 
@@ -132,13 +132,53 @@ modelPPspatial <- ppSpace(y ~ 0, sPoints = GRBI_points,
                     ppWeight = weight,
                     many = TRUE,
                     control.compute = list(waic = TRUE))
+saveRDS(modelPPspatial, "./SDM/results/modelPPspatial.RDS")
 
-# Model with explanatory variables
+# Full model
 modelPP <- ppSpace(y ~ ., sPoints = GRBI_points,
              explanaMesh = explana,
              ppWeight = weight,
              many = TRUE,
              control.compute = list(waic = TRUE))
+saveRDS(modelPP, "./SDM/results/modelPP.RDS")
+
+# Full model without elevation
+formu <- as.formula(paste("y", paste0(names(explana_dat)[names(explana_dat) != "elevation"], collapse = "+"), sep = "~"))
+modelPPnoElev <- ppSpace(formu, 
+             sPoints = GRBI_points,
+             explanaMesh = explana,
+             ppWeight = weight,
+             many = TRUE,
+             control.compute = list(waic = TRUE))
+saveRDS(modelPPnoElev, "./SDM/results/modelPPnoElev.RDS")
+
+# Climate only model
+formu <- as.formula(paste("y", paste0(paste0("bio", 1:19), collapse = "+"), sep = "~"))
+modelPPclim <- ppSpace(formu, 
+             sPoints = GRBI_points,
+             explanaMesh = explana,
+             ppWeight = weight,
+             many = TRUE,
+             control.compute = list(waic = TRUE))
+saveRDS(modelPPclim, "./SDM/results/modelPPclim.RDS")
+
+# Forest interaction model
+modelPPforest <- ppSpace(y ~ type_couv*cl_haut + type_couv*cl_dens, sPoints = GRBI_points,
+                    explanaMesh = explana,
+                    ppWeight = weight,
+                    many = TRUE,
+                    control.compute = list(waic = TRUE))
+saveRDS(modelPPforest, "./SDM/results/modelPPforest.RDS")
+
+# Interaction elevation~climate model
+formu <- as.formula(paste(paste("y", paste0(names(explana_dat), collapse = "+"), sep = "~"), " + elevation:bio1"))
+modelPPelevBio <- ppSpace(formu,
+                    explanaMesh = explana,
+                    ppWeight = weight,
+                    many = TRUE,
+                    control.compute = list(waic = TRUE))
+saveRDS(modelPPelevBio, "./SDM/results/modelPPelevBio.RDS")
+
 
 
 # 7 - Study the estimated parameters --------------------------------------
