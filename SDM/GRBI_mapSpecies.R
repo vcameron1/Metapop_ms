@@ -81,7 +81,7 @@ explana_dat <- stack(climatePresent, elevation, forestCover)
 names(explana_dat[[which(names(explana_dat) == names(elevation))]]) <- "elevation"
 
 # Build spatialPolygons and use those to select GRBI points within the region of interest
-rasterForPoly <- elevation
+rasterForPoly <- aggregate(elevation, fact = 8) # speed up computing time
 values(rasterForPoly) <- ifelse(is.na(values(rasterForPoly)), NA, 1)
 spacePoly <- rasterToPolygons(rasterForPoly, dissolve = TRUE)
 
@@ -99,7 +99,7 @@ xyBasis <- rbind(cbind(c(xmin(spacePoly),xmax(spacePoly),
                          ymax(spacePoly),ymin(spacePoly))),
                  coordinates(GRBI_points))
 Mesh <- inla.mesh.2d(loc.domain = xyBasis,
-                     max.edge = 0.5,
+                     max.edge = 0.7,
                      min.angle = 20,
                      cutoff = 0.5,
                      offset = c(2,1),
