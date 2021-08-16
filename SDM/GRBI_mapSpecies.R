@@ -44,33 +44,18 @@ GRBI <- GRBI[GRBI$O_CODEATLA != "0",]
 # Select presence in habitat 
 #GRBI <- GRBI[GRBI$O_CODEATLA == c("H"),]
 
-# Select one observation per coordinate per year (after 2000)
-annee <- unique(GRBI$ANNEE)
-annee <- annee[annee >= 2000]
-GRBI$lat <- round(GRBI$LATITUDE, 2)
-GRBI$lon <- round(GRBI$LONGITUDE, 2)
-
-GRBI2 <- data.frame()
-for(i in sort(annee)){
-  for(j in unique(GRBI$lat)){
-    for(k in unique(GRBI$lon)){
-      obs <- which(GRBI$ANNEE == i &
-                     GRBI$lat == j &
-                     GRBI$lon == k)
-      
-      if(length(obs)>0) GRBI2 <- rbind(GRBI2, GRBI[obs[1],])
-    }
-  }
-  cat(i, ": complété\n")
-}
-GRBI <- GRBI2
-rm("GRBI2")
-
 # Crop GRBI presence data
 GRBI <- GRBI[GRBI$LONGITUDE>=xmin(elevation) & 
                GRBI$LONGITUDE<=xmax(elevation) & 
                GRBI$LATITUDE>=ymin(elevation) & 
                GRBI$LATITUDE<=ymax(elevation),]
+
+# Rasterize GRBI occurences as presences/absences
+  GRBI_points <- SpatialPoints(cbind(GRBI$LONGITUDE, GRBI$LATITUDE), proj4string = spacePoly@proj4string)
+  GRBI <- rasterize(GRBI_points, elevation, fun='count')
+  GRBI[GRBI > 0] <- 1
+  GRBI_points <- rasterToPoints(GRBI)
+  #GRBI_points <- SpatialPoints(cbind(GRBI$x, GRBI$y), proj4string = spacePoly@proj4string)
 
 
 # 2 - Format predictors ---------------------------------------------------
@@ -81,11 +66,7 @@ explana_dat <- stack(climatePresent, elevation, forestCover)
 names(explana_dat[[which(names(explana_dat) == names(elevation))]]) <- "elevation"
 
 # Build spatialPolygons and use those to select GRBI points within the region of interest
-<<<<<<< HEAD
-rasterForPoly <- raster::aggregate(elevation, fact = 8) # Speed up computing time
-=======
 rasterForPoly <- aggregate(elevation, fact = 8) # speed up computing time
->>>>>>> 77469a0dab367f540408c74421ade4b726cf36ee
 values(rasterForPoly) <- ifelse(is.na(values(rasterForPoly)), NA, 1)
 spacePoly <- rasterToPolygons(rasterForPoly, dissolve = TRUE)
 
