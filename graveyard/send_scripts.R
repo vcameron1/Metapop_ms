@@ -5,7 +5,7 @@
 ##########
 
 # Files to send from data folder
-filesData <- paste0(c("./data_clean/bioclim_sQ.RDS", "./data_clean/elev_sQ.RDS", "./data_clean/f_250.RDS"), collapse=' ')
+filesData <- paste0(c("./data_clean/bioclim_sQ.RDS", "./data_clean/elev_sQ.RDS", "./data_clean/forestCover_sQ.RDS"), collapse=' ')
 system(paste0('scp ', filesData, ' vcameron@beluga.calculcanada.ca:projects/def-dgravel/vcameron/Metapop_ms/data_clean/'))
 
 # Files to send from SDM folder
