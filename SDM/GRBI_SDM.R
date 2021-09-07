@@ -72,66 +72,133 @@ barplot(t, legend = TRUE)
 
 
 # Select the number of quadrature points with saturated model
-n.quad = c(1000, 5000, 10000, 50000, 100000, 500000, 1000000, 5000000, 100000000)
+set.seed(123)
+n.quad = c(1000, 5000, 10000, 50000, 100000, 500000, 1000000) # Model does not converge with > 1000000 quadrature points
 
 for(i in 1:3){
     loglik = rep(NA, length(n.quad))
-    auc = rep(NA, length(n.quad))
 
     for(j in 1:length(n.quad)){
-    mod <- SDM.glm(spacePoly=spacePoly, 
+    res <- SDM.glm(spacePoly=spacePoly, 
                  GRBI_points=GRBI_points,
                  covariables = ".", 
                  pred = explana_dat,
                  nquad = n.quad[j],         
                  quadOverlay = TRUE)
-    model <- mod[["model"]]
+    model <- res[["model"]]
 
     ## Compute log likelihood
     mu <- model$fitted
-    y <- mod[["y"]]
-    weights <- mod[["weights"]]
+    y <- res[["y"]]
+    weights <- res[["weights"]]
     loglik[j] <- sum(weights*(y*log(mu) - mu))
     }
 
-    if(i=1){
+    if(i==1){
+        dev.new()
         plot(n.quad, loglik, log = "x", type = "o")
     }else{
-        lines(n.quad, loglik, log = "x", type = "o")
+        lines(n.quad, loglik, type = "o", col="red")
     }
 }
 
 
 # 4 - Model selection -----------------------------------------------------
 
+##################
+# Habitat requirements of GRBI accoring to COSEWIC
+## Habitat specialist
+## 1. High elevation coniferous forests (windy, dense, naturally perturbed, coniferous)
+## 2. lowland coastal forests (rainy, windy, dense, naturally perturbed, coniferous)
+## 3. indistrial forests of the north (dense, perturbed, coniferous)
+## dense coniferous forests non-perturbed
+## perturbed forest in regeneration
+## Altitude is an important factor: 450m-1000m minimum
+## RL coincides with Mixed fores - boreal forest ecotone
+##################
+
+##################
+# Hypotheses
+## 1. T, P, elevation, and forest cover are important : "bio1 + bio12 + elevation + type_couv + cl_dens + cl_haut"
+## 2. T, P, elevation, and forest cover are important and forest cover interacts with elevation : "bio1 + bio12 + elevation * type_couv * cl_dens * cl_haut"
+## 3. T, P, elevation, and forest cover are important and climate interacts with elevation : "bio1 * bio12 * elevation + type_couv + cl_dens + cl_haut"
+## 4. T, P, elevation, and forest cover are important and elevation interacts with climate and forest cover variables interact : "bio1 * bio12 * elevation + type_couv * cl_dens * cl_haut"
+##################
 
 # Model fomula
-cov <- c("bio1 + bio12 + elevation * type_couv + elevation * cl_dens + elevation * cl_haut")
-cov <- c("elevation + elevation : type_couv")
-cov <- c("elevation + elevation : cl_dens")
-cov <- c("elevation + elevation : cl_haut")
+cov <- list(c("bio1^2 + bio12 + elevation + type_couv + cl_dens + cl_haut"),
+            c("bio1^2 + bio12 + elevation * type_couv * cl_dens * cl_haut"),
+            c("bio1^2 * bio12 * elevation + type_couv + cl_dens + cl_haut"),
+            c("bio1^2 * bio12 * elevation + type_couv * cl_dens * cl_haut"),
+            c("bio1^2 * bio12 * elevation + type_couv * cl_dens + cl_haut"))
 
-# Downweighted poisson regression (point process model)
-mod <- SDM.glm(spacePoly=spacePoly, 
-                 GRBI_points=GRBI_points,
-                 covariables = cov, 
-                 pred = explana_dat,
-                 nquad = 10000,         
-                 quadOverlay = TRUE,
-                 nquadWanted = TRUE)
-model = mod[["model"]]
+aic = rep(NA, length(cov))
+
+for(i in 5:length(cov)){
+  # Downweighted poisson regression (point process model)
+  res <- SDM.glm(spacePoly=spacePoly, 
+                  GRBI_points=GRBI_points,
+                  covariables = cov, 
+                  pred = explana_dat,
+                  nquad = 1000000,         
+                  quadOverlay = TRUE,
+                  nquadWanted = FALSE)
+
+  aic[i] <- res[["model"]]$aic
+}
+
+plot(1:length(cov), aic, type = "o")
+(covariables <- cov[which.min(aic)])
+
 
 # Summary
+model <- res[["model"]]
 summary(model)
 # AUC and plot
 SDM.AUC(model, newdata=explana_dat, GRBI_points=GRBI_points, RL_cutoff = 0.05, plot_prediction = TRUE)
 # Plot predictions
-SDM.plot(model, newdata = explana_dat, logPred = TRUE, GRBI_points, points = FALSE, main = "GLM prediction")
+SDM.plot(model, newdata = explana_dat, logPred = TRUE, GRBI_points, points = TRUE, main = "GLM prediction (log)")
 # Estimated number of quadrature point needed
 mod[["nquadWanted"]]
 
 
-# 5 - Functions -----------------------------------------------------------
+# 5 - Climate warming projection ------------------------------------------
+
+
+# Saturated model
+  # # Downweighted poisson regression (point process model)
+  cov <- c("bio1 * bio12 * elevation + type_couv + cl_dens + cl_haut")
+  res <- SDM.glm(spacePoly=spacePoly, 
+                  GRBI_points=GRBI_points,
+                  covariables = cov, 
+                  pred = explana_dat,
+                  nquad = 1000000,         
+                  quadOverlay = TRUE,
+                  nquadWanted = FALSE)
+model <- res[["model"]]
+summary(model)
+# Plot predictions
+SDM.plot(model, newdata = explana_dat, logPred = TRUE, GRBI_points, points = FALSE, main = "GLM prediction (log)")
+# Predictions for Eastern Townships
+SDM.plot(model, newdata = explana_dat, logPred = TRUE, GRBI_points, points = FALSE, main = "GLM prediction EasternTownships (log)", xlim=c(-73,-70), ylim=c(45,46))
+
+#### + 2°C ####
+explana_warm2 <- explana_dat
+raster::values(explana_warm2[["bio1"]]) <- raster::values(explana_warm2[["bio1"]]) + 2
+# Plot predictions
+SDM.plot(model, newdata = explana_warm2, logPred = TRUE, GRBI_points, points = FALSE, main = "GLM prediction +2°C")
+# Predictions for Eastern Townships
+SDM.plot(model, newdata = explana_warm2, logPred = TRUE, GRBI_points, points = FALSE, main = "GLM prediction +2°C EasternTownships (log)", xlim=c(-73,-70), ylim=c(45,46))
+
+#### + 4°C ####
+explana_warm4 <- explana_dat
+raster::values(explana_warm4[["bio1"]]) <- raster::values(explana_warm4[["bio1"]]) + 4
+# Plot predictions
+SDM.plot(model, newdata = explana_warm4, logPred = TRUE, GRBI_points, points = FALSE, main = "GLM prediction +4°C")
+SDM.plot(model, newdata = explana_warm4, logPred = TRUE, GRBI_points, points = FALSE, main = "GLM prediction +4°C EasternTownships (log)", xlim=c(-73,-70), ylim=c(45,46))
+
+
+# 6 - Functions -----------------------------------------------------------
 
 
 #==========================
@@ -147,8 +214,8 @@ SDM.glm <- function(spacePoly, GRBI_points, covariables = ".", pred, nquad = 100
 
     # Define random samples
     set.seed(12)
-    xSmpl <- runif(150000000, raster::xmin(spacePoly), raster::xmax(spacePoly))
-    ySmpl <- runif(150000000, raster::ymin(spacePoly), raster::ymax(spacePoly))
+    xSmpl <- runif(5000000, raster::xmin(spacePoly), raster::xmax(spacePoly))
+    ySmpl <- runif(5000000, raster::ymin(spacePoly), raster::ymax(spacePoly))
     
     # Organise them into a SpatialPoints object
     xySmpl <- sp::SpatialPoints(cbind(xSmpl, ySmpl), proj4string = spacePoly@proj4string)
@@ -232,17 +299,17 @@ SDM.plot <- function(model, newdata, logPred = TRUE, GRBI_points, points = TRUE,
                           "gold", "red1", "red4"))(200)
 
     dev.new()
-
     if(!logPred){
       raster::plot(prediction, col = colo,  zlim = c(0, max(raster::values(prediction), na.rm = TRUE)), axes = FALSE, box = FALSE, ...)
     }else{
+      prediction[prediction < 0.01] <- 0.01
       logpred <- log(prediction)
-      logpred[prediction==-Inf] <- 0
+      logpred[prediction == -Inf] <- 0
       raster::plot(logpred, col = colo,  zlim = c(min(raster::values(logpred), na.rm = TRUE), max(raster::values(logpred), na.rm = TRUE)), axes = FALSE, box = FALSE, ...)
       print("Intensity predictions were log-transformed")
     }
     
-    if(points) points(raster::coordinates(GRBI_points), pch = 19, cex = 0.05)
+    if(points) points(raster::coordinates(GRBI_points), pch = 3, cex = 0.05)
 
 }
 
