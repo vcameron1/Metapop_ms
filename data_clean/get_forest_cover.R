@@ -118,7 +118,7 @@ f250 <- f250[,c("type_couv","cl_dens","cl_haut","feuillet","geom")]
 
 # Convert char codes to numeric data
 # Required by fasterize::fasterize()
-couvCode <- unique(f250$type_couv[!is.na(f250$type_couv)])
+couvCode <- c("R", "M", "F")
 f250$type_couv <- sapply(f250$type_couv, function(char) match(char, couvCode))
 #=====
 # Résineux: R -> 1
@@ -142,26 +142,52 @@ f250$cl_haut <- as.numeric(f250$cl_haut)
 # 4: 7-12m
 # 5: 7-4m
 # 6: 2-4m
-# " ": <2m
+# 7: <2m
 #=====
 
 # Rasterize forest cover data
-#forestCover <- raster::rasterize(f250, r) # Too long
-f250_type_couv.raster <- fasterize::fasterize(f250, r, field="type_couv") # Faster
-f250_cl_dens.raster <- fasterize::fasterize(f250, r, field="cl_dens") # Faster
-f250_cl_haut.raster <- fasterize::fasterize(f250, r, field="cl_haut") # Faster
+#f250_type_couv.raster <- raster::rasterize(f250, r, field="type_couv") # Too long
+f250_type_couv.raster <- fasterize::fasterize(sf::st_sf(f250), r, field="type_couv") # Faster
+f250_cl_dens.raster <- fasterize::fasterize(sf::st_sf(f250), r, field="cl_dens") # Faster
+f250_cl_haut.raster <- fasterize::fasterize(sf::st_sf(f250), r, field="cl_haut") # Faster
 f250.stack <- raster::stack(f250_type_couv.raster,f250_cl_dens.raster,f250_cl_haut.raster)
 names(f250.stack) <- c("type_couv","cl_dens","cl_haut")
 
 
-# 4 - Save transformed data -----------------------------------------------
+# 4 - Transform back type_couv values to factors --------------------------
+
+
+# type_couv
+saveRDS(f250.stack, "./data_clean/forestCover_sQ.RDS")
+unique(raster::values(f250.stack[["type_couv"]]))
+f250.stack[["type_couv"]] <- raster::as.factor(f250.stack[["type_couv"]])
+rat <- raster::levels(f250.stack[["type_couv"]])[[1]]
+rat$category <- c("R", "M", "F")
+levels(f250.stack[["type_couv"]]) <- rat
+
+# cl_dens
+unique(raster::values(f250.stack[["cl_dens"]]))
+f250.stack[["cl_dens"]] <- raster::as.factor(f250.stack[["cl_dens"]])
+rat <- raster::levels(f250.stack[["cl_dens"]])[[1]]
+rat$category <- c("A", "B", "C", "D")
+levels(f250.stack[["cl_dens"]]) <- rat
+
+# cl_haut
+unique(raster::values(f250.stack[["cl_haut"]]))
+f250.stack[["cl_haut"]] <- raster::as.factor(f250.stack[["cl_haut"]])
+rat <- raster::levels(f250.stack[["cl_haut"]])[[1]]
+rat$category <- as.factor(1:7)
+levels(f250.stack[["cl_haut"]]) <- rat
+
+
+# 5 - Save transformed data -----------------------------------------------
 
 
 # Save data
-saveRDS(f250.stack, "./data_clean/forestCover_sQ.RDS")
+saveRDS(f250.stack, "./data_clean/forestFactor_sQ.RDS")
 
 
-# 5 - Metadata ------------------------------------------------------------
+# 6 - Metadata ------------------------------------------------------------
 
 
 # type_couv: Codes des types de couverts
