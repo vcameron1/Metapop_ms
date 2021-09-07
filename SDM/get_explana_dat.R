@@ -10,7 +10,7 @@ climatePresent <- readRDS("./data_clean/bioclim_sQ.RDS")
 ## Elevation
 elevation <- readRDS("./data_clean/elev_sQ.RDS")
 ## Forest cover
-forestCover <- readRDS("./data_clean/forestCover_sQ.RDS")
+forestCover <- readRDS("./data_clean/forestFactor_sQ.RDS")
 
 # Explana_dat
 explana_dat <- raster::stack(climatePresent, elevation, forestCover)
