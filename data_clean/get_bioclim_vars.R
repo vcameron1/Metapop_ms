@@ -30,7 +30,7 @@ destFile <- paste0(dir, "wc2.1_30s_bio.zip")
 download.file(url, destFile)
 
 # Unzip file
-unzip(destFile[1])
+unzip(destFile[1], exdir = dir)
 
 
 # 2 - Verify files within downloaded folder -------------------------------
@@ -47,11 +47,7 @@ file <- dir("./data_raw/wc2.1_30s_bio")
 nvar <- length(file)
 
 # Extent of South of Québec
-xmin = -75
-xmax = -63
-ymin = 45
-ymax = 49.5
-e <- raster::extent(c(xmin, xmax, ymin, ymax)) # LatLong limits
+e <- raster::extent(readRDS("./data_clean/forestFactor_sQ.RDS")) # LatLong limits
 
 # Import all bioclimatic variables
 for(i in 1:nvar){
