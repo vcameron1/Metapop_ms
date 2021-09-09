@@ -26,7 +26,8 @@ feuillets <- c("31G", "31J", "31O", "32B", "32G",
                "21E", "21M", "21L", "22D", "22E",
                "21K", "21N", "22C", "22F", 
                "21O", "22B", "22G",
-               "22A", "22H")
+               "22A", "22H",
+               "32J", "32I", "22L", "22K", "22J", "22I")
 
 # Url to access data
 url <- paste0("https://diffusion.mffp.gouv.qc.ca/Diffusion/DonneeGratuite/Foret/DONNEES_FOR_ECO_SUD/Resultats_inventaire_et_carte_ecofor/",feuillets,"/PRODUITS_IEQM_",feuillets,"_GPKG.zip")
@@ -103,6 +104,7 @@ print(nrow)
 
 # 2 - Save combined data --------------------------------------------------
 
+
 all(feuillets %in% unique(f_250$feuillet))
 # Save data
 saveRDS(f_250, "./data_clean/f_250.RDS")
@@ -112,8 +114,8 @@ saveRDS(f_250, "./data_clean/f_250.RDS")
 
 
 # Import data
-r <- readRDS("./data_clean/elev_sQ.RDS") # Used as the raster* template 
-f250 <- readRDS("./data_clean/f_250.RDS"); colnames(f250)
+#r <- readRDS("./data_clean/elev_sQ.RDS") # Used as the raster* template 
+f250 <- readRDS("./data_clean/f_250.RDS")
 f250 <- f250[,c("type_couv","cl_dens","cl_haut","feuillet","geom")]
 
 # Convert char codes to numeric data
@@ -146,6 +148,8 @@ f250$cl_haut <- as.numeric(f250$cl_haut)
 #=====
 
 # Rasterize forest cover data
+r <- readRDS("./data_clean/elev_sQ.RDS") # LatLong limits
+
 #f250_type_couv.raster <- raster::rasterize(f250, r, field="type_couv") # Too long
 f250_type_couv.raster <- fasterize::fasterize(sf::st_sf(f250), r, field="type_couv") # Faster
 f250_cl_dens.raster <- fasterize::fasterize(sf::st_sf(f250), r, field="cl_dens") # Faster
@@ -169,7 +173,7 @@ levels(f250.stack[["type_couv"]]) <- rat
 unique(raster::values(f250.stack[["cl_dens"]]))
 f250.stack[["cl_dens"]] <- raster::as.factor(f250.stack[["cl_dens"]])
 rat <- raster::levels(f250.stack[["cl_dens"]])[[1]]
-rat$category <- c("A", "B", "C", "D")
+rat$category <- c("A", "B", "C", "D", "I")
 levels(f250.stack[["cl_dens"]]) <- rat
 
 # cl_haut

@@ -103,8 +103,8 @@ GRBI <- raster::rasterize(GRBI_points, elevation, fun='count')
 
 # Back to spatialPoints
 GRBI[GRBI > 0] <- 1
-GRBI_points <- raster::rasterToPoints(GRBI)
-GRBI_points <- SpatialPoints(GRBI_points,
+GRBI_points <- raster::rasterToPoints(GRBI) # Keep cell centroids
+GRBI_points <- sp::SpatialPoints(GRBI_points,
                                   proj4string = spacePoly@proj4string)
 
 

@@ -43,12 +43,8 @@ elev <- raster::raster("./data_raw/wc2.1_30s_elev.tif")
 # 3 - Crop elevation map to south of Quebec -------------------------------
 
 
-# Crop to South of Québec
-xmin = -75
-xmax = -63
-ymin = 45
-ymax = 49.5
-e <- raster::extent(c(xmin, xmax, ymin, ymax)) # LatLong limits
+# Crop to Québec meridional
+e <- raster::extent(sf::st_bbox(readRDS("./data_clean/f_250.RDS")$geom)) # May require to download forect cover data in steps 1-2 of get_forest_cover.R script
 elev <- raster::crop(elev, e)
 
 
