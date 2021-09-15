@@ -38,7 +38,7 @@ elev <- raster::raster("./data_raw/wc2.1_30s_elev.tif")
 
 
 # Crop to Québec meridional
-e <- raster::extent(sf::st_bbox(readRDS("./data_clean/f_250.RDS")$geom)) # May require to download forest cover data in steps 1-2 of get_forest_cover.R script
+e <- raster::extent(sf::st_bbox(readRDS("./data_clean/forestCover_raw.RDS")$geom)) # May require to download forest cover data in steps 1-2 of get_forest_cover.R script
 elev <- raster::crop(elev, e)
 
 
