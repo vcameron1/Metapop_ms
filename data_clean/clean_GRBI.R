@@ -21,33 +21,33 @@ GRBI <- readxl::read_excel("./data_raw/RAPPORT QO_SOS-POP SCF_GRBI.xlsx", sheet 
 
 
 # Available variables/data
-colnames(GRBI)
+#colnames(GRBI)
 
 # Spatial distribution of points
-plot(GRBI$'LONGITUDE_SIGN GÉO ASSOCIÉ À LA MENTION', GRBI$'LATITUDE_SIGN GÉO ASSOCIÉ À LA MENTION')
-NA %in% unique(GRBI$'LONGITUDE_SIGN GÉO ASSOCIÉ À LA MENTION')
-NA %in% unique(GRBI$'LATITUDE_SIGN GÉO ASSOCIÉ À LA MENTION')
+#plot(GRBI$'LONGITUDE_SIGN GÉO ASSOCIÉ À LA MENTION', GRBI$'LATITUDE_SIGN GÉO ASSOCIÉ À LA MENTION')
+#NA %in% unique(GRBI$'LONGITUDE_SIGN GÉO ASSOCIÉ À LA MENTION')
+#NA %in% unique(GRBI$'LATITUDE_SIGN GÉO ASSOCIÉ À LA MENTION')
 
 # Spatial distribution of points by site
-sunflowerplot(GRBI$LONGITUDE, GRBI$LATITUDE)
+#sunflowerplot(GRBI$LONGITUDE, GRBI$LATITUDE)
 
 # Temporal distribution of occurences
-hist(GRBI$ANNEE) # Year 1000?
-sort(unique(GRBI$ANNEE)) 
-GRBI[GRBI$ANNEE < 2000, c("NOM SITE", "LATITUDE_SIGN GÉO ASSOCIÉ À LA MENTION", "LONGITUDE_SIGN GÉO ASSOCIÉ À LA MENTION", "ANNEE" )]
-hist(GRBI$ANNEE[GRBI$ANNEE > 1990])
+#hist(GRBI$ANNEE) # Year 1000?
+#sort(unique(GRBI$ANNEE)) 
+#GRBI[GRBI$ANNEE < 2000, c("NOM SITE", "LATITUDE_SIGN GÉO ASSOCIÉ À LA MENTION", "LONGITUDE_SIGN GÉO ASSOCIÉ À LA MENTION", "ANNEE" )]
+#hist(GRBI$ANNEE[GRBI$ANNEE > 1990])
 
 # Distribution of precisions
-table(GRBI$PRÉCISION)
+#table(GRBI$PRÉCISION)
 
 # Distribution of classifications
-table(GRBI$CLASSIFICATION)
+#table(GRBI$CLASSIFICATION)
 
 # Distribution of usage
-table(GRBI$USAGE)
+#table(GRBI$USAGE)
 
 # Distribution of types of occurences
-table(GRBI$O_CODEATLA)
+#table(GRBI$O_CODEATLA)
 
 
 # 2 - Clean GRBI data -----------------------------------------------------
