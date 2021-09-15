@@ -1,83 +1,53 @@
 #############################################################
-## Generate a bioclimate raster* for the south of Quebec
+## Generate a bioclim rasterStack* for the south of Quebec
 ## Victor Cameron 
-## July 2021
+## September 2021
 #############################################################
 
 #############################################################
-## Data downloaded from https://www.worldclim.org/data/worldclim21.html
-## Bioclimatic variables were downloaded at a precision of 30 seconds (~1 km2)
+## Data generated using BioSim (https://cfs.nrcan.gc.ca/projects/133)
+## Temperature and precipitation are annual means for the 1981-2010 period
+## Data was simulated at a precision of 250m2
 #############################################################
 
 
-# 0 - Set directory -------------------------------------------------------
+# 1 - Import raw data -----------------------------------------------------
 
 
-setwd("~/Documents/Git/Metapop_ms")
+temp <- raster::raster("./data_raw/mat.tif")
+prec <- raster::raster("./data_raw/tap.tif")
+template <- readRDS("./data_clean/templateRaster_sQ.RDS")
 
 
-# 1 - Download data -------------------------------------------------------
+# 2 - Crop bioclim map to south of Quebec ---------------------------------
 
 
-# Url to access data
-url <- "https://biogeo.ucdavis.edu/data/worldclim/v2.1/base/wc2.1_30s_bio.zip"
+# Reproject bioclim to match template (which also have a ~250m2 resolution)
+temp <- raster::projectRaster(temp, crs = raster::crs(template))
 
-# Directories and files
-dir <- "./data_raw/"
-destFile <- paste0(dir, "wc2.1_30s_bio.zip")
+# Crop to Québec meridional
+temp <- raster::crop(temp, raster::extent(template)) # May require to download forest cover data in steps 1-2 of get_forest_cover.R script
 
-# Download file
-download.file(url, destFile)
-
-# Unzip file
-unzip(destFile[1], exdir = dir)
+# Resample to match template resolution
+temp <- raster::resample(temp, template, method = 'bilinear') 
 
 
-# 2 - Verify files within downloaded folder -------------------------------
+prec <- raster::projectRaster(prec, crs = raster::crs(template))
+bioclim <- raster::stack(temp, prec)
+
+# Crop to Québec meridional
+bioclim <- raster::crop(bioclim, raster::extent(template)) # May require to download forest cover data in steps 1-2 of get_forest_cover.R script
 
 
-# Variables downloaded
-file <- dir("./data_raw/wc2.1_30s_bio")
+# 3 - transform temperature back in degrees C -----------------------------
 
 
-
-# 3 - Extract bioclim variables from folder -------------------------------
-
-
-nvar <- length(file)
-
-# Extent of South of Québec
-e <- raster::extent(readRDS("./data_clean/forestFactor_sQ.RDS")) # LatLong limits
-
-# Import all bioclimatic variables
-for(i in 1:nvar){
-  assign(paste0("bio", i), raster::raster(paste0("./data_raw/wc2.1_30s_bio/", file[i])))
-  
-  # Crop map to south of Qc
-  assign(paste0("bio", i), raster::crop(get(paste0("bio", i)), e))
-    
-  # Increase resolution of raster*
-  # Split raster cells into 4 smaller cells (~25000m2)
-  assign(paste0("bio", i), raster::disaggregate(get(paste0("bio", i)), fact = 4))
-}
+# Temperatures were multiplied by 10 to avoid decimals
+raster::values(bioclim[["mat"]]) <- raster::values(bioclim[["mat"]])/10
 
 
-# 4 - Create rasterStack* with the variables ------------------------------
-
-
-bioclim <- raster::stack(mget(paste0("bio", 1:nvar)))
-rm(list = paste0("bio", 1:nvar))
-
-
-# 5 - Save bioclimatic variables ------------------------------------------
+# 4 - Save bioclimate variable --------------------------------------------
 
 
 saveRDS(bioclim, "./data_clean/bioclim_sQ.RDS")
 
-
-# 6 - Remove downloaded files to save memory space ------------------------
-
-
-# Remove all downloaded files to free memory space
-unlink(destFile, recursive = TRUE)
-unlink("./data_raw/wc2.1_30s_bio", recursive = TRUE)

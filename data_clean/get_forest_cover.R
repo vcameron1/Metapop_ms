@@ -148,7 +148,7 @@ f250$cl_haut <- as.numeric(f250$cl_haut)
 #=====
 
 # Rasterize forest cover data
-r <- readRDS("./data_clean/elev_sQ.RDS") # LatLong limits
+r <- readRDS("./data_clean/templateRaster_sQ.RDS") # LatLong limits
 
 #f250_type_couv.raster <- raster::rasterize(f250, r, field="type_couv") # Too long
 f250_type_couv.raster <- fasterize::fasterize(sf::st_sf(f250), r, field="type_couv") # Faster
