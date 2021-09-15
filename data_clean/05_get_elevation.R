@@ -13,12 +13,13 @@
 
 
 template <- readRDS("./data_clean/templateRaster_sQ.RDS")
-elev <- elevatr::get_elev_raster(template, z = 11)
+elev <- elevatr::get_elev_raster(template, z = 8, clip = "bbox") # Error when downloading more precise (z > 8) elevation data
 
 
 # 2 - Standardize the raster extent and resolution ------------------------
 
 
+# In response to slightly different resolutions
 elev <- raster::resample(elev, template, method = 'bilinear') 
 
 
