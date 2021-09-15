@@ -101,6 +101,6 @@ print(nrow)
 
 all(feuillets %in% unique(f_250$feuillet))
 # Save data
-saveRDS(f_250, "./data_clean/f_250.RDS")
+saveRDS(f_250, "./data_clean/forestCover_raw.RDS")
 
 
