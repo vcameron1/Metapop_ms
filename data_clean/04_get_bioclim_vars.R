@@ -24,22 +24,21 @@ template <- readRDS("./data_clean/templateRaster_sQ.RDS")
 
 # Reproject bioclim to match template (which also have a ~250m2 resolution)
 temp <- raster::projectRaster(temp, crs = raster::crs(template))
+prec <- raster::projectRaster(prec, crs = raster::crs(template))
 
 # Crop to Québec meridional
 temp <- raster::crop(temp, raster::extent(template)) # May require to download forest cover data in steps 1-2 of get_forest_cover.R script
+prec <- raster::crop(prec, raster::extent(template))
 
 # Resample to match template resolution
 temp <- raster::resample(temp, template, method = 'bilinear') 
+prec <- raster::resample(prec, template, method = 'bilinear') 
 
-
-prec <- raster::projectRaster(prec, crs = raster::crs(template))
+# Stack bioclim variables
 bioclim <- raster::stack(temp, prec)
 
-# Crop to Québec meridional
-bioclim <- raster::crop(bioclim, raster::extent(template)) # May require to download forest cover data in steps 1-2 of get_forest_cover.R script
 
-
-# 3 - transform temperature back in degrees C -----------------------------
+# 3 - Transform temperature back in degrees C -----------------------------
 
 
 # Temperatures were multiplied by 10 to avoid decimals
