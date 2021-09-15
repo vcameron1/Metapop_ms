@@ -78,13 +78,13 @@ GRBI <- GRBI[GRBI$USAGE == "Nidification",]
 
 
 # Load reference raster
-elevation <- readRDS("./data_clean/elev_sQ.RDS")
+template <- readRDS("./data_clean/templateRaster_sQ.RDS")
 
 # Crop GRBI presence data
-GRBI <- GRBI[GRBI$LONGITUDE >= raster::xmin(elevation) & 
-               GRBI$LONGITUDE <= raster::xmax(elevation) & 
-               GRBI$LATITUDE >= raster::ymin(elevation) & 
-               GRBI$LATITUDE <= raster::ymax(elevation),]
+GRBI <- GRBI[GRBI$LONGITUDE >= raster::xmin(template) & 
+               GRBI$LONGITUDE <= raster::xmax(template) & 
+               GRBI$LATITUDE >= raster::ymin(template) & 
+               GRBI$LATITUDE <= raster::ymax(template),]
 
 
 # 4 - Rasterize GRBI occurences -------------------------------------------
@@ -95,7 +95,7 @@ spacePoly <- readRDS("./SDM/spacePoly.RDS")
 
 # Rasterize GRBI occurences as presences/absences
 GRBI_points <- sp::SpatialPoints(cbind(GRBI$'LONGITUDE_SIGN GÉO ASSOCIÉ À LA MENTION', GRBI$'LATITUDE_SIGN GÉO ASSOCIÉ À LA MENTION'), proj4string = spacePoly@proj4string)
-GRBI <- raster::rasterize(GRBI_points, elevation, fun='count')
+GRBI <- raster::rasterize(GRBI_points, template, fun='count')
 
 
 # 5 - GRBI raster back to spatialPoints -----------------------------------
