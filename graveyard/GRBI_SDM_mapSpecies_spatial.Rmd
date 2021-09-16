@@ -109,7 +109,7 @@ GRBI2 <- aggregate(cbind(LATITUDE, LONGITUDE, ANNEE) ~ `No RELEVÉ SOS-POP`, dat
 
 
 
-sunflowerplot(GRBI3$LONGITUDE, GRBI3$LATITUDE)
+sunflowerplot(GRBI$LONGITUDE, GRBI$LATITUDE)
 sort(table(GRBI3$LATITUDE))
 sort(table(GRBI3$LONGITUDE))
 GRBI=GRBI2
@@ -171,7 +171,7 @@ Build spatialPolygons and use those to select GRBI points within the region of i
 
 ```{r}
 # Build SpatialPolygons
-rasterForPoly <- elevation
+rasterForPoly <- raster::aggregate(elevation, fact = 8)
 #rasterForPoly <- raster::aggregate(elevation, fact = 8) # Speed up computing time
 values(rasterForPoly) <- ifelse(is.na(values(rasterForPoly)), NA, 1)
 spacePoly <- rasterToPolygons(rasterForPoly, dissolve = TRUE)
@@ -201,7 +201,7 @@ xyBasis <- rbind(cbind(c(xmin(spacePoly),xmax(spacePoly),
                          ymax(spacePoly),ymin(spacePoly))),
                  coordinates(GRBI_points))
 Mesh <- inla.mesh.2d(loc.domain = xyBasis,
-                     max.edge = 0.5,
+                     max.edge = 0.7,
                      min.angle = 20,
                      cutoff = 0.5,
                      offset = c(2,1),
@@ -228,6 +228,14 @@ Note that running the `explanaMesh` function may take a bit of time.
 explana <- explanaMesh(sPoly = spacePoly, 
                        mesh = Mesh, 
                        X = explana_dat)
+
+explana <- explanaMesh(sPoly = spacePoly, 
+                       mesh = Mesh, 
+                       X = stack(stack(climatePresent), elevation, forestCover))
+
+explana <- explanaMesh(sPoly = spacePoly, 
+                       mesh = Mesh, 
+                       X = forestCover)
 ```
 
 ## Calculating weights associated to each edges of the mesh
