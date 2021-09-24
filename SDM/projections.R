@@ -53,8 +53,10 @@ source("./SDM/patch_metrics.R")
 get.metrics <- function(rasterPred, RL_cutoff = 0.05, cc = cc){
   metrics_list <- list()
   for(i in seq_along(cc)){
-  metrics <- patch.metrics(rasterPred[[i]], RL_cutoff = RL_cutoff)
-  metrics_list[[i]] <- metrics
+    metrics <- patch.metrics(rasterPred[[i]], RL_cutoff = RL_cutoff)
+    metrics_list[[i]] <- metrics
+
+    cat("Processing step ", i + 1, " of ", length(cc), "(", round(i/length(cc) * 100), "% completed)\n")
   }
   return(metrics_list)
 }

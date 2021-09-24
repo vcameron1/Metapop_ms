@@ -1,4 +1,10 @@
-# taille des patchs et distance
+###############
+# Script to compute landscape metrics
+# Victor Cameron
+# September 2021
+##############
+
+# This function returns a list of lists per time step. Each time step list contains the total area occupied by the species (sumArea), the total number of occupied patch (n), a data frame containing the area for each patch (patchArea), a matrix of the distance between each patch, and the metapop capacity of the landscape.
 
 patch.metrics <- function(raster, RL_cutoff = 0.05){
 
@@ -6,7 +12,7 @@ patch.metrics <- function(raster, RL_cutoff = 0.05){
     RL_cutoff = log(RL_cutoff)
 
     # Check if any values excced RL_cutoff
-    if(maxValue(raster) < RL_cutoff){
+    if(raster::maxValue(raster) < RL_cutoff){
         sumArea = 0
         n = 0
         patchArea = 0
@@ -23,7 +29,7 @@ patch.metrics <- function(raster, RL_cutoff = 0.05){
 
 
         #### Compute patch area (m2) ####
-        values <- unique(values(clump))
+        values <- unique(raster::values(clump))
         values <- values[!is.na(values)]
         patchArea <- data.frame(patch = values, area = 0)
         for(patch in patchArea$patch){
@@ -46,6 +52,26 @@ patch.metrics <- function(raster, RL_cutoff = 0.05){
         #### Inter-patch distance ####
         clumpPoly <- raster::rasterToPolygons(clump, dissolve = TRUE)
         d_ij <- rgeos::gDistance(clumpPoly, byid = TRUE)
+
+        #### Metapop capacity ####
+
+        # Compute landscape matrix
+        ##exp(-a*d)*A1*A2 as in Hanski 2000
+
+        land <- matrix(rep(0, length(d_ij)), nrow=nrow(d_ij))
+        a <- 1/2
+        for(i in patchArea$patch){
+            for(j in patchArea$patch){
+            if(i == j) next
+            land[i,j] <- exp(-a*d_ij[i,j]) *
+                         (patchArea[i,'area']/max(patchArea[,'area'])) * # Normalize patch area
+                         (patchArea[j,'area']/max(patchArea[,'area']))
+            }
+        }
+
+        # Metapop capacity
+        eigen = eigen(land)$values[1]
+
     }
 
     #### Return ####
@@ -54,6 +80,7 @@ patch.metrics <- function(raster, RL_cutoff = 0.05){
         totalArea = sumArea,
         n = n,
         patchArea = patchArea,
-        d_ij = d_ij)
+        d_ij = d_ij,
+        capacity = eigen)
     )
 }
