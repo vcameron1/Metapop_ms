@@ -1,7 +1,7 @@
 ---
-title: "Model"
+title: "SDM results"
 author: "Victor Cameron"
-date: "09/08/2021"
+date: "08/2021"
 output: html_document
 ---
 
@@ -12,686 +12,369 @@ knitr::opts_chunk$set(echo = TRUE,
 ```
 
 
-## Model setup
-
-```{r dependencies 1, include=FALSE, cache=FALSE}
-set.seed(123)
-
-# Load mapSpecies package locally
-devtools::load_all("../../mapSpecies/")
-library(mapSpecies)
-
-library(raster)
-
-spacePoly <- readRDS("../spacePoly.RDS")
-explana_dat <- readRDS("../explana_dat.RDS")
-GRBI_points <- readRDS("../GRBI_points.RDS")
+```{r dependencies, echo=FALSE}
+library(ggplot2)
+library(hrbrthemes)
+library(ggpubr)
 ```
 
-
-```{r model setup, eval=FALSE}
-
-# 1 - Load data -----------------------------------------------------------
-
-
-# Load GRBI data
-GRBI <- readxl::read_excel("../../data_raw/RAPPORT QO_SOS-POP SCF_GRBI.xlsx", sheet = 2)
-
-# Environmental data
-climatePresent <- readRDS("../../data_clean/bioclim_sQ.RDS")
-
-# Elevation data
-elevation <- readRDS("../../data_clean/elev_sQ.RDS")
-
-# Forest cover
-forestCover <- readRDS("../../data_clean/forestCover_sQ.RDS")
-
-
-# 2 - Clean GRBI data -----------------------------------------------------
-
-
-# Select one observation/ occurence per PRÉCISION == "S"
-GRBI <- GRBI[GRBI$PRÉCISION == "S",]
-
-# Remove recordings of absences
-GRBI <- GRBI[GRBI$O_CODEATLA != "0",]
-
-# Select presence in habitat 
-#GRBI <- GRBI[GRBI$O_CODEATLA == c("H"),]
-
-# Select one observation per coordinate per year (after 2000)
-annee <- unique(GRBI$ANNEE)
-annee <- annee[annee >= 2000]
-GRBI$lat <- round(GRBI$LATITUDE, 2)
-GRBI$lon <- round(GRBI$LONGITUDE, 2)
-
-GRBI2 <- data.frame()
-for(i in sort(annee)){
-  for(j in unique(GRBI$lat)){
-    for(k in unique(GRBI$lon)){
-      obs <- which(GRBI$ANNEE == i &
-                     GRBI$lat == j &
-                     GRBI$lon == k)
-      
-      if(length(obs)>0) GRBI2 <- rbind(GRBI2, GRBI[obs[1],])
-    }
-  }
-  cat(i, ": complété\n")
+```{r GRBI map, echo=FALSE}
+if(!file.exists("/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/map_GRBI.png")){
+    source("/Users/victorcameron/Documents/Git/Metapop_ms/SDM/map_GRBI.R")
+    
+    plot.map(projRaster_path = "/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/projections_GRBI.RDS", 
+             extent = c(xmin = -75, xmax = -64, ymin = 45, ymax = 49.5), 
+             file_name = "/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/map_GRBI.png")   
 }
-GRBI <- GRBI2
-rm("GRBI2")
+```
 
-# Crop GRBI presence data
-GRBI <- GRBI[GRBI$LONGITUDE>=xmin(elevation) & 
-               GRBI$LONGITUDE<=xmax(elevation) & 
-               GRBI$LATITUDE>=ymin(elevation) & 
-               GRBI$LATITUDE<=ymax(elevation),]
+```{r extract metrics, echo=FALSE}
+# Functions to extract metrics
 
+# # Patch area
+extract.patchArea <- function(metrics){
+    area <- setNames(data.frame(matrix(ncol = 2, nrow = 0)), c("area", "temp"))
+    for(i in seq_along(metrics)){
+        if(metrics[[i]]$n == 0) next
+        for(j in seq_along(metrics[[i]]$patchArea$patch)){
+            area <- rbind(area, c(metrics[[i]]$patchArea$area[j], i*0.2-0.2))
+        }
+    }
+    colnames(area) <- c("area", "temp")
+    area$temp <- as.factor(area$temp)
+    
+    return(area)
+}
 
-# 2 - Format predictors ---------------------------------------------------
+# # Inter patch distance
+extract.dist <- function(metrics){
+    dist <- setNames(data.frame(matrix(ncol = 2, nrow = 0)), c("dist", "temp"))
+    for(i in seq_along(metrics)){
+        if(metrics[[i]]$n == 0) next
+        dij <- metrics[[i]]$d_ij[lower.tri(metrics[[i]]$d_ij, diag = FALSE)]
+        temp <- rep(i*0.2-0.2, length(dij))
 
+        dist <- rbind(dist, data.frame(dij, temp))
+    }
+    colnames(dist) <- c("dist", "temp")
+    dist$temp <- as.factor(dist$temp)
+    
+    return(dist)
+}
+```
 
-# Combine explanatory variables into a rasterStack*
-explana_dat <- stack(climatePresent, elevation, forestCover)
-names(explana_dat[[which(names(explana_dat) == names(elevation))]]) <- "elevation"
-
-# Build spatialPolygons and use those to select GRBI points within the region of interest
-rasterForPoly <- raster::aggregate(elevation, fact = 8) # Speed up computing time
-values(rasterForPoly) <- ifelse(is.na(values(rasterForPoly)), NA, 1)
-spacePoly <- rasterToPolygons(rasterForPoly, dissolve = TRUE)
-
-GRBI_points <- SpatialPoints(cbind(GRBI$LONGITUDE, GRBI$LATITUDE),
-                                  proj4string = spacePoly@proj4string)
-
-# 3 - Build the mesh ------------------------------------------------------
-
-# Building the mesh
-regionBorder <- extent(spacePoly)
-xyBasis <- rbind(cbind(c(xmin(spacePoly),xmax(spacePoly),
-                         xmin(spacePoly),xmax(spacePoly)),
-                       c(ymin(spacePoly),ymax(spacePoly), 
-                         ymax(spacePoly),ymin(spacePoly))),
-                 coordinates(GRBI_points))
-Mesh <- inla.mesh.2d(loc.domain = xyBasis,
-                     max.edge = 0.7,
-                     min.angle = 20,
-                     cutoff = 0.5,
-                     offset = c(2,1),
-                     crs = crs(spacePoly))
-
-
-# 4 - Organize the explanatory variables ----------------------------------
+```{r full distribution, echo=FALSE}
+# 1 - Full distribution -----------------------------------
 
 
-explana <- explanaMesh(sPoly = spacePoly,
-                       mesh = Mesh, 
-                       X = explana_dat)
+# Data
+metrics_QC <- readRDS("/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/metrics_QC.RDS")
+
+# Extract metrics
+area_QC <- extract.patchArea(metrics_QC)
+area_QC_sub <- area_QC[area_QC$temp %in% seq(0,4,by=0.8),]
+
+dist_QC <- extract.dist(metrics_QC)
+dist_QC_sub <- dist_QC[dist_QC$temp %in% seq(0,4,by=0.8),]
+
+# Patch area
+# # Stacked density chart
+p1_QC <- ggplot(data=area_QC_sub, aes(x=log(area), group=temp, fill=temp, after_stat(count))) +
+            ggtitle("Québec") +
+            geom_density(position="fill", adjust = 3) +
+            scale_fill_viridis_d(end = seq(0,1,le=6)[length(unique(area_QC_sub$temp))]) +
+            theme_minimal()
+
+# # Multi density chart
+p2_QC <- ggplot(data=area_QC_sub, aes(x=log(area), group=temp, fill=temp, after_stat(count))) +
+            ggtitle("Québec") +
+            geom_density(alpha=.7) +
+            scale_fill_viridis_d(end = seq(0,1,le=6)[length(unique(area_QC_sub$temp))]) +
+            theme_minimal()
+
+# Interpatch distance
+# # Stacked density chart
+p3_QC <- ggplot(data=dist_QC_sub, aes(x=log(dist), group=temp, fill=temp, after_stat(count))) +
+            ggtitle("Québec") +
+            geom_density(position="fill", adjust = 8) +
+            scale_fill_viridis_d(end = seq(0,1,le=6)[length(unique(dist_QC_sub$temp))]) +
+            theme_minimal()
+
+# # Multi density chart
+p4_QC <- ggplot(data=dist_QC_sub, aes(x=log(dist), group=temp, fill=temp, after_stat(count))) +
+            ggtitle("Québec") +
+            geom_density(alpha=.7) +
+            scale_fill_viridis_d(end = seq(0,1,le=6)[length(unique(area_QC_sub$temp))]) +
+            theme_minimal()
+```
+
+```{r EasternTownships, echo=FALSE}
+# 2 - EasternTownships ------------------------------------
+
+
+# Data
+metrics_ET <- readRDS("/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/metrics_ET.RDS")
+
+# Extract metrics
+area_ET <- extract.patchArea(metrics_ET)
+area_ET_sub <- area_ET[area_ET$temp %in% seq(0,4,by=0.8),]
+
+dist_ET <- extract.dist(metrics_ET)
+dist_ET_sub <- dist_ET[dist_ET$temp %in% seq(0,4,by=0.8),]
+
+# plots:
+# # Stacked density chart
+p1_ET <- ggplot(data=area_ET_sub, aes(x=log(area), group=temp, fill=temp, after_stat(count))) +
+            ggtitle("Eastern Townships") +
+            geom_density(position="fill", adjust = 3) +
+            scale_fill_viridis_d(end = seq(0,1,le=6)[length(unique(area_ET_sub$temp))]) +
+            theme_minimal()
+
+# # Multi density chart
+p2_ET <- ggplot(data=area_ET_sub, aes(x=log(area), group=temp, fill=temp, after_stat(count))) +
+            ggtitle("Eastern Townships") +
+            geom_density(alpha=.7) +
+            scale_fill_viridis_d(end = seq(0,1,le=6)[length(unique(area_ET_sub$temp))]) +
+            theme_minimal()
+
+# Interpatch distance
+# # Stacked density chart
+p3_ET <- ggplot(data=dist_ET_sub, aes(x=log(dist), group=temp, fill=temp, after_stat(count))) +
+            ggtitle("Eastern Townships") +
+            geom_density(position="fill", adjust = 3) +
+            scale_fill_viridis_d(end = seq(0,1,le=6)[length(unique(dist_QC_sub$temp))]) +
+            theme_minimal()
+
+# # Multi density chart
+p4_ET <- ggplot(data=dist_ET_sub, aes(x=log(dist), group=temp, fill=temp, after_stat(count))) +
+            ggtitle("Eastern Townships") +
+            geom_density(alpha=.7) +
+            scale_fill_viridis_d(end = seq(0,1,le=6)[length(unique(area_QC_sub$temp))]) +
+            theme_minimal()
+```
+
+```{r forêt Montmorency, echo=FALSE}
+# 3 -Forêt Montmorency ------------------------------
+
+
+# Data
+metrics_M <- readRDS("/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/metrics_M.RDS")
+
+# Extract metrics
+area_M <- extract.patchArea(metrics_M)
+area_M_sub <- area_M[area_M$temp %in% seq(0,4,by=0.8),]
+
+dist_M <- extract.dist(metrics_M)
+dist_M_sub <- dist_M[dist_M$temp %in% seq(0,4,by=0.8),]
+
+# plots:
+# # Stacked density chart
+p1_M <- ggplot(data=area_M_sub, aes(x=log(area), group=temp, fill=temp, after_stat(count))) +
+        ggtitle("Forêt Montmorency") +
+        geom_density(position="fill", adjust = 3) +
+        scale_fill_viridis_d(end = seq(0,1,le=6)[length(unique(area_M_sub$temp))]) +
+        theme_minimal()
+# # Multi density chart
+p2_M <- ggplot(data=area_M_sub, aes(x=log(area), group=temp, fill=temp, after_stat(count))) +
+        ggtitle("Forêt Montmorency") +
+        geom_density(alpha=.7) +
+        scale_fill_viridis_d(end = seq(0,1,le=6)[length(unique(area_M_sub$temp))]) +
+        theme_minimal()
+
+# Interpatch distance
+# # Stacked density chart
+p3_M <- ggplot(data=dist_M_sub, aes(x=log(dist), group=temp, fill=temp, after_stat(count))) +
+            ggtitle("Forêt Montmorency") +
+            geom_density(position="fill", adjust = 8) +
+            scale_fill_viridis_d(end = seq(0,1,le=6)[length(unique(dist_QC_sub$temp))]) +
+            theme_minimal()
+
+# # Multi density chart
+p4_M <- ggplot(data=dist_M_sub, aes(x=log(dist), group=temp, fill=temp, after_stat(count))) +
+            ggtitle("Forêt Montmorency") +
+            geom_density(alpha=.7) +
+            scale_fill_viridis_d(end = seq(0,1,le=6)[length(unique(area_QC_sub$temp))]) +
+            theme_minimal()
+```
+
+## Maps
+
+<center>
+![](/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/GRBI.gif)
+
+![](/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/map_GRBI.png)
+</center>
+
+## Results panel
+
+```{r 4 panel area, fig.align='center', out.width = "100%", fig.asp = .8, echo=FALSE}
+library(dplyr)
+# 1. Combine all data
+area_dupl <- bind_rows(area_QC, area_M, area_ET, .id = "id")
+dist_dupl <- bind_rows(dist_QC, dist_M, dist_ET, .id = "id")
+
+p_total <- group_by(area_dupl, id, temp) %>%
+           summarise(n = n()) %>%
+           mutate(id=replace(id, id==1, "QC")) %>%
+           mutate(id=replace(id, id==2, "M")) %>%
+           mutate(id=replace(id, id==3, "ET")) %>%
+           ggplot(aes(x=temp, y=log(n), group=id)) +
+           geom_line(aes(linetype=id)) +
+           scale_x_discrete(name="Temperature warming (°C)", breaks=seq(0,4,0.5)) +
+           scale_y_continuous(name="n (log scale)", breaks=seq(0,8, le = 5), labels=round(exp(seq(0,8, le = 5)))) +
+           labs(linetype = "Regions") +
+           theme_classic()
+
+pArea_0 <- ggplot(data=area_dupl[area_dupl$temp == 0,], aes(x=log(area), group=id)) +
+            ggtitle("+0°C") +
+            geom_density(aes(linetype=id)) +
+            scale_y_continuous(breaks=seq(0,0.6,0.2), limits = c(0,0.6)) +
+            scale_x_continuous(breaks=seq(-4,8,4), limits = c(-4,8)) +
+            theme_classic()
+pArea_2 <- ggplot(data=area_dupl[area_dupl$temp == 2,], aes(x=log(area), group=id)) +
+            ggtitle("+2°C") +
+            geom_density(aes(linetype=id)) +
+            scale_y_continuous(breaks=seq(0,0.6,0.2), limits = c(0,0.6)) +
+            scale_x_continuous(breaks=seq(-4,8,4), limits = c(-4,8)) +
+            theme_classic()
+pArea_4 <- ggplot(data=area_dupl[area_dupl$temp == 4,], aes(x=log(area), group=id)) +
+            ggtitle("+4°C") +
+            geom_density(aes(linetype=id)) +
+            scale_y_continuous(breaks=seq(0,0.6,0.2), limits = c(0,0.6)) +
+            scale_x_continuous(breaks=seq(-4,8,4), limits = c(-4,8)) +
+            theme_classic()
+pDist_0 <- ggplot(data=dist_dupl[dist_dupl$temp == 0,], aes(x=log(dist), group=id)) +
+            ggtitle("+0°C") +
+            geom_density(aes(linetype=id), adjust = 8) +
+            scale_y_continuous(breaks=seq(0,0.6,0.2), limits = c(0,0.6)) +
+            scale_x_continuous(breaks=seq(-6,2.5,4), limits = c(-6,2.5)) +
+            theme_classic()
+pDist_2 <- ggplot(data=dist_dupl[dist_dupl$temp == 2,], aes(x=log(dist), group=id)) +
+            ggtitle("+2°C") +
+            geom_density(aes(linetype=id), adjust = 8) +
+            scale_y_continuous(breaks=seq(0,0.6,0.2), limits = c(0,0.6)) +
+            scale_x_continuous(breaks=seq(-6,2.5,4), limits = c(-6,2.5)) +
+            theme_classic()
+pDist_4 <- ggplot(data=dist_dupl[dist_dupl$temp == 4,], aes(x=log(dist), group=id)) +
+            ggtitle("+4°C") +
+            geom_density(aes(linetype=id), adjust = 5) +
+            scale_y_continuous(breaks=seq(0,0.6,0.2), limits = c(0,0.6)) +
+            scale_x_continuous(breaks=seq(-6,2.5,4), limits = c(-6,2.5)) +
+            theme_classic()
+
+ggarrange(p_total,
+          ggarrange(pArea_0 + rremove("legend") + rremove("xlab"), pArea_2 + rremove("legend") + rremove("y.text") + rremove("ylab"), pArea_4 + rremove("legend") + rremove("y.text") + rremove("ylab") + rremove("xlab"), ncol = 3, align = "h", widths = c(1.2, 1, 1)),
+          ggarrange(pDist_0 + rremove("legend") + rremove("xlab"), pDist_2 + rremove("legend") + rremove("y.text") + rremove("ylab"), pDist_4 + rremove("legend") + rremove("y.text") + rremove("ylab") + rremove("xlab"), ncol = 3, align = "h", widths = c(1.2, 1, 1)),
+          nrow = 3, heights = c(1.5, 1, 1))
+```
+
+## Patch area
+
+```{r p1, fig.align='center', out.width = "100%", out.height = "75%", fig.asp = .6, echo=FALSE}
+p1 <- ggarrange(p1_QC + rremove("ylab") + rremove("legend") + rremove("xlab"), 
+                p1_ET + rremove("y.text") + rremove("ylab") + rremove("legend"), 
+                p1_M + rremove("y.text") + rremove("ylab") + rremove("xlab"), 
+          #labels = c("A", "B", "C"),
+          ncol = 3, nrow = 1,
+          widths = c(1, 0.9, 1.2), align = "h")
+annotate_figure(p1, 
+                top = text_grob("Patch area density plots", color = "black", face = "bold", size = 14),
+                left = text_grob("Count", color = "black", rot = 90))
+```
+
+```{r p2, fig.align='center', out.width = "100%", out.height = "75%", fig.asp = .6, echo=FALSE}
+p2 <- ggarrange(p2_QC + rremove("ylab") + rremove("legend") + rremove("xlab"), 
+                p2_ET + rremove("y.text") + rremove("ylab") + rremove("legend"), 
+                p2_M + rremove("y.text") + rremove("ylab") + rremove("xlab"), 
+          #labels = c("A", "B", "C"),
+          ncol = 3, nrow = 1,
+          widths = c(1, 0.9, 1.2), align = "h")
+annotate_figure(p2, 
+                top = text_grob("Patch area density plots", color = "black", face = "bold", size = 14),
+                left = text_grob("Density", color = "black", rot = 90))
+```
+
+```{r line plot area, fig.align='center', out.width = "110%", fig.asp = .6, echo=FALSE}
+# # line plot
+# # # Function to plot 
+area.linePlot <- function(df, ...){
+    areaClass <- round(exp(seq(log(1), log(100), le = 4))) # Log sequence
+    df$class <- 1
+    for(i in seq_along(areaClass)){
+        df$class[df$area >= areaClass[i]] <- i+1
+    }
+    df_agg <- aggregate(area ~ class + temp, data = df, "length")
+    # Cols
+    colo <- colorRampPalette(c("grey90", "steelblue4", 
+                            "steelblue2", "blue4", 
+                            "gold", "red1", "red4"))(length(areaClass)+1)
+    plot(log(area) ~ as.numeric(as.character(temp)), data = df_agg[df_agg$class == 1,], ylim = c(0,log(max(df_agg$area))), type = "b", lty=1, col = colo[1],
+        ylab = "log(count)", xlab = "Temperature increase (°C)", ...)
+    for(i in 1:length(areaClass)+1){
+        lines(log(area) ~ as.numeric(as.character(temp)), data = df_agg[df_agg$class == i,], col = colo[i], type = "b")
+    }
+    legend("topright", legend = c(paste0("< ", round(areaClass,1), "km2"), paste0("> ", round(areaClass[which.max(areaClass)],1), "km2")), col = colo, lty=1, title = "Patch area class", bty = "n")
+}
+
+par(mfrow=c(1,3), mar=c(4,4,4,1), oma=c(0.5,0.5,0.5,0))
+area.linePlot(area_QC_sub, main = "Québec")
+area.linePlot(area_ET_sub, main = "EasternTownships")
+area.linePlot(area_M_sub, main = "Forêt Montmorency")
 ```
 
 
-## Spatial model
 
-No predictors other than the spatial effect with preselected priors.
+## Interpatch distance
 
-```{r spatial, eval=FALSE}
-# Spatial model
-modelPPspatial <- ppSpace(y ~ 0, sPoints = GRBI_points,
-                    explanaMesh = explana,
-                    ppWeight = weight,
-                    many = TRUE,
-                    control.compute = list(waic = TRUE))
+
+```{r p3, fig.align='center', out.width = "100%", out.height = "75%", fig.asp = .6, echo=FALSE}
+p3 <- ggarrange(p3_QC + rremove("ylab") + rremove("legend") + rremove("xlab"), 
+                p3_ET + rremove("y.text") + rremove("ylab") + rremove("legend"), 
+                p3_M + rremove("y.text") + rremove("ylab") + rremove("xlab"), 
+          #labels = c("A", "B", "C"),
+          ncol = 3, nrow = 1,
+          widths = c(1, 0.9, 1.2), align = "h")
+annotate_figure(p3, 
+                top = text_grob("Interpatch distance density plots", color = "black", face = "bold", size = 14),
+                left = text_grob("Count", color = "black", rot = 90))
 ```
 
-```{r import model modelPPspatial, echo=FALSE}
-modelPPspatial <- readRDS("./modelPPspatial.RDS")
+```{r p4, fig.align='center', out.width = "100%", out.height = "75%", fig.asp = .6, echo=FALSE}
+p4 <- ggarrange(p4_QC + rremove("ylab") + rremove("legend") + rremove("xlab"), 
+                p4_ET + rremove("y.text") + rremove("ylab") + rremove("legend"), 
+                p4_M + rremove("y.text") + rremove("ylab") + rremove("xlab"), 
+          #labels = c("A", "B", "C"),
+          ncol = 3, nrow = 1,
+          widths = c(1, 0.9, 1.2), align = "h")
+annotate_figure(p4, 
+                top = text_grob("Interpatch distance density plots", color = "black", face = "bold", size = 14),
+                left = text_grob("Density", color = "black", rot = 90))
 ```
 
-```{r saptial summary, echo=FALSE}
-summary(modelPPspatial) 
-```
-
-```{r spatialMapBuild, echo=FALSE}
-#--------------------------
-# Construct prediction maps
-#--------------------------
-# Mean
-mapMean <- mapSpace(modelPPspatial,
-                    dims = dim(explana_dat)[1:2],
-                    type = "mean",
-                    sPoly = spacePoly)
-# Standard deviation
-mapSd <- mapSpace(modelPPspatial,
-                    dims = dim(explana_dat)[1:2],
-                    type = "sd",
-                    sPoly = spacePoly)
-# Lower boundary of the 95% confidence interval
-map.025 <- mapSpace(modelPPspatial,
-                    dims = dim(explana_dat)[1:2],
-                    type = "0.025quant",
-                    sPoly = spacePoly)
-# Upper boundary of the 95% confidence interval
-map.975 <- mapSpace(modelPPspatial,
-                    dims = dim(explana_dat)[1:2],
-                    type = "0.975quant",
-                    sPoly = spacePoly)
-#--------------------------------------
-# Cut raster with polygon of the region
-#--------------------------------------
-mapMaskMean <- mask(mapMean, spacePoly)
-mapMaskSd <- mask(mapSd, spacePoly)
-mapMask.025 <- mask(map.025, spacePoly)
-mapMask.975 <- mask(map.975, spacePoly)
-```
-
-```{r rm modelPPspatial, echo=FALSE}
-rm("modelPPspatial")
-```
-
-```{r spatialMap1, echo=FALSE}
-
-# Colour to use for the maps
-colo <- colorRampPalette(c("grey90", "steelblue4", 
-                           "steelblue2", "steelblue1", 
-                           "gold", "red1", "red4"))(200)
-par(mfrow = c(2,2), mar = c(1,1,5,8))
-plot(mapMaskMean, col = colo, zlim = c(0, 100),
-     axes = FALSE, box = FALSE, main = "Mean")
-points(coordinates(GRBI_points), pch = 19, cex = 0.2)
-plot(mapMaskSd, col = colo,  zlim = c(0, 100),
-     axes = FALSE, box = FALSE, main = "Sd")
-points(coordinates(GRBI_points), pch = 19, cex = 0.2)
-plot(mapMask.025, col = colo,  zlim = c(0, 100),
-     axes = FALSE, box = FALSE, main = "2.5%")
-points(coordinates(GRBI_points), pch = 19, cex = 0.2)
-plot(mapMask.975, col = colo,  zlim = c(0, 100),
-     axes = FALSE, box = FALSE, main = "97.5")
-points(coordinates(GRBI_points), pch = 19, cex = 0.2)
-```
-
-
-## Full model
-
-All predictors with the spatial effect and preselected priors.
-
-```{r full, eval=FALSE}
-# Full model
-modelPP <- ppSpace(y ~ ., sPoints = GRBI_points,
-                    explanaMesh = explana,
-                    ppWeight = weight,
-                    many = TRUE,
-                    control.compute = list(waic = TRUE))
-```
-
-```{r import model modelPP, echo=FALSE}
-modelPP <- readRDS("./modelPP.RDS")
-```
-
-```{r full summary, echo=FALSE}
-summary(modelPP) 
-```
-
-```{r fullMapBuild, echo=FALSE}
-#--------------------------
-# Construct prediction maps
-#--------------------------
-# Mean
-mapMean <- mapSpace(modelPP,
-                    dims = dim(explana_dat)[1:2],
-                    type = "mean",
-                    sPoly = spacePoly)
-# Standard deviation
-mapSd <- mapSpace(modelPP,
-                    dims = dim(explana_dat)[1:2],
-                    type = "sd",
-                    sPoly = spacePoly)
-# Lower boundary of the 95% confidence interval
-map.025 <- mapSpace(modelPP,
-                    dims = dim(explana_dat)[1:2],
-                    type = "0.025quant",
-                    sPoly = spacePoly)
-# Upper boundary of the 95% confidence interval
-map.975 <- mapSpace(modelPP,
-                    dims = dim(explana_dat)[1:2],
-                    type = "0.975quant",
-                    sPoly = spacePoly)
-#--------------------------------------
-# Cut raster with polygon of the region
-#--------------------------------------
-mapMaskMean <- mask(mapMean, spacePoly)
-mapMaskSd <- mask(mapSd, spacePoly)
-mapMask.025 <- mask(map.025, spacePoly)
-mapMask.975 <- mask(map.975, spacePoly)
-```
-
-```{r rm modelPP, echo=FALSE}
-rm("modelPP")
-```
-
-```{r fullMap1, echo=FALSE}
-
-# Colour to use for the maps
-colo <- colorRampPalette(c("grey90", "steelblue4", 
-                           "steelblue2", "steelblue1", 
-                           "gold", "red1", "red4"))(200)
-par(mfrow = c(2,2), mar = c(1,1,5,8))
-plot(mapMaskMean, col = colo, zlim = c(0, 100),
-     axes = FALSE, box = FALSE, main = "Mean")
-points(coordinates(GRBI_points), pch = 19, cex = 0.2)
-plot(mapMaskSd, col = colo,  zlim = c(0, 100),
-     axes = FALSE, box = FALSE, main = "Sd")
-points(coordinates(GRBI_points), pch = 19, cex = 0.2)
-plot(mapMask.025, col = colo,  zlim = c(0, 100),
-     axes = FALSE, box = FALSE, main = "2.5%")
-points(coordinates(GRBI_points), pch = 19, cex = 0.2)
-plot(mapMask.975, col = colo,  zlim = c(0, 100),
-     axes = FALSE, box = FALSE, main = "97.5")
-points(coordinates(GRBI_points), pch = 19, cex = 0.2)
-```
-
-
-## Full model without elevation
-
-No predictors other than the spatial effect with preselected priors.
-
-```{r noElev, eval=FALSE}
-formu <- as.formula(paste("y", paste0(names(explana_dat)[names(explana_dat) != "elevation"], collapse = "+"), sep = "~"))
-# SpatnoElevial model
-modelPPnoElev <- ppSpace(formu, 
-             sPoints = GRBI_points,
-             explanaMesh = explana,
-             ppWeight = weight,
-             many = TRUE,
-             control.compute = list(waic = TRUE))
-
-```
-
-```{r import model modelPPnoElev, echo=FALSE}
-modelPPnoElev <- readRDS("./modelPPnoElev.RDS")
-```
-
-```{r modelPPnoElev summary, echo=FALSE}
-summary(modelPPnoElev) 
-```
-
-```{r noElevMapBuild, echo=FALSE}
-#--------------------------
-# Construct prediction maps
-#--------------------------
-# Mean
-mapMean <- mapSpace(modelPPnoElev,
-                    dims = dim(explana_dat)[1:2],
-                    type = "mean",
-                    sPoly = spacePoly)
-# Standard deviation
-mapSd <- mapSpace(modelPPnoElev,
-                    dims = dim(explana_dat)[1:2],
-                    type = "sd",
-                    sPoly = spacePoly)
-# Lower boundary of the 95% confidence interval
-map.025 <- mapSpace(modelPPnoElev,
-                    dims = dim(explana_dat)[1:2],
-                    type = "0.025quant",
-                    sPoly = spacePoly)
-# Upper boundary of the 95% confidence interval
-map.975 <- mapSpace(modelPPnoElev,
-                    dims = dim(explana_dat)[1:2],
-                    type = "0.975quant",
-                    sPoly = spacePoly)
-#--------------------------------------
-# Cut raster with polygon of the region
-#--------------------------------------
-mapMaskMean <- mask(mapMean, spacePoly)
-mapMaskSd <- mask(mapSd, spacePoly)
-mapMask.025 <- mask(map.025, spacePoly)
-mapMask.975 <- mask(map.975, spacePoly)
-```
-
-```{r rm modelPPnoElev, echo=FALSE}
-rm("modelPPnoElev")
-```
-
-```{r noElevMap1, echo=FALSE}
-
-# Colour to use for the maps
-colo <- colorRampPalette(c("grey90", "steelblue4", 
-                           "steelblue2", "steelblue1", 
-                           "gold", "red1", "red4"))(200)
-par(mfrow = c(2,2), mar = c(1,1,5,8))
-plot(mapMaskMean, col = colo, zlim = c(0, 100),
-     axes = FALSE, box = FALSE, main = "Mean")
-points(coordinates(GRBI_points), pch = 19, cex = 0.2)
-plot(mapMaskSd, col = colo,  zlim = c(0, 100),
-     axes = FALSE, box = FALSE, main = "Sd")
-points(coordinates(GRBI_points), pch = 19, cex = 0.2)
-plot(mapMask.025, col = colo,  zlim = c(0, 100),
-     axes = FALSE, box = FALSE, main = "2.5%")
-points(coordinates(GRBI_points), pch = 19, cex = 0.2)
-plot(mapMask.975, col = colo,  zlim = c(0, 100),
-     axes = FALSE, box = FALSE, main = "97.5")
-points(coordinates(GRBI_points), pch = 19, cex = 0.2)
-```
-
-
-## Climate only model
-
-Forest cover predictors and the spatial effect with preselected priors.
-
-```{r clim, eval=FALSE}
-formu <- as.formula(paste("y", paste0(paste0("bio", 1:19), collapse = "+"), sep = "~"))
-# clim model
-modelPPclim <- ppSpace(formu, 
-                    sPoints = GRBI_points,
-                    explanaMesh = explana,
-                    ppWeight = weight,
-                    many = TRUE,
-                    control.compute = list(waic = TRUE))
-```
-
-
-```{r import model modelPPclim, echo=FALSE}
-modelPP <- readRDS("./modelPPclim.RDS")
-```
-
-```{r modelPPclim summary, echo=FALSE}
-summary(modelPP) 
-```
-
-```{r modelPPclim map build, echo=FALSE}
-#--------------------------
-# Construct prediction maps
-#--------------------------
-# Mean
-mapMean <- mapSpace(modelPP,
-                    dims = dim(explana_dat)[1:2],
-                    type = "mean",
-                    sPoly = spacePoly)
-# Standard deviation
-mapSd <- mapSpace(modelPP,
-                    dims = dim(explana_dat)[1:2],
-                    type = "sd",
-                    sPoly = spacePoly)
-# Lower boundary of the 95% confidence interval
-map.025 <- mapSpace(modelPP,
-                    dims = dim(explana_dat)[1:2],
-                    type = "0.025quant",
-                    sPoly = spacePoly)
-# Upper boundary of the 95% confidence interval
-map.975 <- mapSpace(modelPP,
-                    dims = dim(explana_dat)[1:2],
-                    type = "0.975quant",
-                    sPoly = spacePoly)
-#--------------------------------------
-# Cut raster with polygon of the region
-#--------------------------------------
-mapMaskMean <- mask(mapMean, spacePoly)
-mapMaskSd <- mask(mapSd, spacePoly)
-mapMask.025 <- mask(map.025, spacePoly)
-mapMask.975 <- mask(map.975, spacePoly)
-```
-
-```{r rm modelPPclim, echo=FALSE}
-rm("modelPP")
-```
-
-```{r modelPPclim map 1, echo=FALSE}
-# Colour to use for the maps
-colo <- colorRampPalette(c("grey90", "steelblue4", 
-                           "steelblue2", "steelblue1", 
-                           "gold", "red1", "red4"))(200)
-par(mfrow = c(2,2), mar = c(1,1,5,8))
-plot(mapMaskMean, col = colo, zlim = c(0, 100),
-     axes = FALSE, box = FALSE, main = "Mean")
-points(coordinates(GRBI_points), pch = 19, cex = 0.2)
-plot(mapMaskSd, col = colo,  zlim = c(0, 100),
-     axes = FALSE, box = FALSE, main = "Sd")
-points(coordinates(GRBI_points), pch = 19, cex = 0.2)
-plot(mapMask.025, col = colo,  zlim = c(0, 100),
-     axes = FALSE, box = FALSE, main = "2.5%")
-points(coordinates(GRBI_points), pch = 19, cex = 0.2)
-plot(mapMask.975, col = colo,  zlim = c(0, 100),
-     axes = FALSE, box = FALSE, main = "97.5")
-points(coordinates(GRBI_points), pch = 19, cex = 0.2)
-```
-
-
-## Forest cover interaction model
-
-Forest cover predictors and the spatial effect with preselected priors.
-
-```{r forest interaction, eval=FALSE, eval=FALSE}
-# Forest interaction model
-modelPPforest <- ppSpace(y ~ type_couv*cl_haut*cl_dens, 
-                    sPoints = GRBI_points,
-                    explanaMesh = explana,
-                    ppWeight = weight,
-                    many = TRUE,
-                    control.compute = list(waic = TRUE))
-```
-
-
-```{r import model modelPPForest, echo=FALSE}
-modelPP <- readRDS("./modelPPforest.RDS")
-```
-
-```{r forest interaction summary, echo=FALSE}
-summary(modelPP) 
-```
-
-```{r forest interaction map build, echo=FALSE}
-#--------------------------
-# Construct prediction maps
-#--------------------------
-# Mean
-mapMean <- mapSpace(modelPP,
-                    dims = dim(explana_dat)[1:2],
-                    type = "mean",
-                    sPoly = spacePoly)
-# Standard deviation
-mapSd <- mapSpace(modelPP,
-                    dims = dim(explana_dat)[1:2],
-                    type = "sd",
-                    sPoly = spacePoly)
-# Lower boundary of the 95% confidence interval
-map.025 <- mapSpace(modelPP,
-                    dims = dim(explana_dat)[1:2],
-                    type = "0.025quant",
-                    sPoly = spacePoly)
-# Upper boundary of the 95% confidence interval
-map.975 <- mapSpace(modelPP,
-                    dims = dim(explana_dat)[1:2],
-                    type = "0.975quant",
-                    sPoly = spacePoly)
-#--------------------------------------
-# Cut raster with polygon of the region
-#--------------------------------------
-mapMaskMean <- mask(mapMean, spacePoly)
-mapMaskSd <- mask(mapSd, spacePoly)
-mapMask.025 <- mask(map.025, spacePoly)
-mapMask.975 <- mask(map.975, spacePoly)
-```
-
-```{r rm modelPPforest, echo=FALSE}
-rm("modelPP")
-```
-
-```{r forest interaction map 1, echo=FALSE}
-# Colour to use for the maps
-colo <- colorRampPalette(c("grey90", "steelblue4", 
-                           "steelblue2", "steelblue1", 
-                           "gold", "red1", "red4"))(200)
-par(mfrow = c(2,2), mar = c(1,1,5,8))
-plot(mapMaskMean, col = colo, zlim = c(0, 100),
-     axes = FALSE, box = FALSE, main = "Mean")
-points(coordinates(GRBI_points), pch = 19, cex = 0.2)
-plot(mapMaskSd, col = colo,  zlim = c(0, 100),
-     axes = FALSE, box = FALSE, main = "Sd")
-points(coordinates(GRBI_points), pch = 19, cex = 0.2)
-plot(mapMask.025, col = colo,  zlim = c(0, 100),
-     axes = FALSE, box = FALSE, main = "2.5%")
-points(coordinates(GRBI_points), pch = 19, cex = 0.2)
-plot(mapMask.975, col = colo,  zlim = c(0, 100),
-     axes = FALSE, box = FALSE, main = "97.5")
-points(coordinates(GRBI_points), pch = 19, cex = 0.2)
-```
-
-
-## Interaction elevation~climate model
-
-All predictors plus climate and elevation interaction and the spatial effect with preselected priors.
-
-```{r elevBio, eval=FALSE}
-# elevBio model
-formu <- as.formula(paste(paste("y", paste0(names(explana_dat), collapse = "+"), sep = "~"), " + elevation:bio1"))
-modelPPelevBio <- ppSpace(formu,
-                    explanaMesh = explana,
-                    ppWeight = weight,
-                    many = TRUE,
-                    control.compute = list(waic = TRUE))
-```
-
-
-```{r import model modelPPelevBio, echo=FALSE}
-modelPP <- readRDS("./modelPPelevBio.RDS")
-```
-
-```{r modelPPelevBio summary, echo=FALSE}
-summary(modelPP) 
-```
-
-```{r modelPPelevBio map build, echo=FALSE}
-#--------------------------
-# Construct prediction maps
-#--------------------------
-# Mean
-mapMean <- mapSpace(modelPP,
-                    dims = dim(explana_dat)[1:2],
-                    type = "mean",
-                    sPoly = spacePoly)
-# Standard deviation
-mapSd <- mapSpace(modelPP,
-                    dims = dim(explana_dat)[1:2],
-                    type = "sd",
-                    sPoly = spacePoly)
-# Lower boundary of the 95% confidence interval
-map.025 <- mapSpace(modelPP,
-                    dims = dim(explana_dat)[1:2],
-                    type = "0.025quant",
-                    sPoly = spacePoly)
-# Upper boundary of the 95% confidence interval
-map.975 <- mapSpace(modelPP,
-                    dims = dim(explana_dat)[1:2],
-                    type = "0.975quant",
-                    sPoly = spacePoly)
-#--------------------------------------
-# Cut raster with polygon of the region
-#--------------------------------------
-mapMaskMean <- mask(mapMean, spacePoly)
-mapMaskSd <- mask(mapSd, spacePoly)
-mapMask.025 <- mask(map.025, spacePoly)
-mapMask.975 <- mask(map.975, spacePoly)
-```
-
-```{r rm modelPPelevBio, echo=FALSE}
-rm("modelPP")
-```
-
-```{r modelPPelevBio map 1, echo=FALSE}
-# Colour to use for the maps
-colo <- colorRampPalette(c("grey90", "steelblue4", 
-                           "steelblue2", "steelblue1", 
-                           "gold", "red1", "red4"))(200)
-par(mfrow = c(2,2), mar = c(1,1,5,8))
-plot(mapMaskMean, col = colo, zlim = c(0, 100),
-     axes = FALSE, box = FALSE, main = "Mean")
-points(coordinates(GRBI_points), pch = 19, cex = 0.2)
-plot(mapMaskSd, col = colo,  zlim = c(0, 100),
-     axes = FALSE, box = FALSE, main = "Sd")
-points(coordinates(GRBI_points), pch = 19, cex = 0.2)
-plot(mapMask.025, col = colo,  zlim = c(0, 100),
-     axes = FALSE, box = FALSE, main = "2.5%")
-points(coordinates(GRBI_points), pch = 19, cex = 0.2)
-plot(mapMask.975, col = colo,  zlim = c(0, 100),
-     axes = FALSE, box = FALSE, main = "97.5")
-points(coordinates(GRBI_points), pch = 19, cex = 0.2)
-```
-
-
-## type_couv interaction model
-
-All predictors plus climate and elevation interaction and the spatial effect with preselected priors.
-
-```{r modelPPtypeCouv, eval=FALSE}
-# elevBio model
-formu <- as.formula(y ~ elevation*type_couv + bio1*type_couv + bio12)
-modelPPtypeCouv <- ppSpace(formu,
-                    explanaMesh = explana,
-                    ppWeight = weight,
-                    many = TRUE,
-                    control.compute = list(waic = TRUE))
-```
-
-
-```{r import model modelPPtypeCouv, echo=FALSE}
-modelPP <- readRDS("./modelPPtypeCouv.RDS")
-```
-
-```{r modelPPtypeCouv summary, echo=FALSE}
-summary(modelPP) 
-```
-
-```{r modelPPtypeCouv map build, echo=FALSE}
-#--------------------------
-# Construct prediction maps
-#--------------------------
-# Mean
-mapMean <- mapSpace(modelPP,
-                    dims = dim(explana_dat)[1:2],
-                    type = "mean",
-                    sPoly = spacePoly)
-# Standard deviation
-mapSd <- mapSpace(modelPP,
-                    dims = dim(explana_dat)[1:2],
-                    type = "sd",
-                    sPoly = spacePoly)
-# Lower boundary of the 95% confidence interval
-map.025 <- mapSpace(modelPP,
-                    dims = dim(explana_dat)[1:2],
-                    type = "0.025quant",
-                    sPoly = spacePoly)
-# Upper boundary of the 95% confidence interval
-map.975 <- mapSpace(modelPP,
-                    dims = dim(explana_dat)[1:2],
-                    type = "0.975quant",
-                    sPoly = spacePoly)
-#--------------------------------------
-# Cut raster with polygon of the region
-#--------------------------------------
-mapMaskMean <- mask(mapMean, spacePoly)
-mapMaskSd <- mask(mapSd, spacePoly)
-mapMask.025 <- mask(map.025, spacePoly)
-mapMask.975 <- mask(map.975, spacePoly)
-```
-
-```{r rm modelPPtypeCouv, echo=FALSE}
-rm("modelPP")
-```
-
-```{r modelPPtypeCouv map 1, echo=FALSE}
-# Colour to use for the maps
-colo <- colorRampPalette(c("grey90", "steelblue4", 
-                           "steelblue2", "steelblue1", 
-                           "gold", "red1", "red4"))(200)
-par(mfrow = c(2,2), mar = c(1,1,5,8))
-plot(mapMaskMean, col = colo, zlim = c(0, 100),
-     axes = FALSE, box = FALSE, main = "Mean")
-points(coordinates(GRBI_points), pch = 19, cex = 0.2)
-plot(mapMaskSd, col = colo,  zlim = c(0, 100),
-     axes = FALSE, box = FALSE, main = "Sd")
-points(coordinates(GRBI_points), pch = 19, cex = 0.2)
-plot(mapMask.025, col = colo,  zlim = c(0, 100),
-     axes = FALSE, box = FALSE, main = "2.5%")
-points(coordinates(GRBI_points), pch = 19, cex = 0.2)
-plot(mapMask.975, col = colo,  zlim = c(0, 100),
-     axes = FALSE, box = FALSE, main = "97.5")
-points(coordinates(GRBI_points), pch = 19, cex = 0.2)
+```{r line plot distance, fig.align='center', out.width = "100%", fig.asp = .6, echo=FALSE}
+# # line plot
+# # # Function to plot 
+dist.linePlot <- function(df, ...){
+    distClass <-round(exp(seq(log(1), log(6), le = 4))) # Log sequence
+    df$class <- 1
+    for(i in seq_along(distClass)){
+        df$class[df$dist >= distClass[i]] <- i+1
+    }
+    df_agg <- aggregate(dist ~ class + temp, data = df, "length")
+    # Cols
+    colo <- colorRampPalette(c("grey90", "steelblue4", 
+                            "steelblue2", "blue4", 
+                            "gold", "red1", "red4"))(length(distClass)+1)
+    plot(log(dist) ~ as.numeric(as.character(temp)), data = df_agg[df_agg$class == 1,], ylim = c(0,log(max(df_agg$dist))), type = "b", lty=1, col = colo[1],
+        ylab = "log(count)", xlab = "Temperature increase (°C)", ...)
+    for(i in 1:length(distClass)+1){
+        lines(log(dist) ~ as.numeric(as.character(temp)), data = df_agg[df_agg$class == i,], col = colo[i], type = "b")
+    }
+    legend("topright", legend = c(paste0("< ", round(distClass,1), "km"), paste0("> ", round(distClass[which.max(distClass)],1), "km")), col = colo, lty=1, title = "Distance class", bty = "n")
+}
+
+par(mfrow=c(1,3), mar=c(4,4,4,1), oma=c(0.5,0.5,0.5,0))
+dist.linePlot(dist_QC_sub, main = "Québec")
+dist.linePlot(dist_ET_sub, main = "EasternTownships")
+dist.linePlot(dist_M_sub, main = "Forêt Montmorency")
 ```
