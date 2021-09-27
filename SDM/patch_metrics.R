@@ -17,6 +17,7 @@ patch.metrics <- function(raster, RL_cutoff = 0.05){
         n = 0
         patchArea = 0
         d_ij = NA
+        capacity = NA
     }else{
         #### Compute total habitat size ####
         raster[raster < RL_cutoff] <- NA
