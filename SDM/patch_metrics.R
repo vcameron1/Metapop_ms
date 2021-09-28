@@ -64,9 +64,7 @@ patch.metrics <- function(raster, RL_cutoff = 0.05){
         for(i in patchArea$patch){
             for(j in patchArea$patch){
             if(i == j) next
-            land[i,j] <- exp(-a*d_ij[i,j]) *
-                         (patchArea[i,'area']/max(patchArea[,'area'])) * # Normalize patch area
-                         (patchArea[j,'area']/max(patchArea[,'area']))
+            land[i,j] <- exp(-a*d_ij[i,j]) * patchArea[i,'area'] * patchArea[j,'area']
             }
         }
 
