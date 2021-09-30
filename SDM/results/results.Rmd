@@ -61,6 +61,17 @@ extract.dist <- function(metrics){
     
     return(dist)
 }
+
+# # Metapop capacity
+extract.capacity <- function(metrics){
+    capacity <- c()
+    for(i in seq_along(metrics)){
+        if(metrics[[i]]$n == 0) next
+        capacity[i] <- metrics[[i]]$capacity
+    }
+    
+    return(capacity)
+}
 ```
 
 ```{r full distribution, echo=FALSE}
@@ -72,10 +83,12 @@ metrics_QC <- readRDS("/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results
 
 # Extract metrics
 area_QC <- extract.patchArea(metrics_QC)
-area_QC_sub <- area_QC[area_QC$temp %in% seq(0,4,by=0.8),]
+area_QC_sub <- area_QC[area_QC$temp %in% seq(0,4,by=2),]
 
 dist_QC <- extract.dist(metrics_QC)
-dist_QC_sub <- dist_QC[dist_QC$temp %in% seq(0,4,by=0.8),]
+dist_QC_sub <- dist_QC[dist_QC$temp %in% seq(0,4,by=2),]
+
+cap_QC <- extract.capacity(metrics_QC)
 
 # Patch area
 # # Stacked density chart
@@ -117,10 +130,12 @@ metrics_ET <- readRDS("/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results
 
 # Extract metrics
 area_ET <- extract.patchArea(metrics_ET)
-area_ET_sub <- area_ET[area_ET$temp %in% seq(0,4,by=0.8),]
+area_ET_sub <- area_ET[area_ET$temp %in% seq(0,4,by=2),]
 
 dist_ET <- extract.dist(metrics_ET)
-dist_ET_sub <- dist_ET[dist_ET$temp %in% seq(0,4,by=0.8),]
+dist_ET_sub <- dist_ET[dist_ET$temp %in% seq(0,4,by=2),]
+
+cap_ET <- extract.capacity(metrics_ET)
 
 # plots:
 # # Stacked density chart
@@ -162,10 +177,12 @@ metrics_M <- readRDS("/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/
 
 # Extract metrics
 area_M <- extract.patchArea(metrics_M)
-area_M_sub <- area_M[area_M$temp %in% seq(0,4,by=0.8),]
+area_M_sub <- area_M[area_M$temp %in% seq(0,4,by=2),]
 
 dist_M <- extract.dist(metrics_M)
-dist_M_sub <- dist_M[dist_M$temp %in% seq(0,4,by=0.8),]
+dist_M_sub <- dist_M[dist_M$temp %in% seq(0,4,by=2),]
+
+cap_M <- extract.capacity(metrics_M)
 
 # plots:
 # # Stacked density chart
@@ -210,62 +227,91 @@ p4_M <- ggplot(data=dist_M_sub, aes(x=log(dist), group=temp, fill=temp, after_st
 ```{r 4 panel area, fig.align='center', out.width = "100%", fig.asp = .8, echo=FALSE}
 library(dplyr)
 # 1. Combine all data
-area_dupl <- bind_rows(area_QC, area_M, area_ET, .id = "id")
-dist_dupl <- bind_rows(dist_QC, dist_M, dist_ET, .id = "id")
+area_dupl <- bind_rows(area_QC, area_M, area_ET, .id = "id") %>%
+               mutate(id=replace(id, id==1, "QC")) %>%
+               mutate(id=replace(id, id==2, "M")) %>%
+               mutate(id=replace(id, id==3, "ET"))
+dist_dupl <- bind_rows(dist_QC, dist_M, dist_ET, .id = "id") %>%
+               mutate(id=replace(id, id==1, "QC")) %>%
+               mutate(id=replace(id, id==2, "M")) %>%
+               mutate(id=replace(id, id==3, "ET"))
+capacity <- bind_rows(data.frame(capacity = cap_QC, temp = cc), data.frame(capacity = cap_M, temp = cc), data.frame(capacity = cap_ET, temp = cc[seq_along(cap_ET)]), .id = "id") %>%
+               mutate(id=replace(id, id==1, "QC")) %>%
+               mutate(id=replace(id, id==2, "M")) %>%
+               mutate(id=replace(id, id==3, "ET"))
 
-p_total <- group_by(area_dupl, id, temp) %>%
-           summarise(n = n()) %>%
-           mutate(id=replace(id, id==1, "QC")) %>%
-           mutate(id=replace(id, id==2, "M")) %>%
-           mutate(id=replace(id, id==3, "ET")) %>%
-           ggplot(aes(x=temp, y=log(n), group=id)) +
+# Count patch number per region and temperature step
+dat_total <- group_by(area_dupl, id, temp) %>%
+           summarise(n = n())
+# Plot number of patches by region and temperature warming step
+coeff <- 40
+cols <- c("blue4", "green4", "brown3")
+p_total <- ggplot(dat_total, aes(x=temp, y=n, group=id, color=id)) +
+           scale_color_manual(values=cols) +
+           geom_line(data = subset(dat_total, id %in% c("QC","M"))) +
+           geom_line(data=subset(dat_total, id=="ET"), aes(y=n*coeff)) +
+           #scale_linetype_manual(values=c("solid", "twodash", "dotted")) +
+           scale_x_discrete(name="Temperature warming (°C)", breaks=seq(0,4,0.5)) +
+           scale_y_continuous(name="Number of patches \n(Québec & F. Montmorency)", sec.axis = sec_axis(~./coeff, name="Number of patches \n(Eastern Tornships)")) +
+           labs(linetype = "Regions") +
+           theme_classic() +
+           theme(legend.position = c(.95, .95), legend.justification = c("right", "top")) 
+
+p_cap <- group_by(capacity, id, temp) %>%
+           ggplot(aes(x=temp, y=capacity, group=id)) +
            geom_line(aes(linetype=id)) +
            scale_x_discrete(name="Temperature warming (°C)", breaks=seq(0,4,0.5)) +
-           scale_y_continuous(name="n (log scale)", breaks=seq(0,8, le = 5), labels=round(exp(seq(0,8, le = 5)))) +
+           scale_y_continuous(name = "Metapop capacity") +
            labs(linetype = "Regions") +
            theme_classic()
 
-pArea_0 <- ggplot(data=area_dupl[area_dupl$temp == 0,], aes(x=log(area), group=id)) +
-            ggtitle("+0°C") +
-            geom_density(aes(linetype=id)) +
-            scale_y_continuous(breaks=seq(0,0.6,0.2), limits = c(0,0.6)) +
+pArea_QC <- ggplot(data=area_dupl[area_dupl$id == "QC" & area_dupl$temp %in% c(0,2,4),], aes(x=log(area), group=temp, color=temp)) +
+            scale_color_manual(values=rep(cols[3],3)) +
+            ggtitle("Québec") +
+            geom_density(aes(linetype=temp)) +
+            scale_y_continuous(breaks=seq(0,0.6,0.2), limits = c(0,0.65)) +
             scale_x_continuous(breaks=seq(-4,8,4), limits = c(-4,8)) +
             theme_classic()
-pArea_2 <- ggplot(data=area_dupl[area_dupl$temp == 2,], aes(x=log(area), group=id)) +
-            ggtitle("+2°C") +
-            geom_density(aes(linetype=id)) +
-            scale_y_continuous(breaks=seq(0,0.6,0.2), limits = c(0,0.6)) +
+pArea_M <- ggplot(data=area_dupl[area_dupl$id == "M" & area_dupl$temp %in% c(0,2,4),], aes(x=log(area), group=temp, color=temp)) +
+            scale_color_manual(values=rep(cols[2],3)) +
+            ggtitle("Forêt Montmorency") +
+            geom_density(aes(linetype=temp)) +
+            scale_y_continuous(breaks=seq(0,0.6,0.2), limits = c(0,0.65)) +
             scale_x_continuous(breaks=seq(-4,8,4), limits = c(-4,8)) +
             theme_classic()
-pArea_4 <- ggplot(data=area_dupl[area_dupl$temp == 4,], aes(x=log(area), group=id)) +
-            ggtitle("+4°C") +
-            geom_density(aes(linetype=id)) +
-            scale_y_continuous(breaks=seq(0,0.6,0.2), limits = c(0,0.6)) +
+pArea_ET <- ggplot(data=area_dupl[area_dupl$id == "ET" & area_dupl$temp %in% c(0,2,4),], aes(x=log(area), group=temp, color=temp)) +
+            scale_color_manual(values=rep(cols[1],3)) +
+            ggtitle("Eastern Townships") +
+            geom_density(aes(linetype=temp)) +
+            scale_y_continuous(breaks=seq(0,0.6,0.2), limits = c(0,0.65)) +
             scale_x_continuous(breaks=seq(-4,8,4), limits = c(-4,8)) +
             theme_classic()
-pDist_0 <- ggplot(data=dist_dupl[dist_dupl$temp == 0,], aes(x=log(dist), group=id)) +
-            ggtitle("+0°C") +
-            geom_density(aes(linetype=id), adjust = 8) +
-            scale_y_continuous(breaks=seq(0,0.6,0.2), limits = c(0,0.6)) +
+pDist_0 <- ggplot(data=dist_dupl[dist_dupl$id == "QC" & area_dupl$temp %in% c(0,2,4),], aes(x=log(dist), group=temp, color=temp)) +
+            ggtitle("Québec") +
+            scale_color_manual(values=rep(cols[3],3)) +
+            geom_density(aes(linetype=temp), adjust = 8) +
+            scale_y_continuous(breaks=seq(0,0.6,0.2), limits = c(0,0.65)) +
             scale_x_continuous(breaks=seq(-6,2.5,4), limits = c(-6,2.5)) +
             theme_classic()
-pDist_2 <- ggplot(data=dist_dupl[dist_dupl$temp == 2,], aes(x=log(dist), group=id)) +
-            ggtitle("+2°C") +
-            geom_density(aes(linetype=id), adjust = 8) +
-            scale_y_continuous(breaks=seq(0,0.6,0.2), limits = c(0,0.6)) +
+pDist_2 <- ggplot(data=dist_dupl[dist_dupl$id == "M" & area_dupl$temp %in% c(0,2,4),], aes(x=log(dist), group=temp, color=temp)) +
+            scale_color_manual(values=rep(cols[2],3)) +
+            ggtitle("Forêt Montmorency") +
+            geom_density(aes(linetype=temp), adjust = 8) +
+            scale_y_continuous(breaks=seq(0,0.6,0.2), limits = c(0,0.65)) +
             scale_x_continuous(breaks=seq(-6,2.5,4), limits = c(-6,2.5)) +
             theme_classic()
-pDist_4 <- ggplot(data=dist_dupl[dist_dupl$temp == 4,], aes(x=log(dist), group=id)) +
-            ggtitle("+4°C") +
-            geom_density(aes(linetype=id), adjust = 5) +
-            scale_y_continuous(breaks=seq(0,0.6,0.2), limits = c(0,0.6)) +
+pDist_4 <- ggplot(data=dist_dupl[dist_dupl$id == "ET" & area_dupl$temp %in% c(0,2,4),], aes(x=log(dist), group=temp, color=temp)) +
+            scale_color_manual(values=rep(cols[1],3)) +
+            ggtitle("Eastern townships") +
+            geom_density(aes(linetype=temp), adjust = 5) +
+            scale_y_continuous(breaks=seq(0,0.6,0.2), limits = c(0,0.65)) +
             scale_x_continuous(breaks=seq(-6,2.5,4), limits = c(-6,2.5)) +
             theme_classic()
 
-ggarrange(p_total,
+ggarrange(p_total + rremove("x.text") + rremove("xlab"), p_cap + rremove("legend"),
           ggarrange(pArea_0 + rremove("legend") + rremove("xlab"), pArea_2 + rremove("legend") + rremove("y.text") + rremove("ylab"), pArea_4 + rremove("legend") + rremove("y.text") + rremove("ylab") + rremove("xlab"), ncol = 3, align = "h", widths = c(1.2, 1, 1)),
           ggarrange(pDist_0 + rremove("legend") + rremove("xlab"), pDist_2 + rremove("legend") + rremove("y.text") + rremove("ylab"), pDist_4 + rremove("legend") + rremove("y.text") + rremove("ylab") + rremove("xlab"), ncol = 3, align = "h", widths = c(1.2, 1, 1)),
-          nrow = 3, heights = c(1.5, 1, 1))
+          nrow = 4, heights = c(1.5, 1.5, 1, 1))
 ```
 
 ## Patch area
