@@ -89,36 +89,6 @@ dist_QC <- extract.dist(metrics_QC)
 dist_QC_sub <- dist_QC[dist_QC$temp %in% seq(0,4,by=2),]
 
 cap_QC <- extract.capacity(metrics_QC)
-
-# Patch area
-# # Stacked density chart
-p1_QC <- ggplot(data=area_QC_sub, aes(x=log(area), group=temp, fill=temp, after_stat(count))) +
-            ggtitle("Québec") +
-            geom_density(position="fill", adjust = 3) +
-            scale_fill_viridis_d(end = seq(0,1,le=6)[length(unique(area_QC_sub$temp))]) +
-            theme_minimal()
-
-# # Multi density chart
-p2_QC <- ggplot(data=area_QC_sub, aes(x=log(area), group=temp, fill=temp, after_stat(count))) +
-            ggtitle("Québec") +
-            geom_density(alpha=.7) +
-            scale_fill_viridis_d(end = seq(0,1,le=6)[length(unique(area_QC_sub$temp))]) +
-            theme_minimal()
-
-# Interpatch distance
-# # Stacked density chart
-p3_QC <- ggplot(data=dist_QC_sub, aes(x=log(dist), group=temp, fill=temp, after_stat(count))) +
-            ggtitle("Québec") +
-            geom_density(position="fill", adjust = 8) +
-            scale_fill_viridis_d(end = seq(0,1,le=6)[length(unique(dist_QC_sub$temp))]) +
-            theme_minimal()
-
-# # Multi density chart
-p4_QC <- ggplot(data=dist_QC_sub, aes(x=log(dist), group=temp, fill=temp, after_stat(count))) +
-            ggtitle("Québec") +
-            geom_density(alpha=.7) +
-            scale_fill_viridis_d(end = seq(0,1,le=6)[length(unique(area_QC_sub$temp))]) +
-            theme_minimal()
 ```
 
 ```{r EasternTownships, echo=FALSE}
@@ -136,36 +106,6 @@ dist_ET <- extract.dist(metrics_ET)
 dist_ET_sub <- dist_ET[dist_ET$temp %in% seq(0,4,by=2),]
 
 cap_ET <- extract.capacity(metrics_ET)
-
-# plots:
-# # Stacked density chart
-p1_ET <- ggplot(data=area_ET_sub, aes(x=log(area), group=temp, fill=temp, after_stat(count))) +
-            ggtitle("Eastern Townships") +
-            geom_density(position="fill", adjust = 3) +
-            scale_fill_viridis_d(end = seq(0,1,le=6)[length(unique(area_ET_sub$temp))]) +
-            theme_minimal()
-
-# # Multi density chart
-p2_ET <- ggplot(data=area_ET_sub, aes(x=log(area), group=temp, fill=temp, after_stat(count))) +
-            ggtitle("Eastern Townships") +
-            geom_density(alpha=.7) +
-            scale_fill_viridis_d(end = seq(0,1,le=6)[length(unique(area_ET_sub$temp))]) +
-            theme_minimal()
-
-# Interpatch distance
-# # Stacked density chart
-p3_ET <- ggplot(data=dist_ET_sub, aes(x=log(dist), group=temp, fill=temp, after_stat(count))) +
-            ggtitle("Eastern Townships") +
-            geom_density(position="fill", adjust = 3) +
-            scale_fill_viridis_d(end = seq(0,1,le=6)[length(unique(dist_QC_sub$temp))]) +
-            theme_minimal()
-
-# # Multi density chart
-p4_ET <- ggplot(data=dist_ET_sub, aes(x=log(dist), group=temp, fill=temp, after_stat(count))) +
-            ggtitle("Eastern Townships") +
-            geom_density(alpha=.7) +
-            scale_fill_viridis_d(end = seq(0,1,le=6)[length(unique(area_QC_sub$temp))]) +
-            theme_minimal()
 ```
 
 ```{r forêt Montmorency, echo=FALSE}
@@ -183,35 +123,6 @@ dist_M <- extract.dist(metrics_M)
 dist_M_sub <- dist_M[dist_M$temp %in% seq(0,4,by=2),]
 
 cap_M <- extract.capacity(metrics_M)
-
-# plots:
-# # Stacked density chart
-p1_M <- ggplot(data=area_M_sub, aes(x=log(area), group=temp, fill=temp, after_stat(count))) +
-        ggtitle("Forêt Montmorency") +
-        geom_density(position="fill", adjust = 3) +
-        scale_fill_viridis_d(end = seq(0,1,le=6)[length(unique(area_M_sub$temp))]) +
-        theme_minimal()
-# # Multi density chart
-p2_M <- ggplot(data=area_M_sub, aes(x=log(area), group=temp, fill=temp, after_stat(count))) +
-        ggtitle("Forêt Montmorency") +
-        geom_density(alpha=.7) +
-        scale_fill_viridis_d(end = seq(0,1,le=6)[length(unique(area_M_sub$temp))]) +
-        theme_minimal()
-
-# Interpatch distance
-# # Stacked density chart
-p3_M <- ggplot(data=dist_M_sub, aes(x=log(dist), group=temp, fill=temp, after_stat(count))) +
-            ggtitle("Forêt Montmorency") +
-            geom_density(position="fill", adjust = 8) +
-            scale_fill_viridis_d(end = seq(0,1,le=6)[length(unique(dist_QC_sub$temp))]) +
-            theme_minimal()
-
-# # Multi density chart
-p4_M <- ggplot(data=dist_M_sub, aes(x=log(dist), group=temp, fill=temp, after_stat(count))) +
-            ggtitle("Forêt Montmorency") +
-            geom_density(alpha=.7) +
-            scale_fill_viridis_d(end = seq(0,1,le=6)[length(unique(area_QC_sub$temp))]) +
-            theme_minimal()
 ```
 
 ## Maps
@@ -258,9 +169,10 @@ p_total <- ggplot(dat_total, aes(x=temp, y=n, group=id, color=id)) +
            theme(legend.position = c(.95, .95), legend.justification = c("right", "top")) 
 
 p_cap <- group_by(capacity, id, temp) %>%
-           ggplot(aes(x=temp, y=capacity, group=id)) +
-           geom_line(aes(linetype=id)) +
-           scale_x_discrete(name="Temperature warming (°C)", breaks=seq(0,4,0.5)) +
+           ggplot(aes(x=temp, y=capacity, group=id, color=id)) +
+           geom_line() +
+           scale_color_manual(values=cols) +
+           scale_x_continuous(name="Temperature warming (°C)", breaks=seq(0,4,0.5)) +
            scale_y_continuous(name = "Metapop capacity") +
            labs(linetype = "Regions") +
            theme_classic()
@@ -286,35 +198,91 @@ pArea_ET <- ggplot(data=area_dupl[area_dupl$id == "ET" & area_dupl$temp %in% c(0
             scale_y_continuous(breaks=seq(0,0.6,0.2), limits = c(0,0.65)) +
             scale_x_continuous(breaks=seq(-4,8,4), limits = c(-4,8)) +
             theme_classic()
-pDist_0 <- ggplot(data=dist_dupl[dist_dupl$id == "QC" & area_dupl$temp %in% c(0,2,4),], aes(x=log(dist), group=temp, color=temp)) +
-            ggtitle("Québec") +
+pDist_QC <- ggplot(data=dist_dupl[dist_dupl$id == "QC" & dist_dupl$temp %in% c(0,2,4),], aes(x=log(dist), group=temp, color=temp)) +
             scale_color_manual(values=rep(cols[3],3)) +
             geom_density(aes(linetype=temp), adjust = 8) +
             scale_y_continuous(breaks=seq(0,0.6,0.2), limits = c(0,0.65)) +
             scale_x_continuous(breaks=seq(-6,2.5,4), limits = c(-6,2.5)) +
             theme_classic()
-pDist_2 <- ggplot(data=dist_dupl[dist_dupl$id == "M" & area_dupl$temp %in% c(0,2,4),], aes(x=log(dist), group=temp, color=temp)) +
+pDist_M <- ggplot(data=dist_dupl[dist_dupl$id == "M" & dist_dupl$temp %in% c(0,2,4),], aes(x=log(dist), group=temp, color=temp)) +
             scale_color_manual(values=rep(cols[2],3)) +
-            ggtitle("Forêt Montmorency") +
             geom_density(aes(linetype=temp), adjust = 8) +
             scale_y_continuous(breaks=seq(0,0.6,0.2), limits = c(0,0.65)) +
             scale_x_continuous(breaks=seq(-6,2.5,4), limits = c(-6,2.5)) +
             theme_classic()
-pDist_4 <- ggplot(data=dist_dupl[dist_dupl$id == "ET" & area_dupl$temp %in% c(0,2,4),], aes(x=log(dist), group=temp, color=temp)) +
+pDist_ET <- ggplot(data=dist_dupl[dist_dupl$id == "ET" & dist_dupl$temp %in% c(0,2,4),], aes(x=log(dist), group=temp, color=temp)) +
             scale_color_manual(values=rep(cols[1],3)) +
-            ggtitle("Eastern townships") +
             geom_density(aes(linetype=temp), adjust = 5) +
             scale_y_continuous(breaks=seq(0,0.6,0.2), limits = c(0,0.65)) +
             scale_x_continuous(breaks=seq(-6,2.5,4), limits = c(-6,2.5)) +
             theme_classic()
 
-ggarrange(p_total + rremove("x.text") + rremove("xlab"), p_cap + rremove("legend"),
-          ggarrange(pArea_0 + rremove("legend") + rremove("xlab"), pArea_2 + rremove("legend") + rremove("y.text") + rremove("ylab"), pArea_4 + rremove("legend") + rremove("y.text") + rremove("ylab") + rremove("xlab"), ncol = 3, align = "h", widths = c(1.2, 1, 1)),
-          ggarrange(pDist_0 + rremove("legend") + rremove("xlab"), pDist_2 + rremove("legend") + rremove("y.text") + rremove("ylab"), pDist_4 + rremove("legend") + rremove("y.text") + rremove("ylab") + rremove("xlab"), ncol = 3, align = "h", widths = c(1.2, 1, 1)),
-          nrow = 4, heights = c(1.5, 1.5, 1, 1))
+ggarrange(p_total, p_cap + rremove("legend"),
+          ggarrange(pArea_QC + rremove("legend") + rremove("xlab"), pArea_M + rremove("legend") + rremove("y.text") + rremove("ylab"), pArea_ET + rremove("legend") + rremove("y.text") + rremove("ylab") + rremove("xlab"), ncol = 3, align = "h", widths = c(1.2, 1, 1)),
+          ggarrange(pDist_QC + rremove("legend") + rremove("xlab"), pDist_M + rremove("legend") + rremove("y.text") + rremove("ylab"), pDist_ET + rremove("legend") + rremove("y.text") + rremove("ylab") + rremove("xlab"), ncol = 3, align = "h", widths = c(1.2, 1, 1)),
+          nrow = 4, heights = c(1.5, 1.5, 1.2, 1))
 ```
 
+## Metapop effect
+
+Habitat availability vs. landscape connectivity (capacity)
+
+```{r metapop effect, fig.align='center', out.width = "100%", out.height = "75%", fig.asp = .6, echo=FALSE}
+
+```
+
+
+# Exploration of visualizations
+
 ## Patch area
+
+```{r area subfigures, echo=FALSE}
+# Patch area for full QC
+# # Stacked density chart
+p1_QC <- ggplot(data=area_QC_sub, aes(x=log(area), group=temp, fill=temp, after_stat(count))) +
+            ggtitle("Québec") +
+            geom_density(position="fill", adjust = 3) +
+            scale_fill_viridis_d(end = seq(0,1,le=6)[length(unique(area_QC_sub$temp))]) +
+            theme_minimal()
+
+# # Multi density chart
+p2_QC <- ggplot(data=area_QC_sub, aes(x=log(area), group=temp, fill=temp, after_stat(count))) +
+            ggtitle("Québec") +
+            geom_density(alpha=.7) +
+            scale_fill_viridis_d(end = seq(0,1,le=6)[length(unique(area_QC_sub$temp))]) +
+            theme_minimal()
+
+
+# patch area for foret montmorency
+# # Stacked density chart
+p1_M <- ggplot(data=area_M_sub, aes(x=log(area), group=temp, fill=temp, after_stat(count))) +
+        ggtitle("Forêt Montmorency") +
+        geom_density(position="fill", adjust = 3) +
+        scale_fill_viridis_d(end = seq(0,1,le=6)[length(unique(area_M_sub$temp))]) +
+        theme_minimal()
+# # Multi density chart
+p2_M <- ggplot(data=area_M_sub, aes(x=log(area), group=temp, fill=temp, after_stat(count))) +
+        ggtitle("Forêt Montmorency") +
+        geom_density(alpha=.7) +
+        scale_fill_viridis_d(end = seq(0,1,le=6)[length(unique(area_M_sub$temp))]) +
+        theme_minimal()
+
+
+# patch area for eastern townships
+# # Stacked density chart
+p1_ET <- ggplot(data=area_ET_sub, aes(x=log(area), group=temp, fill=temp, after_stat(count))) +
+            ggtitle("Eastern Townships") +
+            geom_density(position="fill", adjust = 3) +
+            scale_fill_viridis_d(end = seq(0,1,le=6)[length(unique(area_ET_sub$temp))]) +
+            theme_minimal()
+
+# # Multi density chart
+p2_ET <- ggplot(data=area_ET_sub, aes(x=log(area), group=temp, fill=temp, after_stat(count))) +
+            ggtitle("Eastern Townships") +
+            geom_density(alpha=.7) +
+            scale_fill_viridis_d(end = seq(0,1,le=6)[length(unique(area_ET_sub$temp))]) +
+            theme_minimal()
+```
 
 ```{r p1, fig.align='center', out.width = "100%", out.height = "75%", fig.asp = .6, echo=FALSE}
 p1 <- ggarrange(p1_QC + rremove("ylab") + rremove("legend") + rremove("xlab"), 
@@ -372,6 +340,54 @@ area.linePlot(area_M_sub, main = "Forêt Montmorency")
 
 ## Interpatch distance
 
+```{r distance subfigures, echo=FALSE}
+# Interpatch distance for full QC
+# # Stacked density chart
+p3_QC <- ggplot(data=dist_QC_sub, aes(x=log(dist), group=temp, fill=temp, after_stat(count))) +
+            ggtitle("Québec") +
+            geom_density(position="fill", adjust = 8) +
+            scale_fill_viridis_d(end = seq(0,1,le=6)[length(unique(dist_QC_sub$temp))]) +
+            theme_minimal()
+
+# # Multi density chart
+p4_QC <- ggplot(data=dist_QC_sub, aes(x=log(dist), group=temp, fill=temp, after_stat(count))) +
+            ggtitle("Québec") +
+            geom_density(alpha=.7) +
+            scale_fill_viridis_d(end = seq(0,1,le=6)[length(unique(area_QC_sub$temp))]) +
+            theme_minimal()
+
+
+# Interpatch distance for foret montmorency
+# # Stacked density chart
+p3_M <- ggplot(data=dist_M_sub, aes(x=log(dist), group=temp, fill=temp, after_stat(count))) +
+            ggtitle("Forêt Montmorency") +
+            geom_density(position="fill", adjust = 8) +
+            scale_fill_viridis_d(end = seq(0,1,le=6)[length(unique(dist_QC_sub$temp))]) +
+            theme_minimal()
+
+# # Multi density chart
+p4_M <- ggplot(data=dist_M_sub, aes(x=log(dist), group=temp, fill=temp, after_stat(count))) +
+            ggtitle("Forêt Montmorency") +
+            geom_density(alpha=.7) +
+            scale_fill_viridis_d(end = seq(0,1,le=6)[length(unique(area_QC_sub$temp))]) +
+            theme_minimal()
+
+
+# Interpatch distance for Eastern townships
+# # Stacked density chart
+p3_ET <- ggplot(data=dist_ET_sub, aes(x=log(dist), group=temp, fill=temp, after_stat(count))) +
+            ggtitle("Eastern Townships") +
+            geom_density(position="fill", adjust = 3) +
+            scale_fill_viridis_d(end = seq(0,1,le=6)[length(unique(dist_QC_sub$temp))]) +
+            theme_minimal()
+
+# # Multi density chart
+p4_ET <- ggplot(data=dist_ET_sub, aes(x=log(dist), group=temp, fill=temp, after_stat(count))) +
+            ggtitle("Eastern Townships") +
+            geom_density(alpha=.7) +
+            scale_fill_viridis_d(end = seq(0,1,le=6)[length(unique(area_QC_sub$temp))]) +
+            theme_minimal()
+```
 
 ```{r p3, fig.align='center', out.width = "100%", out.height = "75%", fig.asp = .6, echo=FALSE}
 p3 <- ggarrange(p3_QC + rremove("ylab") + rremove("legend") + rremove("xlab"), 
