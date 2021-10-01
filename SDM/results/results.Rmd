@@ -253,6 +253,13 @@ ggarrange(p_total + rremove("xlab") + rremove("x.text"), p_area + rremove("legen
           nrow = 4, heights = c(1.5, 1.5, 1.2, 1), align = "v")
 ```
 
+
+Results at the scale of Québec as well as for the Forêt Montmorency present range expansion hiding the simulataneous range contraction. In the Eastern Townships, effects of range contraction are clearly observable.
+
+The figure presents counter intuitive results: a warming of the climate leads to i) population loss (fewer occupied patches), ii) an increase in total area occupied and iii) almost perfectly constant density distribution of patch area. **Only the loss of patches of all size and the increase in size of few very large patches may explain the constant density distribution**.
+
+These confounding results are the result of the distribution expansion to previously unsuitable habitat.
+
 ## Metapop effect
 
 Habitat availability vs. landscape connectivity (capacity)
@@ -273,18 +280,44 @@ group_by(capacity, id, temp) %>%
            labs(linetype = "Regions") +
            theme_classic()
 
+# QC
 
-ggplot(data=totalArea_QC, aes(x=temp, y=totalArea*400)) +
-geom_line() +
-geom_line(data=cap_QC, aes(y=capacity))
+totalArea_QC$weight <- c(1000,rep(1,nrow(totalArea_QC)-1))
+cap_QC$weight <- c(1000,rep(1,nrow(cap_QC)-1))
+pMeta_QC <- ggplot(data=totalArea_QC, aes(x=temp, y=totalArea/totalArea[1])) +
+               geom_smooth(aes(weight=totalArea_QC$weight), se=FALSE, col = "black", size=0.5) +
+               geom_smooth(data=cap_QC, aes(y=capacity/capacity[1], weight=weight), linetype=2, se=FALSE, col = "black", size=0.5) +
+               scale_x_continuous(name="Temperature warming (°C)", limits=c(0,4)) +
+               scale_y_continuous(name = "") +
+               ggtitle("Québec") +
+               theme_classic() +
+               theme(axis.text.y = element_blank())
 
-ggplot(data=totalArea_ET, aes(x=temp, y=totalArea)) +
-geom_line() +
-geom_line(data=cap_ET, aes(y=capacity*100))
+# ET
+totalArea_ET$weight <- c(1000,rep(1,nrow(totalArea_ET)-1))
+cap_ET$weight <- c(1000,rep(1,nrow(cap_ET)-1))
+pMeta_ET <- ggplot(data=totalArea_ET, aes(x=temp, y=totalArea/totalArea[1])) +
+               geom_smooth(aes(weight=totalArea_ET$weight), se=FALSE, col = "black", size=0.5) +
+               geom_smooth(data=cap_ET, aes(y=capacity/capacity[1], weight=weight), linetype=2, se=FALSE, col = "black", size=0.5) +
+               scale_x_continuous(name="Temperature warming (°C)", limits=c(0,4)) +
+               scale_y_continuous(name = "") +
+               ggtitle("Eastern Townships") +
+               theme_classic() +
+               theme(axis.text.y = element_blank())
 
-ggplot(data=totalArea_M, aes(x=temp, y=totalArea)) +
-geom_line() +
-geom_line(data=cap_M, aes(y=capacity*2000))
+# M
+totalArea_M$weight <- c(1000,rep(1,nrow(totalArea_M)-1))
+cap_M$weight <- c(1000,rep(1,nrow(cap_M)-1))
+pMeta_M <- ggplot(data=totalArea_M, aes(x=temp, y=totalArea/totalArea[1])) +
+               geom_smooth(aes(weight=totalArea_M$weight), se=FALSE, col = "black", size=0.5) +
+               geom_smooth(data=cap_M, aes(y=capacity/capacity[1], weight=weight), linetype=2, se=FALSE, col = "black", size=0.5) +
+               scale_x_continuous(name="Temperature warming (°C)", limits=c(0,4)) +
+               scale_y_continuous(name = "") +
+               ggtitle("Forêt Montmorency") +
+               theme_classic() +
+               theme(axis.text.y = element_blank())
+
+ggarrange(pMeta_QC, pMeta_ET, pMeta_M, ncol = 3)
 ```
 
 ## Mismatch
@@ -295,7 +328,7 @@ Proportion of habitat (type of forest cover) occupied is presented for climate w
 # Data --------------------------------------------------------------------
 
 
-explana_dat <- readRDS("./SDM/explana_dat.RDS")
+explana_dat <- readRDS("/Users/victorcameron/Documents/Git/Metapop_ms/SDM/explana_dat.RDS")
 SDM <- readRDS( "/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/projections_GRBI.RDS")
 
 
@@ -346,15 +379,20 @@ t_GRBI_M <- habOcc.table(explana_dat, SDM, extent = c(xmin = -72.2, xmax = -70, 
 # Eastern Townships
 t_GRBI_ET <- habOcc.table(explana_dat, SDM, extent = c(xmin = -73, xmax = -70, ymin = 45, ymax = 46), RL_cutoff = 0.05)
 
+# Gaspésie
+t_GRBI_G <- habOcc.table(explana_dat, SDM, extent = c(xmin = -67.5, xmax = -65, ymin = 48, ymax = 49), RL_cutoff = 0.05)
+
 
 # Plot --------------------------------------------------------------------
 
-par(mfrow = c(1,3))
-barplot(t(t_GRBI_QC), beside = TRUE, legend = TRUE, main = "Québec")
+par(mfrow = c(1,4))
+barplot(t(t_GRBI_QC), beside = TRUE, legend = TRUE, main = "Québec", ylab = "Proportion of occupied habitats")
 barplot(t(t_GRBI_M), beside = TRUE, legend = TRUE, main = "Forêt Montmorency")
 barplot(t(t_GRBI_ET), beside = TRUE, legend = TRUE, main = "Eastern Townships")
+barplot(t(t_GRBI_G), beside = TRUE, legend = TRUE, main = "Gaspésie")
 ```
 
+Examination of the mismatch between habitat and species abiotic niche shows an increase at the Québec scale of habitat occupancy (through range expansion). That is because newly suitable habitat is added to the distribution. However, the effects of loss of previously occupied habitat is hidden by the range expansion.
 
 # Preliminary exploration of visualizations
 
