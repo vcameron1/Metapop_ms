@@ -72,7 +72,22 @@ extract.capacity <- function(metrics){
     
     return(capacity)
 }
+
+# # Total area (habitat availability/quantity)
+extract.area <- function(metrics){
+    area <- c()
+    for(i in seq_along(metrics)){
+        if(metrics[[i]]$n == 0) next
+        area[i] <- metrics[[i]]$totalArea
+    }
+    
+    return(area)
+}
 ```
+
+```{r cc, echo=FALSE}
+cc <- seq(0,4,le=21)
+````
 
 ```{r full distribution, echo=FALSE}
 # 1 - Full distribution -----------------------------------
@@ -89,6 +104,10 @@ dist_QC <- extract.dist(metrics_QC)
 dist_QC_sub <- dist_QC[dist_QC$temp %in% seq(0,4,by=2),]
 
 cap_QC <- extract.capacity(metrics_QC)
+cap_QC <- data.frame(capacity=cap_QC, temp=cc[seq_along(cap_QC)])
+
+totalArea=extract.area(metrics_QC)
+totalArea_QC <- data.frame(totalArea=totalArea, temp=cc[seq_along(totalArea)])
 ```
 
 ```{r EasternTownships, echo=FALSE}
@@ -106,6 +125,10 @@ dist_ET <- extract.dist(metrics_ET)
 dist_ET_sub <- dist_ET[dist_ET$temp %in% seq(0,4,by=2),]
 
 cap_ET <- extract.capacity(metrics_ET)
+cap_ET <- data.frame(capacity=cap_ET, temp=cc[seq_along(cap_ET)])
+
+totalArea=extract.area(metrics_ET)
+totalArea_ET <- data.frame(totalArea=totalArea, temp=cc[seq_along(totalArea)])
 ```
 
 ```{r forêt Montmorency, echo=FALSE}
@@ -123,7 +146,12 @@ dist_M <- extract.dist(metrics_M)
 dist_M_sub <- dist_M[dist_M$temp %in% seq(0,4,by=2),]
 
 cap_M <- extract.capacity(metrics_M)
+cap_M <- data.frame(capacity=cap_M, temp=cc[seq_along(cap_M)])
+
+totalArea=extract.area(metrics_M)
+totalArea_M <- data.frame(totalArea=totalArea, temp=cc[seq_along(totalArea)])
 ```
+
 
 ## Maps
 
@@ -135,7 +163,7 @@ cap_M <- extract.capacity(metrics_M)
 
 ## Results panel
 
-```{r 4 panel area, fig.align='center', out.width = "100%", fig.asp = .8, echo=FALSE}
+```{r 4 panel area, fig.align='center', out.width = "100%", echo=FALSE}
 library(dplyr)
 # 1. Combine all data
 area_dupl <- bind_rows(area_QC, area_M, area_ET, .id = "id") %>%
@@ -146,7 +174,7 @@ dist_dupl <- bind_rows(dist_QC, dist_M, dist_ET, .id = "id") %>%
                mutate(id=replace(id, id==1, "QC")) %>%
                mutate(id=replace(id, id==2, "M")) %>%
                mutate(id=replace(id, id==3, "ET"))
-capacity <- bind_rows(data.frame(capacity = cap_QC, temp = cc), data.frame(capacity = cap_M, temp = cc), data.frame(capacity = cap_ET, temp = cc[seq_along(cap_ET)]), .id = "id") %>%
+totalArea_dupl <- bind_rows(totalArea_QC, totalArea_M, totalArea_ET, .id = "id") %>%
                mutate(id=replace(id, id==1, "QC")) %>%
                mutate(id=replace(id, id==2, "M")) %>%
                mutate(id=replace(id, id==3, "ET"))
@@ -166,16 +194,17 @@ p_total <- ggplot(dat_total, aes(x=temp, y=n, group=id, color=id)) +
            scale_y_continuous(name="Number of patches \n(Québec & F. Montmorency)", sec.axis = sec_axis(~./coeff, name="Number of patches \n(Eastern Tornships)")) +
            labs(linetype = "Regions") +
            theme_classic() +
-           theme(legend.position = c(.95, .95), legend.justification = c("right", "top")) 
+           theme(legend.position = c(.95, .95), legend.justification = c("right", "top"), legend.key.size = unit(0.5, 'cm'), legend.text = element_text(size=7), legend.title=element_blank()) 
 
-p_cap <- group_by(capacity, id, temp) %>%
-           ggplot(aes(x=temp, y=capacity, group=id, color=id)) +
-           geom_line() +
-           scale_color_manual(values=cols) +
-           scale_x_continuous(name="Temperature warming (°C)", breaks=seq(0,4,0.5)) +
-           scale_y_continuous(name = "Metapop capacity") +
-           labs(linetype = "Regions") +
-           theme_classic()
+coeff <- 40
+p_area <- ggplot(data=totalArea_dupl, aes(x=temp, y=totalArea, group=id, color=id)) +
+          scale_color_manual(values=cols) +
+          geom_line(data=subset(totalArea_dupl, id %in% c("QC","M"))) +
+          geom_line(data=subset(totalArea_dupl, id=="ET"), aes(y=totalArea*coeff)) +
+          scale_x_continuous(name="Temperature warming (°C)") +
+          scale_y_continuous(name="Habitat size for Québec \n& F. Montmorency (km2)", sec.axis = sec_axis(~./coeff, name="Habitat size for \nEastern Townships (km2)")) +
+          theme_classic() +
+          theme(legend.position = c(.95, .95), legend.justification = c("right", "top"), legend.key.size = unit(0.5, 'cm'), legend.text = element_text(size=7), legend.title=element_blank())
 
 pArea_QC <- ggplot(data=area_dupl[area_dupl$id == "QC" & area_dupl$temp %in% c(0,2,4),], aes(x=log(area), group=temp, color=temp)) +
             scale_color_manual(values=rep(cols[3],3)) +
@@ -183,7 +212,8 @@ pArea_QC <- ggplot(data=area_dupl[area_dupl$id == "QC" & area_dupl$temp %in% c(0
             geom_density(aes(linetype=temp)) +
             scale_y_continuous(breaks=seq(0,0.6,0.2), limits = c(0,0.65)) +
             scale_x_continuous(breaks=seq(-4,8,4), limits = c(-4,8)) +
-            theme_classic()
+            theme_classic() +
+            theme(legend.position = c(.95, .95), legend.justification = c("right", "top"), legend.key.size = unit(0.3, 'cm'), legend.text = element_text(size=5), legend.title=element_blank())
 pArea_M <- ggplot(data=area_dupl[area_dupl$id == "M" & area_dupl$temp %in% c(0,2,4),], aes(x=log(area), group=temp, color=temp)) +
             scale_color_manual(values=rep(cols[2],3)) +
             ggtitle("Forêt Montmorency") +
@@ -217,10 +247,10 @@ pDist_ET <- ggplot(data=dist_dupl[dist_dupl$id == "ET" & dist_dupl$temp %in% c(0
             scale_x_continuous(breaks=seq(-6,2.5,4), limits = c(-6,2.5)) +
             theme_classic()
 
-ggarrange(p_total, p_cap + rremove("legend"),
-          ggarrange(pArea_QC + rremove("legend") + rremove("xlab"), pArea_M + rremove("legend") + rremove("y.text") + rremove("ylab"), pArea_ET + rremove("legend") + rremove("y.text") + rremove("ylab") + rremove("xlab"), ncol = 3, align = "h", widths = c(1.2, 1, 1)),
+ggarrange(p_total + rremove("xlab") + rremove("x.text"), p_area + rremove("legend"),
+          ggarrange(pArea_QC + rremove("xlab"), pArea_M + rremove("legend") + rremove("y.text") + rremove("ylab"), pArea_ET + rremove("legend") + rremove("y.text") + rremove("ylab") + rremove("xlab"), ncol = 3, align = "h", widths = c(1.2, 1, 1)),
           ggarrange(pDist_QC + rremove("legend") + rremove("xlab"), pDist_M + rremove("legend") + rremove("y.text") + rremove("ylab"), pDist_ET + rremove("legend") + rremove("y.text") + rremove("ylab") + rremove("xlab"), ncol = 3, align = "h", widths = c(1.2, 1, 1)),
-          nrow = 4, heights = c(1.5, 1.5, 1.2, 1))
+          nrow = 4, heights = c(1.5, 1.5, 1.2, 1), align = "v")
 ```
 
 ## Metapop effect
@@ -228,15 +258,111 @@ ggarrange(p_total, p_cap + rremove("legend"),
 Habitat availability vs. landscape connectivity (capacity)
 
 ```{r metapop effect, fig.align='center', out.width = "100%", out.height = "75%", fig.asp = .6, echo=FALSE}
+capacity <- bind_rows(cap_QC, cap_M, cap_ET, , .id = "id") %>%
+               mutate(id=replace(id, id==1, "QC")) %>%
+               mutate(id=replace(id, id==2, "M")) %>%
+               mutate(id=replace(id, id==3, "ET"))
 
+
+group_by(capacity, id, temp) %>%
+           ggplot(aes(x=temp, y=capacity, group=id, color=id)) +
+           geom_line() +
+           scale_color_manual(values=cols) +
+           scale_x_continuous(name="Temperature warming (°C)") +
+           scale_y_continuous(name = "Metapop capacity") +
+           labs(linetype = "Regions") +
+           theme_classic()
+
+
+ggplot(data=totalArea_QC, aes(x=temp, y=totalArea*400)) +
+geom_line() +
+geom_line(data=cap_QC, aes(y=capacity))
+
+ggplot(data=totalArea_ET, aes(x=temp, y=totalArea)) +
+geom_line() +
+geom_line(data=cap_ET, aes(y=capacity*100))
+
+ggplot(data=totalArea_M, aes(x=temp, y=totalArea)) +
+geom_line() +
+geom_line(data=cap_M, aes(y=capacity*2000))
+```
+
+## Mismatch
+
+Proportion of habitat (type of forest cover) occupied is presented for climate warming scenarios.
+
+```{r mismatch, fig.align='center', out.width = "100%", out.height = "75%", fig.asp = .6, echo=FALSE}
+# Data --------------------------------------------------------------------
+
+
+explana_dat <- readRDS("./SDM/explana_dat.RDS")
+SDM <- readRDS( "/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/projections_GRBI.RDS")
+
+
+# Funtion to compute habitat occupancy tables -----------------------------
+
+
+habOcc.table <- function(explana_dat, SDM, extent = c(xmin = -75, xmax = -64, ymin = 45, ymax = 49.5), RL_cutoff = 0.05){
+     # Crop rasters
+     e <- raster::extent(extent)
+     explana_sub <- raster::crop(explana_dat, e)
+     SDM_sub <- raster::crop(SDM, e)
+
+     # Initial distribution of habitats occupied
+     t_couv <- table(raster::values(explana_sub[["type_couv"]]))
+     t <- table(raster::values(explana_sub[["type_couv"]]), raster::values(SDM_sub[[1]]>=log(RL_cutoff)))
+     t_occ <- t[,"TRUE"]/t_couv
+
+     # +2°C habitat distribution occupied by GRBI
+     t <- table(raster::values(explana_sub[["type_couv"]]), raster::values(SDM_sub[[11]]>=log(RL_cutoff)))
+     t_occ <- rbind(t_occ, t[,"TRUE"]/t_couv)
+
+     # +4°C habitat distribution occupied by GRBI
+     if(any(raster::values(SDM_sub[[21]])>=log(RL_cutoff), na.rm = TRUE)){
+          t <- table(raster::values(explana_sub[["type_couv"]]), raster::values(SDM_sub[[21]]>=log(RL_cutoff)))
+          t_occ <- rbind(t_occ, t[,"TRUE"]/t_couv)
+     }
+     
+
+     # Rename table
+     rownames(t_occ) <- c("0°C", "+2°C", "+4°C")[1:nrow(t_occ)]
+     colnames(t_occ) <- c("B", "M", "T")
+
+     # Return
+     return(t_occ)
+}
+
+
+# Compute habitat occupancy tables -----------------------------------------
+
+# Québec 
+t_GRBI_QC <- habOcc.table(explana_dat, SDM, extent = c(xmin = -75, xmax = -64, ymin = 45, ymax = 49.5), RL_cutoff = 0.05)
+
+
+# Forêt Montmorency 
+t_GRBI_M <- habOcc.table(explana_dat, SDM, extent = c(xmin = -72.2, xmax = -70, ymin = 46.8, ymax = 48.2), RL_cutoff = 0.05)
+
+
+# Eastern Townships
+t_GRBI_ET <- habOcc.table(explana_dat, SDM, extent = c(xmin = -73, xmax = -70, ymin = 45, ymax = 46), RL_cutoff = 0.05)
+
+
+# Plot --------------------------------------------------------------------
+
+par(mfrow = c(1,3))
+barplot(t(t_GRBI_QC), beside = TRUE, legend = TRUE, main = "Québec")
+barplot(t(t_GRBI_M), beside = TRUE, legend = TRUE, main = "Forêt Montmorency")
+barplot(t(t_GRBI_ET), beside = TRUE, legend = TRUE, main = "Eastern Townships")
 ```
 
 
-# Exploration of visualizations
+# Preliminary exploration of visualizations
+
+Scripts are not run in order to save processing time
 
 ## Patch area
 
-```{r area subfigures, echo=FALSE}
+```{r area subfigures, echo=FALSE, eval=FALSE}
 # Patch area for full QC
 # # Stacked density chart
 p1_QC <- ggplot(data=area_QC_sub, aes(x=log(area), group=temp, fill=temp, after_stat(count))) +
@@ -284,7 +410,7 @@ p2_ET <- ggplot(data=area_ET_sub, aes(x=log(area), group=temp, fill=temp, after_
             theme_minimal()
 ```
 
-```{r p1, fig.align='center', out.width = "100%", out.height = "75%", fig.asp = .6, echo=FALSE}
+```{r p1, fig.align='center', out.width = "100%", out.height = "75%", fig.asp = .6, echo=FALSE, eval=FALSE}
 p1 <- ggarrange(p1_QC + rremove("ylab") + rremove("legend") + rremove("xlab"), 
                 p1_ET + rremove("y.text") + rremove("ylab") + rremove("legend"), 
                 p1_M + rremove("y.text") + rremove("ylab") + rremove("xlab"), 
@@ -296,7 +422,7 @@ annotate_figure(p1,
                 left = text_grob("Count", color = "black", rot = 90))
 ```
 
-```{r p2, fig.align='center', out.width = "100%", out.height = "75%", fig.asp = .6, echo=FALSE}
+```{r p2, fig.align='center', out.width = "100%", out.height = "75%", fig.asp = .6, echo=FALSE, eval=FALSE}
 p2 <- ggarrange(p2_QC + rremove("ylab") + rremove("legend") + rremove("xlab"), 
                 p2_ET + rremove("y.text") + rremove("ylab") + rremove("legend"), 
                 p2_M + rremove("y.text") + rremove("ylab") + rremove("xlab"), 
@@ -308,7 +434,7 @@ annotate_figure(p2,
                 left = text_grob("Density", color = "black", rot = 90))
 ```
 
-```{r line plot area, fig.align='center', out.width = "110%", fig.asp = .6, echo=FALSE}
+```{r line plot area, fig.align='center', out.width = "110%", fig.asp = .6, echo=FALSE, eval=FALSE}
 # # line plot
 # # # Function to plot 
 area.linePlot <- function(df, ...){
@@ -340,7 +466,7 @@ area.linePlot(area_M_sub, main = "Forêt Montmorency")
 
 ## Interpatch distance
 
-```{r distance subfigures, echo=FALSE}
+```{r distance subfigures, echo=FALSE, eval=FALSE}
 # Interpatch distance for full QC
 # # Stacked density chart
 p3_QC <- ggplot(data=dist_QC_sub, aes(x=log(dist), group=temp, fill=temp, after_stat(count))) +
@@ -389,7 +515,7 @@ p4_ET <- ggplot(data=dist_ET_sub, aes(x=log(dist), group=temp, fill=temp, after_
             theme_minimal()
 ```
 
-```{r p3, fig.align='center', out.width = "100%", out.height = "75%", fig.asp = .6, echo=FALSE}
+```{r p3, fig.align='center', out.width = "100%", out.height = "75%", fig.asp = .6, echo=FALSE, eval=FALSE}
 p3 <- ggarrange(p3_QC + rremove("ylab") + rremove("legend") + rremove("xlab"), 
                 p3_ET + rremove("y.text") + rremove("ylab") + rremove("legend"), 
                 p3_M + rremove("y.text") + rremove("ylab") + rremove("xlab"), 
@@ -401,7 +527,7 @@ annotate_figure(p3,
                 left = text_grob("Count", color = "black", rot = 90))
 ```
 
-```{r p4, fig.align='center', out.width = "100%", out.height = "75%", fig.asp = .6, echo=FALSE}
+```{r p4, fig.align='center', out.width = "100%", out.height = "75%", fig.asp = .6, echo=FALSE, eval=FALSE}
 p4 <- ggarrange(p4_QC + rremove("ylab") + rremove("legend") + rremove("xlab"), 
                 p4_ET + rremove("y.text") + rremove("ylab") + rremove("legend"), 
                 p4_M + rremove("y.text") + rremove("ylab") + rremove("xlab"), 
@@ -413,7 +539,7 @@ annotate_figure(p4,
                 left = text_grob("Density", color = "black", rot = 90))
 ```
 
-```{r line plot distance, fig.align='center', out.width = "100%", fig.asp = .6, echo=FALSE}
+```{r line plot distance, fig.align='center', out.width = "100%", fig.asp = .6, echo=FALSE, eval=FALSE}
 # # line plot
 # # # Function to plot 
 dist.linePlot <- function(df, ...){
