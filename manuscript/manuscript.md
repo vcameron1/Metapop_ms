@@ -184,6 +184,29 @@ It captures the effect of the landscape spatial structure as it is percieved by 
 
 ## Results
 
+### Effect of habitat, climate and elevation on Bicknell thrush's presence
+
+*Climate and precipitation had a strong impact on bicknell's thrush presence*
+
+*Elevation*
+
+*Habitat*
+
+### Impacts of climate warming on Bicknell's thrush distribution
+
+*Number of patches*
+
+*Total area*
+
+*Patch area*
+
+*Inter patch distance*
+
+### Suitability of habitat types
+
+### Cumulative impacts of distribution area and connectivity
+
+*Loss in capacity is precipitated by loss of connectivity*
 
 ## Discussion
 
