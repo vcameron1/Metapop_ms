@@ -264,7 +264,54 @@ These confounding results are the result of the distribution expansion to previo
 
 Habitat availability vs. landscape connectivity (capacity)
 
-```{r metapop effect, fig.align='center', out.width = "100%", out.height = "75%", fig.asp = .6, echo=FALSE}
+```{r capacity vs. area, fig.align='center', out.width = "100%", out.height = "75%", fig.asp = .6, echo=FALSE}
+
+# Function to return capacity plots
+plot.capacity <- function(metrics, cc, totalArea, alpha = c(1, 2, 4, 8, 16)){
+
+    capacity <- data.frame(temp = cc, 
+                            weight = c(1000,rep(1,length(cc)-1))) # weights given to force all lines at single origin
+    # Compute capacity for different alpha values
+    for(a in alpha){
+        eigen <- as.data.frame(get.capacity(metrics, alpha = 1/a, cc)$eigen)
+        names(eigen) <- paste0("eigen", a)
+        capacity <- cbind(capacity,eigen)
+    }
+
+    # Cols
+    colo <- colorRampPalette(c("grey90", "steelblue4", 
+                            "steelblue2", "steelblue1", 
+                            "gold", "red1", "red4"))(length(alpha))
+
+    # Base plot
+    p_cap <- ggplot(data=totalArea, aes(x=temp, y=totalArea/totalArea[1])) +
+                geom_smooth(aes(weight=totalArea_ET$weight), se=FALSE, col = "black", size=0.5) +
+                scale_x_continuous(name="Temperature warming (°C)", limits=c(0,4)) +
+                scale_y_continuous(name = "") +
+                ggtitle("Eastern Townships") +
+                theme_classic() +
+                theme(axis.text.y = element_blank())
+
+    # Add lines
+    p_cap <- p_cap + 
+            geom_smooth(data=capacity, aes(y=capacity[,3]/capacity[,3][1], weight=weight), linetype=2, se=FALSE, col = colo[1], size=0.5) +
+            geom_smooth(data=capacity, aes(y=capacity[,4]/capacity[,4][1], weight=weight), linetype=2, se=FALSE, col = colo[2], size=0.5) +
+            geom_smooth(data=capacity, aes(y=capacity[,5]/capacity[,5][1], weight=weight), linetype=2, se=FALSE, col = colo[3], size=0.5) +
+            geom_smooth(data=capacity, aes(y=capacity[,6]/capacity[,6][1], weight=weight), linetype=2, se=FALSE, col = colo[4], size=0.5) +
+            geom_smooth(data=capacity, aes(y=capacity[,7]/capacity[,7][1], weight=weight), linetype=2, se=FALSE, col = colo[5], size=0.5) 
+
+    return(p_cap)
+}
+
+# 
+p_capQC <- plot.capacity(metrics_QC, cc, totalArea_QC)
+p_capM <- plot.capacity(metrics_M, cc, totalArea_M)
+p_capET <- plot.capacity(metrics_ET, cc)
+
+ggarrange(p_capQC, p_capM, p_capET, ncol = 3)
+````
+
+```{r metapop effect, fig.align='center', out.width = "100%", out.height = "75%", fig.asp = .6, echo=FALSE, eval=FALSE}
 capacity <- bind_rows(cap_QC, cap_M, cap_ET, , .id = "id") %>%
                mutate(id=replace(id, id==1, "QC")) %>%
                mutate(id=replace(id, id==2, "M")) %>%
@@ -324,7 +371,7 @@ ggarrange(pMeta_QC, pMeta_ET, pMeta_M, ncol = 3)
 
 Proportion of habitat (type of forest cover) occupied is presented for climate warming scenarios.
 
-```{r mismatch, fig.align='center', out.width = "100%", out.height = "75%", fig.asp = .6, echo=FALSE}
+```{r mismatch, fig.align='center', out.width = "100%", fig.asp = .4, echo=FALSE}
 # Data --------------------------------------------------------------------
 
 
@@ -371,10 +418,8 @@ habOcc.table <- function(explana_dat, SDM, extent = c(xmin = -75, xmax = -64, ym
 # Québec 
 t_GRBI_QC <- habOcc.table(explana_dat, SDM, extent = c(xmin = -75, xmax = -64, ymin = 45, ymax = 49.5), RL_cutoff = 0.05)
 
-
 # Forêt Montmorency 
 t_GRBI_M <- habOcc.table(explana_dat, SDM, extent = c(xmin = -72.2, xmax = -70, ymin = 46.8, ymax = 48.2), RL_cutoff = 0.05)
-
 
 # Eastern Townships
 t_GRBI_ET <- habOcc.table(explana_dat, SDM, extent = c(xmin = -73, xmax = -70, ymin = 45, ymax = 46), RL_cutoff = 0.05)
@@ -393,6 +438,28 @@ barplot(t(t_GRBI_G), beside = TRUE, legend = TRUE, main = "Gaspésie")
 ```
 
 Examination of the mismatch between habitat and species abiotic niche shows an increase at the Québec scale of habitat occupancy (through range expansion). That is because newly suitable habitat is added to the distribution. However, the effects of loss of previously occupied habitat is hidden by the range expansion.
+
+Mismatch affects not only the proportion of habitat types occupied, but also the change in proportions occupied between habitat types. At the scale of Québec, the change in occupancy is of:
+```{r prop change QC, fig.align='center', echo=TRUE}
+# Change in habitat occupancy
+(t_GRBI_QC[2,]-t_GRBI_QC[1,])/t_GRBI_QC[1,] # 0 to +2
+(t_GRBI_QC[3,]-t_GRBI_QC[2,])/t_GRBI_QC[2,] # +2 to +4
+```
+
+In Forêt Montmorency:
+
+```{r prop change M, fig.align='center', echo=TRUE}
+# Change in habitat occupancy
+(t_GRBI_M[2,]-t_GRBI_M[1,])/t_GRBI_M[1,] # 0 to +2
+(t_GRBI_M[3,]-t_GRBI_M[2,])/t_GRBI_M[2,] # +2 to +4
+```
+
+In the Eastern Townships:
+
+```{r prop change M, fig.align='center', echo=TRUE}
+# Change in habitat occupancy
+(t_GRBI_ET[2,]-t_GRBI_ET[1,])/t_GRBI_ET[1,] # 0 to +2
+```
 
 # Preliminary exploration of visualizations
 
