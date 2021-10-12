@@ -17,6 +17,7 @@ library(ggplot2)
 library(hrbrthemes)
 library(ggpubr)
 source("/Users/victorcameron/Documents/Git/Metapop_ms/SDM/patch_metrics.R")
+source("/Users/victorcameron/Documents/Git/Metapop_ms/SDM/map_GRBI.R")
 ```
 
 ```{r GRBI map, echo=FALSE}
@@ -159,8 +160,12 @@ totalArea_M <- data.frame(totalArea=totalArea, temp=cc[seq_along(totalArea)])
 <center>
 ![](/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/GRBI.gif)
 
-![](/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/map_GRBI.png)
+<!-- ![](/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/map_GRBI.png) -->
 </center>
+
+```{r 4 range map, fig.align='center', out.width = "100%", echo=FALSE}
+plot.map3()
+```
 
 ## Results panel
 
@@ -382,7 +387,7 @@ pMeta_M <- ggplot(data=totalArea_M, aes(x=temp, y=totalArea/totalArea[1])) +
                theme_classic() +
                theme(axis.text.y = element_blank())
 
-ggarrange(pMeta_QC, pMeta_ET, pMeta_M, ncol = 3)
+ggarrange(pMeta_QC, pMeta_M, pMeta_ET, ncol = 3)
 ```
 
 ## Mismatch
