@@ -16,6 +16,7 @@ knitr::opts_chunk$set(echo = TRUE,
 library(ggplot2)
 library(hrbrthemes)
 library(ggpubr)
+source("/Users/victorcameron/Documents/Git/Metapop_ms/SDM/patch_metrics.R")
 ```
 
 ```{r GRBI map, echo=FALSE}
@@ -87,7 +88,7 @@ extract.area <- function(metrics){
 
 ```{r cc, echo=FALSE}
 cc <- seq(0,4,le=21)
-````
+```
 
 ```{r full distribution, echo=FALSE}
 # 1 - Full distribution -----------------------------------
@@ -256,27 +257,43 @@ ggarrange(p_total + rremove("xlab") + rremove("x.text"), p_area + rremove("legen
 
 Results at the scale of Québec as well as for the Forêt Montmorency present range expansion hiding the simulataneous range contraction. In the Eastern Townships, effects of range contraction are clearly observable.
 
-The figure presents counter intuitive results: a warming of the climate leads to i) population loss (fewer occupied patches), ii) an increase in total area occupied and iii) almost perfectly constant density distribution of patch area. **Only the loss of patches of all size and the increase in size of few very large patches may explain the constant density distribution**.
+The figure presents counter intuitive results: a warming of the climate leads to i) population loss (fewer occupied patches), ii) an increase in total area occupied and iii) almost perfectly constant density distribution of patch area. **Only the loss of small patches balanced by the fragmentation of large patches and the increase in size of few patches may explain the constant density distribution**.
 
-These confounding results are the result of the distribution expansion to previously unsuitable habitat.
+These confounding results are the result of the distribution expansion to previously unsuitable habitat (colonization) hiding the effects of patch contraction, extinction and fragmentation.
 
 ## Metapop effect
 
 Habitat availability vs. landscape connectivity (capacity)
 
-```{r capacity vs. area, fig.align='center', out.width = "100%", out.height = "75%", fig.asp = .6, echo=FALSE}
-
-# Function to return capacity plots
-plot.capacity <- function(metrics, cc, totalArea, alpha = c(1, 2, 4, 8, 16)){
-
+```{r compute capacity, echo=FALSE, eval=FALSE}
+# Function to compute and save metapop capacities for different alpha values
+compute.capacity <- function(metrics, cc, totalArea, file.name, alpha = c(1, 5, 50, 200, 500)){
     capacity <- data.frame(temp = cc, 
-                            weight = c(1000,rep(1,length(cc)-1))) # weights given to force all lines at single origin
-    # Compute capacity for different alpha values
+                                weight = c(1000,rep(1,length(cc)-1))) # weights given to force all lines at single origin
+    # # Compute capacity for different alpha values
     for(a in alpha){
         eigen <- as.data.frame(get.capacity(metrics, alpha = 1/a, cc)$eigen)
         names(eigen) <- paste0("eigen", a)
         capacity <- cbind(capacity,eigen)
     }
+
+     # # Save computed capacities
+    saveRDS(capacity, file.name)
+}
+
+# Compute capacities
+compute.capacity(metrics_QC, cc, totalArea_QC, file.name = "/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/capacities_QC.RDS")
+compute.capacity(metrics_M, cc, totalArea_M, file.name = "/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/capacities_M.RDS")
+compute.capacity(metrics_ET, cc, totalArea_ET, file.name = "/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/capacities_ET.RDS")
+```
+
+```{r capacity vs. area, fig.align='center', out.width = "100%", out.height = "75%", fig.asp = .6, echo=FALSE, eval=FALSE}
+
+# Function to return capacity plot
+plot.capacity <- function(metrics, cc, totalArea, file.name, alpha = c(1, 5, 50, 200, 500)){
+    
+    # Load data
+    capacity <- readRDS(file.name)    
 
     # Cols
     colo <- colorRampPalette(c("grey90", "steelblue4", 
@@ -304,14 +321,15 @@ plot.capacity <- function(metrics, cc, totalArea, alpha = c(1, 2, 4, 8, 16)){
 }
 
 # 
-p_capQC <- plot.capacity(metrics_QC, cc, totalArea_QC)
-p_capM <- plot.capacity(metrics_M, cc, totalArea_M)
-p_capET <- plot.capacity(metrics_ET, cc)
+p_capQC <- plot.capacity(metrics_QC, cc, totalArea_QC, compute.cap = TRUE, file.name = "/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/capacities_QC.RDS")
+p_capM <- plot.capacity(metrics_M, cc, totalArea_M, compute.cap = TRUE, file.name = "/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/capacities_M.RDS")
+p_capET <- plot.capacity(metrics_ET, cc, totalArea_ET, file.name = "/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/capacities_ET.RDS")
 
 ggarrange(p_capQC, p_capM, p_capET, ncol = 3)
 ````
 
-```{r metapop effect, fig.align='center', out.width = "100%", out.height = "75%", fig.asp = .6, echo=FALSE, eval=FALSE}
+Metapopulation capacities are shown for alpha values of 1, 5, 50, 200, and 500km.
+```{r metapop effect, fig.align='center', out.width = "100%", out.height = "75%", fig.asp = .6, echo=FALSE, eval=TRUE}
 capacity <- bind_rows(cap_QC, cap_M, cap_ET, , .id = "id") %>%
                mutate(id=replace(id, id==1, "QC")) %>%
                mutate(id=replace(id, id==2, "M")) %>%
@@ -369,7 +387,7 @@ ggarrange(pMeta_QC, pMeta_ET, pMeta_M, ncol = 3)
 
 ## Mismatch
 
-Proportion of habitat (type of forest cover) occupied is presented for climate warming scenarios.
+Proportion of suitability of the different habitat types (type of forest cover) is presented for climate warming scenarios.
 
 ```{r mismatch, fig.align='center', out.width = "100%", fig.asp = .4, echo=FALSE}
 # Data --------------------------------------------------------------------
@@ -456,7 +474,7 @@ In Forêt Montmorency:
 
 In the Eastern Townships:
 
-```{r prop change M, fig.align='center', echo=TRUE}
+```{r prop change ET, fig.align='center', echo=TRUE}
 # Change in habitat occupancy
 (t_GRBI_ET[2,]-t_GRBI_ET[1,])/t_GRBI_ET[1,] # 0 to +2
 ```
