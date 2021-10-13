@@ -87,15 +87,15 @@ patch.metrics <- function(raster, RL_cutoff = 0.05){
 
 # This function computes the capacity of a landscape
 ## metrics <- readRDS("./SDM/results/metrics_ET.RDS")
-capacity <- function(metrics, alpha = 1/2){
+get.capacity <- function(metrics, alpha = 1/2, cc){
     
-    eigen <- c()
+    eigen <- data.frame(eigen = rep(0,length(metrics)), temp = cc)
     
     # Loop through time steps
     for(i in 1:length(metrics)){
 
         if(metrics[[i]]$n == 0){
-            eigen[i] = 0
+            eigen[i,] = c(0, cc[i])
             next
         }
 
@@ -116,7 +116,7 @@ capacity <- function(metrics, alpha = 1/2){
         }
 
         # Metapop capacity
-        eigen[i] = eigen(land)$values[1]
+        eigen[i,] = c(eigen(land)$values[1], cc[i])
 
     }
     return(eigen)

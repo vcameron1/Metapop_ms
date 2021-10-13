@@ -41,7 +41,7 @@ plot.map <- function(projRaster_path = "./SDM/results/projections_GRBI.RDS", ext
     dev.off()
 }
 
-plot.map3 <- function(projRaster_path = "./SDM/results/projections_GRBI.RDS", extent = c(xmin = -75, xmax = -64, ymin = 45, ymax = 49.5)){
+plot.map3 <- function(projRaster_path = "/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/projections_GRBI.RDS", extent = c(xmin = -75, xmax = -64, ymin = 45, ymax = 49.5)){
     
     
     # 1 - Import projections --------------------------------------------------
@@ -57,10 +57,10 @@ plot.map3 <- function(projRaster_path = "./SDM/results/projections_GRBI.RDS", ex
     # 2 - Draw the map --------------------------------------------------------
 
 
-    par(mfrow=c(3,1))
-    raster::plot(SDM_sub[[1]]>=log(0.05), legend = F, bty = "o", yaxs="i", xaxs="i",  col = c("darkkhaki", "darkgreen"), colNA = rgb(193/256,236/256,250/256))
-    raster::plot(SDM_sub[[11]]>=log(0.05), legend = F, bty = "o", yaxs="i", xaxs="i",  col = c("darkkhaki", "darkgreen"), colNA = rgb(193/256,236/256,250/256))
-    raster::plot(SDM_sub[[21]]>=log(0.05), legend = F, bty = "o", yaxs="i", xaxs="i",  col = c("darkkhaki", "darkgreen"), colNA = rgb(193/256,236/256,250/256))
+    par(mfrow=c(3,1), mar=c(3,3,0,0))
+    raster::plot(SDM_sub[[1]]>=log(0.05), legend = F, bty = "o", yaxs="i", xaxs="i",  col = c("darkkhaki", "darkgreen"), colNA = rgb(193/256,236/256,250/256), main = "0°C")
+    raster::plot(SDM_sub[[11]]>=log(0.05), legend = F, bty = "o", yaxs="i", xaxs="i",  col = c("darkkhaki", "darkgreen"), colNA = rgb(193/256,236/256,250/256), main = "+2°C")
+    raster::plot(SDM_sub[[21]]>=log(0.05), legend = F, bty = "o", yaxs="i", xaxs="i",  col = c("darkkhaki", "darkgreen"), colNA = rgb(193/256,236/256,250/256), main = "+4°C")
 }
 
 

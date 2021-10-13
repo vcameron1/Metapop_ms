@@ -163,7 +163,7 @@ totalArea_M <- data.frame(totalArea=totalArea, temp=cc[seq_along(totalArea)])
 <!-- ![](/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/map_GRBI.png) -->
 </center>
 
-```{r 4 range map, fig.align='center', out.width = "100%", echo=FALSE}
+```{r 4 range map, fig.align='center', out.width = "100%", out.height = "200%", echo=FALSE}
 plot.map3()
 ```
 
@@ -208,7 +208,7 @@ p_area <- ggplot(data=totalArea_dupl, aes(x=temp, y=totalArea, group=id, color=i
           geom_line(data=subset(totalArea_dupl, id %in% c("QC","M"))) +
           geom_line(data=subset(totalArea_dupl, id=="ET"), aes(y=totalArea*coeff)) +
           scale_x_continuous(name="Temperature warming (°C)") +
-          scale_y_continuous(name="Habitat size for Québec \n& F. Montmorency (km2)", sec.axis = sec_axis(~./coeff, name="Habitat size for \nEastern Townships (km2)")) +
+          scale_y_continuous(name="Habitat amount \n(Québec, Montmorency; km2)", sec.axis = sec_axis(~./coeff, name="Habitat amount \n(Eastern Townships; km2)")) +
           theme_classic() +
           theme(legend.position = c(.95, .95), legend.justification = c("right", "top"), legend.key.size = unit(0.5, 'cm'), legend.text = element_text(size=7), legend.title=element_blank())
 
@@ -260,15 +260,15 @@ ggarrange(p_total + rremove("xlab") + rremove("x.text"), p_area + rremove("legen
 ```
 
 
-Results at the scale of Québec as well as for the Forêt Montmorency present range expansion hiding the simulataneous range contraction. In the Eastern Townships, effects of range contraction are clearly observable.
+Results at the scale of Québec as well as for the Forêt Montmorency present expansion of habitat amount hiding the simulataneous habitat patches loss and fragmentation. In the Eastern Townships, effects of habitat patch loss and contraction are clearly observable.
 
-The figure presents counter intuitive results: a warming of the climate leads to i) population loss (fewer occupied patches), ii) an increase in total area occupied and iii) almost perfectly constant density distribution of patch area. **Only the loss of small patches balanced by the fragmentation of large patches and the increase in size of few patches may explain the constant density distribution**.
+The figure presents counter intuitive results: a warming of the climate leads to i) habitat patches loss, ii) an increase in total habitat amount and iii) little change in density distribution of habitat patch area. **Only the loss of small patches balanced by the fragmentation of large patches and the increase in size of few patches may explain the constant density distribution**.
 
-These confounding results are the result of the distribution expansion to previously unsuitable habitat (colonization) hiding the effects of patch contraction, extinction and fragmentation.
+These confounding results are the result of the habitat expansion to previously unsuitable habitat (colonization) hiding the effects of habitat patch contraction, extinction and fragmentation.
 
 ## Metapop effect
 
-Habitat availability vs. landscape connectivity (capacity)
+Habitat amount vs. landscape connectivity (capacity)
 
 ```{r compute capacity, echo=FALSE, eval=FALSE}
 # Function to compute and save metapop capacities for different alpha values
@@ -460,7 +460,7 @@ barplot(t(t_GRBI_ET), beside = TRUE, legend = TRUE, main = "Eastern Townships")
 barplot(t(t_GRBI_G), beside = TRUE, legend = TRUE, main = "Gaspésie")
 ```
 
-Examination of the mismatch between habitat and species abiotic niche shows an increase at the Québec scale of habitat occupancy (through range expansion). That is because newly suitable habitat is added to the distribution. However, the effects of loss of previously occupied habitat is hidden by the range expansion.
+Examination of the mismatch between habitat and species abiotic niche shows an increase at the Québec scale of habitat amount (expansion). That is because newly suitable habitat is added to the distribution. However, the effects of loss and fragmentation of previously suitable habitat is hidden by the new suitable patches.
 
 Mismatch affects not only the proportion of habitat types occupied, but also the change in proportions occupied between habitat types. At the scale of Québec, the change in occupancy is of:
 ```{r prop change QC, fig.align='center', echo=TRUE}
