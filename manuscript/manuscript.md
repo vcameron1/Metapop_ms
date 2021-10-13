@@ -106,6 +106,58 @@ In the following sections, we demonstrate the ability of a coupled metapopulatio
 
 ## Methods
 
+### Studied region
+
+*The Bicknell's thrush breeding range was projected for the region where the majority of its habitat is identified (between -75° and -64°N and 45° and 49.5°W)*
+- Central Québec 
+- Populations in Eastern townships, Forêt Montmmorency, Gaspésie
+
+*Forest, elevation, and clim data. The landscape is characterized by a mix of boreal, mixed and temperate forests*
+- Forest data
+- Clim data (mean of 1960-2000)
+- Elevational data
+- Latitudinal and elevational gradient in forest type and climate
+
+
+### Bicknell's thrush breeding range
+
+*The Bicknell's thrush breeding range was modeled using a downweighted poisson regression in combination with unpublished data of CDPNQ*
+- 250m2 square grid
+- Occurence data
+- Pseudo absences (weights)
+- Characteristics of the data set
+- Model projects intensity (density)
+- Projections of the breeding range at equilibrium
+
+*The model was designed using expert knowledge on habitat and climatic niche characteristics and identified a temperature threshold that interacts with elevation*
+- habitat: High elevation, coastal or boreal
+- Disturbed habitat: Dense boreal (coniferous) forests
+	- Habitat characterized by: forest type, forest density, and forest height
+- Interaction between elevation and MAT and MAP
+- (Intensity ~ MAT * MAP * Elevation + forest type + forest density + forest height)
+- Model coefficients summary
+
+
+### Scenario and analysis
+
+*Breeding range was projected for a gradient in climate warming with static habitat*
+- Temperature increased from current to +4°C (would corresponds to RCP ...)
+- lag in boreal species response [BOX, COSEWIC, @vissault_slow_2020]
+
+*Analyses were conducted at the scale of Québec and for two subregions of interest to metapopulation dynamics*
+- Regions selected to illustrate metapop dynamics (different distribution characteristics)
+- Forêt Montmorency:
+- Eastern Townships: Low latitude, small summits, expected extinctions
+
+*Bicknell's thrush breeding range (log(intensity>0.05))*
+
+*We assessed distribution changes with measures of cumulative changes and their temporal (°C) trends (n, area, distance)*
+
+*Evaluation of habitat change on metapopulation dynamics (habitat amount vs. capacity)*
+
+*Correlation of forest-climate distribution*
+
+<!----
 ### Model structure 
 *We illustrate the applicability of the approach by expanding a metapopulation model to two species.*
 We illustrate the applicability of the approach by expanding a metapopulation model to two species.
@@ -181,32 +233,27 @@ Prevalence is the proportion of patches occupied by the Bicknell's thrush in the
 Distribution extent is a measure of the realized niche breadth and is the range of **temperatures** at which it is present.
 Metapopulation capacity measures directly the extinction risk through its relation with the extinction threshold fixed by the ratio of extinction to colonization rates [@hanski_metapopulation_2000].
 It captures the effect of the landscape spatial structure as it is percieved by the species on the landscape's ability to support a persisting metapopulation.
+--->
 
 ## Results
 
-### Effect of habitat, climate and elevation on Bicknell thrush's presence
-
-*Climate and precipitation had a strong impact on bicknell's thrush presence*
-
-*Elevation*
-
-*Habitat*
-
-### Impacts of climate warming on Bicknell's thrush distribution
+### Impacts of climate warming on Bicknell's thrush breeding range
 
 *Number of patches*
 
-*Total area*
+*Habitat amount*
 
 *Patch area*
 
 *Inter patch distance*
 
-### Suitability of habitat types
-
-### Cumulative impacts of distribution area and connectivity
+### Cumulative impacts of habitat amount and connectivity
 
 *Loss in capacity is precipitated by loss of connectivity*
+
+### Effect of temperature warming on habitat and climate distribution
+
+*habitat (suitable) moving toward boreal forest, leaving behind M and T*
 
 ## Discussion
 
@@ -253,6 +300,10 @@ A des incidences sur comment on conserve (milieu de la conservation inspiré par
 *Paragraph 2. habitat-abiotic mismatch*
 
 *Paragraph 3. Metapopulation approach. Importance of connectivity. Mountain tops.*
+
+- Habitat amount decrease --> capacity decline precipitated
+	- connectivity (fragmentation + isolation + habitat amount) loss
+
 
 *Paragraph 4. Importance of environmental correlation between trophic levels. We don’t really know that.*
 
