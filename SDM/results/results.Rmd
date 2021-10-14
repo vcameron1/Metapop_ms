@@ -13,6 +13,7 @@ knitr::opts_chunk$set(echo = TRUE,
 
 
 ```{r dependencies, echo=FALSE}
+library(dplyr)
 library(ggplot2)
 library(hrbrthemes)
 library(ggpubr)
@@ -163,14 +164,17 @@ totalArea_M <- data.frame(totalArea=totalArea, temp=cc[seq_along(totalArea)])
 <!-- ![](/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/map_GRBI.png) -->
 </center>
 
+### Predictions of Bicknell's thrush breeding range
+
 ```{r 4 range map, fig.align='center', out.width = "100%", out.height = "200%", echo=FALSE}
 plot.map3()
 ```
 
+**Fig 1**. Bicknell's thrush predicted breeding range. Breeding range is presented for A) current climatic conditions, for B) an increase of 2°c, and for C) an increase of 4°C.
+
 ## Results panel
 
 ```{r 4 panel area, fig.align='center', out.width = "100%", echo=FALSE}
-library(dplyr)
 # 1. Combine all data
 area_dupl <- bind_rows(area_QC, area_M, area_ET, .id = "id") %>%
                mutate(id=replace(id, id==1, "QC")) %>%
@@ -259,6 +263,7 @@ ggarrange(p_total + rremove("xlab") + rremove("x.text"), p_area + rremove("legen
           nrow = 4, heights = c(1.5, 1.5, 1.2, 1), align = "v")
 ```
 
+**Fig. 2**. Bicknell's thrush breeding range distribution change in response to climate warming. 
 
 Results at the scale of Québec as well as for the Forêt Montmorency present expansion of habitat amount hiding the simulataneous habitat patches loss and fragmentation. In the Eastern Townships, effects of habitat patch loss and contraction are clearly observable.
 
@@ -341,14 +346,14 @@ capacity <- bind_rows(cap_QC, cap_M, cap_ET, , .id = "id") %>%
                mutate(id=replace(id, id==3, "ET"))
 
 
-group_by(capacity, id, temp) %>%
-           ggplot(aes(x=temp, y=capacity, group=id, color=id)) +
-           geom_line() +
-           scale_color_manual(values=cols) +
-           scale_x_continuous(name="Temperature warming (°C)") +
-           scale_y_continuous(name = "Metapop capacity") +
-           labs(linetype = "Regions") +
-           theme_classic()
+#group_by(capacity, id, temp) %>%
+#           ggplot(aes(x=temp, y=capacity, group=id, color=id)) +
+#           geom_line() +
+#           scale_color_manual(values=cols) +
+#           scale_x_continuous(name="Temperature warming (°C)") +
+#           scale_y_continuous(name = "Metapop capacity") +
+#           labs(linetype = "Regions") +
+#           theme_classic()
 
 # QC
 
@@ -390,9 +395,15 @@ pMeta_M <- ggplot(data=totalArea_M, aes(x=temp, y=totalArea/totalArea[1])) +
 ggarrange(pMeta_QC, pMeta_M, pMeta_ET, ncol = 3)
 ```
 
+**Fig. 3**. Metapopulation effect. Habitat amount (solid line) and metapopulation capacity in response to climate warming are presented for regions of A) Québec, B) Forêt Montmorency, and C) Eastern Townships.
+
+Change in habitat amount hides changes in landscape connectivity. Metapopulation capacity shows that the impact of landscape spatial configuration has effects on species persistence that is supperior to what of habitat amount alone. The metapop effect illustartes the non linearity between changes in habitat availability and species perrsistence in the landscape.
+
 ## Mismatch
 
-Proportion of suitability of the different habitat types (type of forest cover) is presented for climate warming scenarios.
+Habitat (type of forest cover) proportion contained within the Bicknell's thrush projected breeding range for climate warming scenarios.
+
+Point of this figure: to illustrate that the response lag of a lower trophic position creates a mismatch between its distribution and that of climatic conditions. Ultimately, Metapop theory predicts that the mismatch can alter the extent and the position of the top trophic level distribution limits, therefore affecting top trophic level response to climate warming.
 
 ```{r mismatch, fig.align='center', out.width = "100%", fig.asp = .4, echo=FALSE}
 # Data --------------------------------------------------------------------
@@ -448,23 +459,28 @@ t_GRBI_M <- habOcc.table(explana_dat, SDM, extent = c(xmin = -72.2, xmax = -70, 
 t_GRBI_ET <- habOcc.table(explana_dat, SDM, extent = c(xmin = -73, xmax = -70, ymin = 45, ymax = 46), RL_cutoff = 0.05)
 
 # Gaspésie
-t_GRBI_G <- habOcc.table(explana_dat, SDM, extent = c(xmin = -67.5, xmax = -65, ymin = 48, ymax = 49), RL_cutoff = 0.05)
+#t_GRBI_G <- habOcc.table(explana_dat, SDM, extent = c(xmin = -67.5, xmax = -65, ymin = 48, ymax = 49), RL_cutoff = 0.05)
 
 
 # Plot --------------------------------------------------------------------
 
-par(mfrow = c(1,4))
-barplot(t(t_GRBI_QC), beside = TRUE, legend = TRUE, main = "Québec", ylab = "Proportion of occupied habitats")
+par(mfrow = c(1,3))
+barplot(t(t_GRBI_QC), beside = TRUE, legend = TRUE, main = "Québec", ylab = "Habitat proportion")
 barplot(t(t_GRBI_M), beside = TRUE, legend = TRUE, main = "Forêt Montmorency")
 barplot(t(t_GRBI_ET), beside = TRUE, legend = TRUE, main = "Eastern Townships")
-barplot(t(t_GRBI_G), beside = TRUE, legend = TRUE, main = "Gaspésie")
+#barplot(t(t_GRBI_G), beside = TRUE, legend = TRUE, main = "Gaspésie")
 ```
 
-Examination of the mismatch between habitat and species abiotic niche shows an increase at the Québec scale of habitat amount (expansion). That is because newly suitable habitat is added to the distribution. However, the effects of loss and fragmentation of previously suitable habitat is hidden by the new suitable patches.
+**Fig. 4**. Habitat - climate mismatch.
 
-Mismatch affects not only the proportion of habitat types occupied, but also the change in proportions occupied between habitat types. At the scale of Québec, the change in occupancy is of:
+Examination of the mismatch between habitat and species abiotic niche (climate) shows an increase at the Québec scale of habitat amount (expansion) for an increase of 2°C. That is because previously unsuitable habitat is added to the breeding range. It is observable by the greater increase of the breeding range in the mixed forest than in the boreal forest. However, the effects of loss and fragmentation of previously suitable habitat is hidden by the breeding range expansion to new suitable patches.
+
+Mismatch affects not only the proportion of habitat types contained within bicknell's thrush breeding range, but also the change in proportions of habitat types contained within the breeding range. At the scale of Québec, the change in proportions is of:
+
+**Table. 1**. Proportion of habitat types contained within bicknell's thrush breeding range for climate warming scenarios.
+
 ```{r prop change QC, fig.align='center', echo=TRUE}
-# Change in habitat occupancy
+# Change in habitats proportions within the breeding range
 (t_GRBI_QC[2,]-t_GRBI_QC[1,])/t_GRBI_QC[1,] # 0 to +2
 (t_GRBI_QC[3,]-t_GRBI_QC[2,])/t_GRBI_QC[2,] # +2 to +4
 ```
@@ -472,7 +488,7 @@ Mismatch affects not only the proportion of habitat types occupied, but also the
 In Forêt Montmorency:
 
 ```{r prop change M, fig.align='center', echo=TRUE}
-# Change in habitat occupancy
+# Change in habitats proportions within the breeding range
 (t_GRBI_M[2,]-t_GRBI_M[1,])/t_GRBI_M[1,] # 0 to +2
 (t_GRBI_M[3,]-t_GRBI_M[2,])/t_GRBI_M[2,] # +2 to +4
 ```
@@ -480,9 +496,12 @@ In Forêt Montmorency:
 In the Eastern Townships:
 
 ```{r prop change ET, fig.align='center', echo=TRUE}
-# Change in habitat occupancy
+# Change in habitats proportions within the breeding range
 (t_GRBI_ET[2,]-t_GRBI_ET[1,])/t_GRBI_ET[1,] # 0 to +2
 ```
+
+Breeding range contraction is shown by the greater decrease in contained proportion of mixed and temperate forest types than boreal. That is the expression of the habitat-climate (niche) mismatch. In other words, the result of the forest habitat incapacity to respond to climate warming.
+
 
 # Preliminary exploration of visualizations
 
