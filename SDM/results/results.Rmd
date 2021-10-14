@@ -287,15 +287,15 @@ compute.capacity <- function(metrics, cc, totalArea, file.name, alpha = c(1, 5, 
 }
 
 # Compute capacities
-compute.capacity(metrics_QC, cc, totalArea_QC, file.name = "/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/capacities_QC.RDS")
-compute.capacity(metrics_M, cc, totalArea_M, file.name = "/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/capacities_M.RDS")
-compute.capacity(metrics_ET, cc, totalArea_ET, file.name = "/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/capacities_ET.RDS")
+if(!file.exists("/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/capacities_QC.RDS")) compute.capacity(metrics_QC, cc, totalArea_QC, file.name = "/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/capacities_QC.RDS")
+if(!file.exists("/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/capacities_M.RDS")) compute.capacity(metrics_M, cc, totalArea_M, file.name = "/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/capacities_M.RDS")
+if(!file.exists("/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/capacities_ET.RDS")) compute.capacity(metrics_ET, cc, totalArea_ET, file.name = "/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/capacities_ET.RDS")
 ```
 
 ```{r capacity vs. area, fig.align='center', out.width = "100%", out.height = "75%", fig.asp = .6, echo=FALSE, eval=FALSE}
 
 # Function to return capacity plot
-plot.capacity <- function(metrics, cc, totalArea, file.name, alpha = c(1, 5, 50, 200, 500)){
+plot.capacity <- function(cc, totalArea, file.name, alpha = c(1, 5, 50, 200, 500)){
     
     # Load data
     capacity <- readRDS(file.name)    
@@ -326,9 +326,9 @@ plot.capacity <- function(metrics, cc, totalArea, file.name, alpha = c(1, 5, 50,
 }
 
 # 
-p_capQC <- plot.capacity(metrics_QC, cc, totalArea_QC, compute.cap = TRUE, file.name = "/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/capacities_QC.RDS")
-p_capM <- plot.capacity(metrics_M, cc, totalArea_M, compute.cap = TRUE, file.name = "/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/capacities_M.RDS")
-p_capET <- plot.capacity(metrics_ET, cc, totalArea_ET, file.name = "/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/capacities_ET.RDS")
+p_capQC <- plot.capacity(cc, totalArea_QC, compute.cap = TRUE, file.name = "/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/capacities_QC.RDS")
+p_capM <- plot.capacity(cc, totalArea_M, compute.cap = TRUE, file.name = "/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/capacities_M.RDS")
+p_capET <- plot.capacity(cc, totalArea_ET, file.name = "/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/capacities_ET.RDS")
 
 ggarrange(p_capQC, p_capM, p_capET, ncol = 3)
 ````
