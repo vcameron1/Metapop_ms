@@ -109,25 +109,33 @@ In the following sections, we demonstrate the ability of a coupled metapopulatio
 ### Studied region
 
 *The Bicknell's thrush breeding range was projected for the region where the majority of its habitat is identified (between -75° and -64°N and 45° and 49.5°W)*
-- Central Québec 
-- Populations in Eastern townships, Forêt Montmmorency, Gaspésie
-
-*Forest, elevation, and clim data. The landscape is characterized by a mix of boreal, mixed and temperate forests*
-- Forest data
-- Clim data (mean of 1960-2000)
-- Elevational data
-- Latitudinal and elevational gradient in forest type and climate
-
+The Bicknell's thrush breeding range was projected for the region where the majority of the canadian occurences are identified (between -75° and -64°N and 45° and 49.5°W) [cosewic].
+Populations were primarily found in the province of Québec, in the regions of the Eastern Townships, Gaspésie, and Forêt Montmorency (fig. 1).
+The landcape is characterized by a mix of boreal, mixed and temperate forest driven by important latitudinal and elevational gradients in climate.
+Boreal forest type increases in prevalence with altitude and latitude while Temperate forest type is associated with lower elevations and warmer climates and Mixed forest type characterises the transition from Boreal to Temperate.
+Mean annual temperatures ranges from -3.8 to 7°C and mean annual precipitations from 793 to 1735 mm [SOURCE].
+climate data were interpolated from climate station records for the 1981-2010 period to produce a time series of annual means (McKenney 2013?!?).
+Elevational data was gathered using the elevatr R package [SOURCE].
+All data were rasterized at a 250m2 resolution. 
 
 ### Bicknell's thrush breeding range
 
 *The Bicknell's thrush breeding range was modeled using a downweighted poisson regression in combination with unpublished data of CDPNQ*
+The Bicknell's thrush breeding range was modeled using a downweighted poisson regression adapted from @renner_point_2015 in combination with unpublished data of the Centre de données sur le patrimoine naturel du Québec (CDPNQ).
+We only considered reccordings of nidification behaviours as occurences.
+We rasterized occurences on a 250m2 square grid to remove any potential effects of temporal and spatial speudo replication.
+We used a saturated model to find the number of pseudo absences that optimized the likelihood and selected 1 000 000 pseudo absences that were randomly positioned accross the landscape (from -76° to -64°N and 45° to 52°W).  
+We set the weights to some small values at presence locations and to large values at pseudo absences locations [@renner_point_2015].
+The model returned intensity maps corresponding to estimated densities.
+
+
 - 250m2 square grid
 - Occurence data
-- Pseudo absences (weights)
+- Pseudo absences (weights), model selection on all variables
 - Characteristics of the data set
 - Model projects intensity (density & suitability proxy)
 - Projections of the breeding range at equilibrium
+- data used for higher latitudes
 
 *The model was designed using expert knowledge on habitat and climatic niche characteristics and identified a temperature threshold that interacts with elevation*
 - habitat: High elevation, coastal or boreal
@@ -149,16 +157,31 @@ In the following sections, we demonstrate the ability of a coupled metapopulatio
 - **Uncertainty** ... ran X projections ?!?
 
 *Analyses were conducted for Québec and for two subregions of interest to metapopulation dynamics*
+Analyses were conducted separately for the region of Québec as well as two subregions.
+The Réserve faunique des Laurentides is mountenous, being part of Laurentians mountain chain, and is part of the boreal forest.
+It is at the northern edge of the Bicknell's thrush distribution, but has a high concentration of populations.
+The Eastern Townships is situated in the southern most part of Québec where the dominating forest habitat type is temperate forest. 
+The landscape is characterized by the presence of the Appalachian mountain chain and the monteregiennes mountains creating a highly fragmented landscape for the bicknell's thrush.
+
 - Regions selected to illustrate metapop dynamics (different distribution characteristics)
+	- dynamiques d'expansion et effondrement de métapop
 	- also at different latitudes
 - Forêt Montmorency: high latitude (Colder climate), less patchy, some habitat patches not yet suitable due to cool climate
 - Eastern Townships: Low latitude (warm climate), small summits, expected extinctions
 
 *We defined the extent of bicknell's thrush breeding range using an arbritrary intensity threshold of 0.05.*
+We defined the extent of bicknell's thrush breeding range using intensity maps returned by the model and converting them to distribution maps.
+To set distribution limits, we used an arbritrary intensity threshold of 0.05.
+Individual habitat patches were defined as the immediate neighbouring patches within the breeding range.
+
 - Projections were returned as raster maps of intensity
 - We transformed the projected intensity map to a range map (i.e., present or absent, 1 or 0) using the threshold to define range limits
 
 *We assessed changes in the distribution of the breeding range with measures of temporal (°C) trends in ...suitable... variables for each climate scenaro: i) n, ii) area, and iii) distance*
+Changes to the breeding range were assessed using measures of temporal trends for the number of patches, the areas of patches, and the inter-patch distances.
+These measures captured the number of population, the population sizes and the connectivity of the landscape.
+
+
 - These results were obtained from the breeding range raster by joining all immediate neighbouring cells part of the breeding range to generate disctinct patches (polygons). 
 - We present the number of distinct patches, the distribution of patch area, and the distribution of inter-patch distances
 - Number of patches = number of populations
@@ -166,13 +189,20 @@ In the following sections, we demonstrate the ability of a coupled metapopulatio
 - Inter-patch distance = connectivity of the landscape
 - Results were analysed separately for QC, M, and ET regions
 
-*We evaluated the effects of change in the distribution of the breeding range on the Bicknell's thrush metapopulation dynamics (metapop effect) using metapopulation capacity*
-- Capacity: a quantitive measure of the landscape spatial configuration on metapopulation persistence
-- We compare total area to capacity to show impact of connectivity on species perception of the landscape configuration
-
 *To quantify the habitat-climate mismatch (correlation between forest and climate distribution), we assessed the forest habitats within the breeding range.*
 - We calculated the proportion of the regional habitats present within the breeding range for climate warming scenarios.
 - To better express the mismatch of forest habitats and suitable climate conditions, we calculated the changes in forest habitats proportions within the projected breeding ranges between climate warming scenarios.
+
+*We evaluated the effects of change in the distribution of the breeding range on the Bicknell's thrush metapopulation dynamics (metapop effect) using metapopulation capacity*
+We evaluated changes in landscape connectivity using the metapopulation capacity.
+Metapopulation capacity measures persistence of the metapopulation given the spatial configuration of the landscape by integrating effects of dispersal, patch areas and inter-patch distances [@hanski_capacity_2000].
+Dispersal probability was modeled as a decreasing exponential function evaluated for a range of average dispersal distances.
+
+
+- Capacity: a quantitive measure of the landscape spatial configuration on metapopulation persistence
+- We compare habitat amount (total area) to capacity to show impact of connectivity on species perception of the landscape configuration
+- dispersal kernel
+
 
 <!----
 ### Model structure 
@@ -256,25 +286,39 @@ It captures the effect of the landscape spatial structure as it is percieved by 
 
 ### Impacts of climate warming on Bicknell's thrush breeding range
 
-Climate warming had a strong effect on Bicknell's thrush breeding range within all studied regions. For intermediate climate warming, range expansion was observed at the scale of Québec and in Forêt Montmorency, while the Eastern Townships showed rapid contraction (Fig. 1). 
-For greater climate warming, breeding range contracted importantly in all regions.
-The direction of change varied with latitude and with the extent of climate warming.
+Climate warming had a strong effect on Bicknell's thrush breeding range within all studied regions. 
+We observed significant loss of suitable habitat patches, and moderate climate warming to increase habitat amount in some regions, but intense warming to have severe negative effects (Fig. 1).
+The direction and extent of change varied with latitude and with the extent of climate warming.
 
-*Number of patches*
-Our results show a general decline in the number of patches following climate warming (Fig. 2). 
-The effects of climate warming on the number of patches within the Bicknell's thrush breeding range were more important the greater the temperature warming.
-The rate of change decreased with extent of climate warming.
+*Our results show a general decline in the number of patches following climate warming (Fig. 2).*
+- The effects of climate warming on the number of patches within the Bicknell's thrush breeding range were more important the greater the temperature warming.
+- The rate of change decreased with extent of climate warming where 50% of habitat patches were lost within and increase of 1.5°C.
+- M contains a large portion of QC patches while ET contribution to is minimal
 
+*Increase in abitat amount was observed for low to intermediate levels of climate warming (0 to +1°C), but severe decreases were observed for greater important climate warming* 
+- QC and M rapid increase, then acceleration in decrease
+- ET imediate decrease + total extinction at +2.6°C
 
-*Habitat amount*
+*Density distribution of patch area show little change for a temperature increase of +2°C*
+- Change more important for +4°C 
+- Distribution for QC very similar to that of M
+- limited changes to the density distributions
+- However, Remember that number of patch decreases
+- Decrease in very small patches
+- Increase in intermediate to large patches
 
-*Patch area*
-
-*Inter patch distance*
+*Climate warming reduces the proportion occupied by large inter-patch distance*
+- Increase in shorter i-p distances
+- changes within M and ET greater than in QC
 
 ### Cumulative impacts of habitat amount and connectivity
 
-*Loss in capacity is precipitated by loss of connectivity*
+*Loss in capacity is precipitated by loss of landscape connectivity*
+- Changes in habitat availability are amplified in capacity
+- Weird: M area increases, but not connectivity
+- ET area amount and capacity decreases sharply
+- Increase in habitat amount in QC causes spikes in capacity
+- Increases in habitat amount has most effect on capacity for greater dispersal distance (connectivity)
 
 ### Effect of temperature warming on habitat and climate distribution
 
