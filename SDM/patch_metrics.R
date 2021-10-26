@@ -6,82 +6,101 @@
 
 # This function returns a list of lists per time step. Each time step list contains the total area occupied by the species (sumArea), the total number of occupied patch (n), a data frame containing the area for each patch (patchArea), a matrix of the distance between each patch, and the metapop capacity of the landscape.
 
-patch.metrics <- function(raster, RL_cutoff = 0.05){
+patch.metrics <- function(projRaster, RL_cutoff = 0.05, a = 1/2){
 
     # 
-    RL_cutoff = log(RL_cutoff)
+    RL_cutoff = log(RL_cutoff) ## Log RL because projections were log
 
-    # Check if any values excced RL_cutoff
-    if(raster::maxValue(raster) < RL_cutoff){
-        sumArea = 0
-        n = 0
-        patchArea = 0
-        d_ij = NA
-        capacity = NA
-    }else{
-        #### Compute total habitat size ####
-        raster[raster < RL_cutoff] <- NA
-        area <- raster::area(raster, na.rm=TRUE) # in km2
-        area <- area[!is.na(area)]
-        sumArea <- sum(area, na.rm = TRUE)
+    # Results containers
+    n <- c()                  ## Number of patches
+    totalArea <- c()          ## Total area
+    capacity <- data.frame(capacity = NA,
+                           alpha = NA,
+                           scenario = NA)           ## Metapopulation capacity
+    patchArea <- data.frame(patch = NA,
+                            area = NA,
+                            scenario = NA) ## individual patch areas
+    d_ij <- list()            ## inter-patch distance matrices
 
-        # Identify groups of cells that are connected
-        clump <- raster::clump(raster >= RL_cutoff)
+    # Loop accros projections to compute metrics
+    for(i in seq_along(names(projRaster))){
+        raster = projRaster[[i]]
+        # Check if any values excced RL_cutoff
+        if(raster::maxValue(raster) < RL_cutoff){
+            n[i] = 0
+            totalArea[i] = 0
+            capacity[i] = 0
+            patchArea = rbind(patchArea, c(0,0,names(raster)))
+            d_ij[[i]] = 0
+        }else{
+            #### Compute total habitat size ####
+            raster[raster < RL_cutoff] <- NA
+            area <- raster::area(raster, na.rm=TRUE) # in km2
+            area <- area[!is.na(area)]
+            totalArea[i] <- sum(area, na.rm = TRUE)
+            
+            # Identify groups of cells that are connected
+            clump <- raster::clump(raster >= RL_cutoff)
+
+            #### Compute patch area (km2) ####
+            values <- unique(raster::values(clump))
+            values <- values[!is.na(values)]
+            for(patch in seq_along(values)){
+                # # Compute clump area 
+                clumpX <- clump
+                clumpX[clumpX != patch] <- NA
+                clumpArea <- raster::area(clumpX, na.rm = TRUE)
+                clumpArea <- clumpArea[!is.na(clumpArea)]
+                clumpArea <- sum(clumpArea, na.rm = TRUE)
+                    
+                # # Save in df
+                patchArea <- rbind(patchArea, c(patch, clumpArea, names(raster)))
+            }
+            patchArea <- patchArea[!is.na(patchArea$area),]
+            patchArea$area <- as.numeric(patchArea$area)
+
+            #### Number of patches ####
+            n[i] = length(patchArea[patchArea$scenario==names(raster), "patch"])
 
 
-        #### Compute patch area (m2) ####
-        values <- unique(raster::values(clump))
-        values <- values[!is.na(values)]
-        patchArea <- data.frame(patch = values, area = 0)
-        for(patch in patchArea$patch){
-            # # Compute clump area 
-            clumpX <- clump
-            clumpX[clumpX != patch] <- NA
-            clumpArea <- raster::area(clumpX, na.rm = TRUE)
-            clumpArea <- clumpArea[!is.na(clumpArea)]
-            clumpArea <- sum(clumpArea, na.rm = TRUE)
-                
-            # # Save in df
-            patchArea[which(patchArea$patch == patch), 'area'] <- clumpArea
-        }
+            #### Inter-patch distance ####
+            clumpPoly <- raster::rasterToPolygons(clump, dissolve = TRUE)
+            d_ij[[i]] <- rgeos::gDistance(clumpPoly, byid = TRUE)
 
 
-        #### Number of patches ####
-        n = length(patchArea$patch)
+            #### Metapop capacity ####
+            # Compute landscape matrix
+            ##exp(-a*d)*A1*A2 as in Hanski 2000
 
-
-        #### Inter-patch distance ####
-        clumpPoly <- raster::rasterToPolygons(clump, dissolve = TRUE)
-        d_ij <- rgeos::gDistance(clumpPoly, byid = TRUE)
-
-        #### Metapop capacity ####
-
-        # Compute landscape matrix
-        ##exp(-a*d)*A1*A2 as in Hanski 2000
-
-        land <- matrix(rep(0, length(d_ij)), nrow=nrow(d_ij))
-        a <- 1/2
-        for(i in patchArea$patch){
-            for(j in patchArea$patch){
-            if(i == j) next
-            land[i,j] <- exp(-a*d_ij[i,j]) * patchArea[i,'area'] * patchArea[j,'area']
+            land <- matrix(rep(0, length(d_ij[[i]])), nrow=nrow(d_ij[[i]]))
+            for(alpha in a){
+                for(patch_i in seq_along(values)){
+                    for(patch_j in seq_along(values)){
+                    if(patch_i == patch_j) next
+                    land[patch_i,patch_j] <- exp(-alpha*d_ij[[i]][patch_i,patch_j]) * 
+                                    patchArea[patchArea$scenario==names(raster) & patchArea$patch==patch_i,'area'] * 
+                                    patchArea[patchArea$scenario==names(raster) & patchArea$patch==patch_j,'area']
+                    }
+                }
+                # Metapop capacity
+                capacity <- rbind(capacity, c(eigen(land)$values[1], alpha, names(raster)))
+                capacity <- capacity[!is.na(capacity$capacity),]
+                capacity$capacity <- as.numeric(capacity$capacity)
             }
         }
-
-        # Metapop capacity
-        eigen = eigen(land)$values[1]
-
     }
+
+    # Rename result containers
+    names(n) = names(totalArea) = names(d_ij) <- names(projRaster)
 
     #### Return ####
     return(
         list(
-        totalArea = sumArea,
-        n = n,
-        patchArea = patchArea,
-        d_ij = d_ij,
-        capacity = eigen)
-    )
+            n = n,
+            totalArea = totalArea,
+            capacity = capacity,
+            patchArea = patchArea,
+            d_ij = d_ij))
 }
 
 

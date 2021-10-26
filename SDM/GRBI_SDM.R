@@ -23,8 +23,8 @@ GRBI_points <- readRDS("./data_clean/GRBI_rasterPoints_sQ.RDS")
 # Explanatory variables
 explana_dat <- readRDS("./SDM/explana_dat.RDS")
 ## Square temperature
-explana_dat[["mat2"]] <- explana_dat[["mat"]]
-raster::values(explana_dat[["mat2"]])<- raster::values(explana_dat[["mat"]])^2
+explana_dat[["temp2"]] <- explana_dat[["temp"]]
+raster::values(explana_dat[["temp2"]])<- raster::values(explana_dat[["temp"]])^2
 
 # Polygon of the region boundaries
 spacePoly <- readRDS("./SDM/spacePoly.RDS")
@@ -37,15 +37,15 @@ names(explana_dat)
 dev.new()
 
 # Rasterize GRBI occurences
-GRBI_r <- raster::rasterize(raster::coordinates(GRBI_points)[,1:2], explana_dat[["mat"]], fun='count', background=0)
+GRBI_r <- raster::rasterize(raster::coordinates(GRBI_points)[,1:2], explana_dat[["temp"]], fun='count', background=0)
 
-# mat : mean annual temperature
-hist(raster::values(explana_dat[["mat"]])) 
-boxplot(raster::values(explana_dat[["mat"]]) ~ raster::values(GRBI_r))
+# temp : mean annual temperature
+hist(raster::values(explana_dat[["temp"]])) 
+boxplot(raster::values(explana_dat[["temp"]]) ~ raster::values(GRBI_r))
 
-# tap : mean total annual precipitations
-hist(raster::values(explana_dat[["tap"]])) 
-boxplot(raster::values(explana_dat[["tap"]]) ~ raster::values(GRBI_r))
+# prec : mean total annual precipitations
+hist(raster::values(explana_dat[["prec"]])) 
+boxplot(raster::values(explana_dat[["prec"]]) ~ raster::values(GRBI_r))
 
 # elevation
 hist(raster::values(explana_dat[["elevation"]]))
@@ -128,11 +128,11 @@ for(i in 1:3){
 
 ##################
 # Hypothesys
-## 3. T, P, elevation, and forest cover are important and climate interacts with elevation : "bio1 * bio12 * elevation + type_couv + cl_dens + cl_haut"
+## 3. T, P, elevation, and forest cover are important and climat interacts with elevation : "bio1 * bio12 * elevation + type_couv + cl_dens + cl_haut"
 ##################
 
 # Model fomula
-cov <- c("mat * mat2 * tap * elevation + type_couv + cl_dens + cl_haut") 
+cov <- c("temp * temp2 * prec * elevation + type_couv + cl_dens + cl_haut") 
 
 # Downweighted poisson regression (point process model)
 res <- SDM.glm(spacePoly=spacePoly, 
@@ -156,17 +156,17 @@ SDM.AUC(model, newdata=explana_dat, GRBI_points=GRBI_points, RL_cutoff = 0.05, p
 
 
 # Temperature gradient
-mat <- seq(from=min(raster::values(explana_dat[["mat"]]), na.rm = TRUE), to=max(raster::values(explana_dat[["mat"]]), na.rm = TRUE), length.out=100)
-mat2 <- mat^2
+temp <- seq(from=min(raster::values(explana_dat[["temp"]]), na.rm = TRUE), to=max(raster::values(explana_dat[["temp"]]), na.rm = TRUE), length.out=100)
+temp2 <- temp^2
 
 # Fix other variables
 dat <- as.data.frame(raster::values(explana_dat))[1:100,]
-dat$tap <- mean(raster::values(explana_dat[["tap"]]), na.rm = TRUE)
+dat$prec <- mean(raster::values(explana_dat[["prec"]]), na.rm = TRUE)
 dat$type_couv <- 1
 dat$cl_dens <- 1
 dat$cl_haut <- 7
-dat$mat <- mat
-dat$mat2 <- mat2
+dat$temp <- temp
+dat$temp2 <- temp2
 elev <- seq(500, 1200, by = 25)
 
 # Predict
@@ -182,14 +182,10 @@ colo <- colorRampPalette(c("grey90", "steelblue4",
                           "gold", "red1", "red4"))(length(elev))
 
 # Plot prediction
-plot(y = log(intensity[[length(elev)]]), x = dat$mat, col = colo[length(elev)],ylab="log(intensity)", type="l",
+plot(y = log(intensity[[length(elev)]]), x = dat$temp, col = colo[length(elev)],ylab="log(intensity)", type="l",
     xlab = "Temperature (°C)")
 for(i in 1:(length(elev)-1)){
-  lines(y = log(intensity[[i]]), x = dat$mat, col=colo[i])
+  lines(y = log(intensity[[i]]), x = dat$temp, col=colo[i])
 }
 legend(3.6, 14, legend = elev, fill = colo, ncol = 2, title = "Elevation (m)", bty = 'n')
-
-
-# 6 - Functions -----------------------------------------------------------
-
 

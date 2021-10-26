@@ -57,10 +57,10 @@ plot.map3 <- function(projRaster_path = "/Users/victorcameron/Documents/Git/Meta
     # 2 - Draw the map --------------------------------------------------------
 
 
-    par(mfrow=c(3,1), mar=c(3,3,0,0))
-    raster::plot(SDM_sub[[1]]>=log(0.05), legend = F, bty = "o", yaxs="i", xaxs="i",  col = c("darkkhaki", "darkgreen"), colNA = rgb(193/256,236/256,250/256), main = "0°C")
-    raster::plot(SDM_sub[[11]]>=log(0.05), legend = F, bty = "o", yaxs="i", xaxs="i",  col = c("darkkhaki", "darkgreen"), colNA = rgb(193/256,236/256,250/256), main = "+2°C")
-    raster::plot(SDM_sub[[21]]>=log(0.05), legend = F, bty = "o", yaxs="i", xaxs="i",  col = c("darkkhaki", "darkgreen"), colNA = rgb(193/256,236/256,250/256), main = "+4°C")
+    par(mfrow=c(raster::nlayers(SDM)/2,2), mar=c(3,3,1,1))
+    for(i in 1:raster::nlayers(SDM)){
+        raster::plot(SDM_sub[[i]]>=log(0.05), legend = F, bty = "o", yaxs="i", xaxs="i",  col = c("darkkhaki", "darkgreen"), colNA = rgb(193/256,236/256,250/256), main = names(SDM_sub[[i]]))
+    }
 }
 
 
