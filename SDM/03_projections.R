@@ -12,10 +12,11 @@ bioclim_proj <- readRDS("./data_clean/bioclim_proj_sQ.RDS")
 explana_dat <- readRDS("./SDM/explana_dat.RDS")
 
 # Scenarios
-scenarios <- c("1981_2010", "RCP45_2011_2040", "RCP45_2041_2070", "RCP45_2071_2100")
+scenarios <- c("1981_2010", "RCP45_2011_2040",
+               "RCP45_2041_2070", "RCP45_2071_2100")
 
 # Compute predictions per scenario
-for(i in seq_along(scenarios)){
+for (i in seq_along(scenarios)) {
 
   # # Projected temperature data
   explana_scenario <- explana_dat
@@ -68,19 +69,19 @@ source("./SDM/patch_metrics.R")
 # # Limit analysis to current distribution
 e <- raster::extent(c(xmin = -75, xmax = -64, ymin = 45, ymax = 49.5))
 SDM_QC <- raster::crop(SDM_GRBI, e)
-metrics_QC <- patch.metrics(SDM_QC, RL_cutoff = 0.05, a = 1/2)
+metrics_QC <- patch.metrics(SDM_QC, RL_cutoff = 0.05, a = c(1, 1/5, 1/50, 1/200, 1/500))
 #saveRDS(metrics_QC, "./SDM/results/metrics_QC.RDS")
 
 # Patch metrics over EasternTownships
 e_ET <- raster::extent(c(xmin = -73, xmax = -70, ymin = 45, ymax = 46))
 SDM_ET <- raster::crop(SDM_GRBI, e_ET)
-metrics_ET <- patch.metrics(SDM_ET, RL_cutoff = 0.05, a = 1/2)
+metrics_ET <- patch.metrics(SDM_ET, RL_cutoff = 0.05, a = c(1, 1/5, 1/50, 1/200, 1/500))
 #saveRDS(metrics_ET, "./SDM/results/metrics_ET.RDS")
 
 # Patch metrics over forêt Montmorency
-e_M <- raster::extent(c(xmin = -72.2, xmax = -70, ymin = 46.8, ymax = 48.2))
-SDM_M <- raster::crop(SDM_GRBI, e_M)
-metrics_M <- patch.metrics(SDM_M, RL_cutoff = 0.05, a = 1/2)
+e_RL <- raster::extent(c(xmin = -72.2, xmax = -70, ymin = 46.8, ymax = 48.2))
+SDM_RL <- raster::crop(SDM_GRBI, e_RL)
+metrics_M <- patch.metrics(SDM_M, RL_cutoff = 0.05, a = c(1, 1/5, 1/50, 1/200, 1/500))
 #saveRDS(metrics_M, "./SDM/results/metrics_M.RDS")
 
 
