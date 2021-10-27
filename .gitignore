@@ -50,6 +50,8 @@ vignettes/*.pdf
 *.RDS
 *.grd
 *.gri
+*.gif
+*.html
 mapSpecies/*
 graveyard/*
 trash/*
