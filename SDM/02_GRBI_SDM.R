@@ -18,63 +18,62 @@ source("./SDM/SDM_functions.R")
 
 
 # Rasterized GRBI occurences for south of Québec
-GRBI_points <- readRDS("./data_clean/GRBI_rasterPoints_sQ.RDS")
+GRBI_points <- readRDS("./data_clean/GRBI_rasterPoints.RDS")
 
 # Explanatory variables
-explana_dat <- readRDS("./SDM/explana_dat.RDS")
-## Square temperature
-explana_dat[["temp2"]] <- explana_dat[["temp"]]
-raster::values(explana_dat[["temp2"]])<- raster::values(explana_dat[["temp"]])^2
+load("./SDM/explana_dat_df.RData")
 
 # Polygon of the region boundaries
-spacePoly <- readRDS("./SDM/spacePoly.RDS")
+load("./SDM/spacePoly.RData")
 
 
 # 2 - Explore data --------------------------------------------------------
 
 
-names(explana_dat)
-dev.new()
+if(false){
+  names(explana_dat)
+  dev.new()
 
-# Rasterize GRBI occurences
-GRBI_r <- raster::rasterize(raster::coordinates(GRBI_points)[,1:2], explana_dat[["temp"]], fun='count', background=0)
+  # Rasterize GRBI occurences
+  GRBI_r <- raster::rasterize(raster::coordinates(GRBI_points)[,1:2], explana_dat[["temp"]], fun='count', background=0)
 
-# temp : mean annual temperature
-hist(raster::values(explana_dat[["temp"]])) 
-boxplot(raster::values(explana_dat[["temp"]]) ~ raster::values(GRBI_r))
+  # temp : mean annual temperature
+  hist(raster::values(explana_dat[["temp"]])) 
+  boxplot(raster::values(explana_dat[["temp"]]) ~ raster::values(GRBI_r))
 
-# prec : mean total annual precipitations
-hist(raster::values(explana_dat[["prec"]])) 
-boxplot(raster::values(explana_dat[["prec"]]) ~ raster::values(GRBI_r))
+  # prec : mean total annual precipitations
+  hist(raster::values(explana_dat[["prec"]])) 
+  boxplot(raster::values(explana_dat[["prec"]]) ~ raster::values(GRBI_r))
 
-# elevation
-hist(raster::values(explana_dat[["elevation"]]))
-hist(raster::values(explana_dat[["elevation"]])[raster::values(GRBI_r) == 1]) 
-boxplot(raster::values(explana_dat[["elevation"]]) ~ raster::values(GRBI_r))
+  # elevation
+  hist(raster::values(explana_dat[["elevation"]]))
+  hist(raster::values(explana_dat[["elevation"]])[raster::values(GRBI_r) == 1]) 
+  boxplot(raster::values(explana_dat[["elevation"]]) ~ raster::values(GRBI_r))
 
-# type_couv
-table(raster::values(explana_dat[["type_couv"]]))
+  # type_couv
+  table(raster::values(explana_dat[["type_couv"]]))
 
-t <- table(raster::values(explana_dat[["type_couv"]]), raster::values(GRBI_r))
-t[,1] <- t[,1]/colSums(t)[1]
-t[,2] <- t[,2]/colSums(t)[2]
-barplot(t, legend = TRUE)
+  t <- table(raster::values(explana_dat[["type_couv"]]), raster::values(GRBI_r))
+  t[,1] <- t[,1]/colSums(t)[1]
+  t[,2] <- t[,2]/colSums(t)[2]
+  barplot(t, legend = TRUE)
 
-# cl_dens
-table(raster::values(explana_dat[["cl_dens"]]))
+  # cl_dens
+  table(raster::values(explana_dat[["cl_dens"]]))
 
-t <- table(raster::values(explana_dat[["cl_dens"]]), raster::values(GRBI_r))
-t[,1] <- t[,1]/colSums(t)[1]
-t[,2] <- t[,2]/colSums(t)[2]
-barplot(t, legend = TRUE)
+  t <- table(raster::values(explana_dat[["cl_dens"]]), raster::values(GRBI_r))
+  t[,1] <- t[,1]/colSums(t)[1]
+  t[,2] <- t[,2]/colSums(t)[2]
+  barplot(t, legend = TRUE)
 
-# cl_haut
-table(raster::values(explana_dat[["cl_haut"]]))
+  # cl_haut
+  table(raster::values(explana_dat[["cl_haut"]]))
 
-t <- table(raster::values(explana_dat[["cl_haut"]]), raster::values(GRBI_r))
-t[,1] <- t[,1]/colSums(t)[1]
-t[,2] <- t[,2]/colSums(t)[2]
-barplot(t, legend = TRUE)
+  t <- table(raster::values(explana_dat[["cl_haut"]]), raster::values(GRBI_r))
+  t[,1] <- t[,1]/colSums(t)[1]
+  t[,2] <- t[,2]/colSums(t)[2]
+  barplot(t, legend = TRUE)
+}
 
 
 # 3 - Likelihood for different numbers of quadrature points ---------------
@@ -117,13 +116,13 @@ for(i in 1:3){
 ##################
 # Habitat requirements of GRBI accoring to COSEWIC
 ## Habitat specialist
-## 1. High elevation coniferous forests (windy, dense, naturally perturbed, coniferous)
-## 2. lowland coastal forests (rainy, windy, dense, naturally perturbed, coniferous)
-## 3. indistrial forests of the north (dense, perturbed, coniferous)
-## dense coniferous forests non-perturbed
-## perturbed forest in regeneration
+## 1. High elevation coniferous forests (windy, dense, naturally perturbed, coniferous, fir)
+## 2. lowland coastal forests (rainy, windy, dense, naturally perturbed, coniferous, fir)
+## 3. indistrial forests of the north (dense, perturbed, coniferous, fir)
+## dense fir forests non-perturbed
+## perturbed fir forest in regeneration
 ## Altitude is an important factor: 450m-1000m minimum
-## RL coincides with Mixed fores - boreal forest ecotone
+## RL coincides with Mixed forest - boreal forest ecotone
 ##################
 
 ##################
@@ -132,14 +131,15 @@ for(i in 1:3){
 ##################
 
 # Model fomula
-cov <- c("temp * temp2 * prec * elevation + type_couv + cl_dens + cl_haut") 
+#cov <- c("temp * temp2 * prec * elevation + type_couv + cl_dens + cl_haut")
+cov <- c("temp * temp2 * prec * elevation + abie.balPropBiomass * abie.balBiomass")
 
 # Downweighted poisson regression (point process model)
 res <- SDM.glm(spacePoly=spacePoly, 
                   GRBI_points=GRBI_points,
                   covariables = cov, 
                   pred = explana_dat,
-                  nquad = 1000000,         
+                  nquad = 1000000,
                   quadOverlay = TRUE,
                   nquadWanted = FALSE)
 model <- res[["model"]]

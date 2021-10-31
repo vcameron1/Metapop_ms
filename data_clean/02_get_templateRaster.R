@@ -21,6 +21,15 @@ template <- MergedRasters >= 0
 raster::writeRaster(template, filename="./data_clean/templateRaster.tif", overwrite=TRUE)
 
 
+# Build SpatialPolygons
+rasterForPoly <- template
+raster::values(rasterForPoly) <- ifelse(is.na(raster::values(rasterForPoly)), NA, 1)
+spacePoly <- raster::rasterToPolygons(rasterForPoly, dissolve = TRUE)
+
+# Save spatialPolygons
+raster::writeRaster(spacePoly, filename="./data_clean/templateRaster.tif", overwrite=TRUE)
+
+
 # 2 - Québec region -------------------------------------------------------
 
 

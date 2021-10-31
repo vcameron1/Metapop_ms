@@ -74,17 +74,23 @@ GRBI <- GRBI[GRBI$CLASSIFICATION == "R",]
 GRBI <- GRBI[GRBI$USAGE == "Nidification",]
 
 
-# 3 - Crop GRBI data to region of interest --------------------------------
+# 3 - Reproject spatial points --------------------------------------------
 
 
 # Load reference raster
-template <- readRDS("./data_clean/templateRaster_sQ.RDS")
+template <- raster::raster("./data_clean/templateRaster.tif")
 
-# Crop GRBI presence data
-GRBI <- GRBI[GRBI$LONGITUDE >= raster::xmin(template) & 
-               GRBI$LONGITUDE <= raster::xmax(template) & 
-               GRBI$LATITUDE >= raster::ymin(template) & 
-               GRBI$LATITUDE <= raster::ymax(template),]
+# Load reference spatialPolygons
+load("./SDM/spacePoly.RData")
+
+# Load LatLong non projected spacepoly
+latlongPoly <- readRDS("./SDM/spacePoly.RDS")
+
+# Coordinates to spatial points
+GRBI_points <- sp::SpatialPoints(cbind(GRBI$'LONGITUDE_SIGN GÉO ASSOCIÉ À LA MENTION', GRBI$'LATITUDE_SIGN GÉO ASSOCIÉ À LA MENTION'), proj4string = latlongPoly@proj4string)
+
+# Reproject points
+GRBI_points <- rgdal::spTransform(GRBI_points, spacePoly@proj4string)
 
 
 # 4 - Rasterize GRBI occurences -------------------------------------------
@@ -94,11 +100,17 @@ GRBI <- GRBI[GRBI$LONGITUDE >= raster::xmin(template) &
 spacePoly <- readRDS("./SDM/spacePoly.RDS")
 
 # Rasterize GRBI occurences as presences/absences
-GRBI_points <- sp::SpatialPoints(cbind(GRBI$'LONGITUDE_SIGN GÉO ASSOCIÉ À LA MENTION', GRBI$'LATITUDE_SIGN GÉO ASSOCIÉ À LA MENTION'), proj4string = spacePoly@proj4string)
+#GRBI_points <- sp::SpatialPoints(cbind(GRBI$'LONGITUDE_SIGN GÉO ASSOCIÉ À LA MENTION', GRBI$'LATITUDE_SIGN GÉO ASSOCIÉ À LA MENTION'), proj4string = spacePoly@proj4string)
 GRBI <- raster::rasterize(GRBI_points, template, fun='count')
 
 
-# 5 - GRBI raster back to spatialPoints -----------------------------------
+# 5 - Crop GRBI data to region of interest --------------------------------
+
+
+GRBI <- mask(GRBI, spacePoly)
+
+
+# 6 - GRBI raster back to spatialPoints -----------------------------------
 
 
 # Back to spatialPoints
@@ -108,7 +120,7 @@ GRBI_points <- sp::SpatialPoints(GRBI_points,
                                   proj4string = spacePoly@proj4string)
 
 
-# 6 - Save rasterized GRBI occurences -----------------------------------
+# 7 - Save rasterized GRBI occurences -----------------------------------
 
 
-saveRDS(GRBI_points, "./data_clean/GRBI_rasterPoints_sQ.RDS")
+saveRDS(GRBI_points, "./data_clean/GRBI_rasterPoints.RDS")

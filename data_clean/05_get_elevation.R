@@ -1,18 +1,18 @@
 #############################################################
 ## Generate an elevation raster* for the south of Quebec
-## Victor Cameron 
+## Victor Cameron
 ## Spetember 2021
 #############################################################
 
 #############################################################
-## Elevation data was downloaded at a precision of ~90m
+## Elevation data was downloaded at a precision of 186.803sm
 #############################################################
 
 
 # 1 - Import raw data -----------------------------------------------------
 
 
-template <- readRDS("./data_clean/templateRaster_sQ.RDS")
+template <- raster::raster("./data_clean/templateRaster.tif")
 elev <- elevatr::get_elev_raster(template, z = 8, clip = "bbox") # Error when downloading more precise (z > 8) elevation data
 
 
@@ -23,8 +23,17 @@ elev <- elevatr::get_elev_raster(template, z = 8, clip = "bbox") # Error when do
 elev <- raster::resample(elev, template, method = 'bilinear') 
 
 
-# 3 - save data -----------------------------------------------------------
+# 3 - Cut raster with polygon of the region -------------------------------
 
 
-saveRDS(elev, "./data_clean/elev_sQ.RDS")
+# Import spacePoly
+spacePoly <- 
 
+# Mak
+elev <- raster::mask(elev, spacePoly)
+
+
+# 4 - save data -----------------------------------------------------------
+
+
+raster::writeRaster(template, filename="./data_clean/elev.tif", overwrite=TRUE)
