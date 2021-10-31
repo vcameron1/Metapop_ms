@@ -46,43 +46,44 @@ for (i in seq_along(scenarios)) {
 
   # # Stack
   if(i == 1){ 
-    SDM_GRBI <- logpred
+    RCP45 <- logpred
     }else{
-      SDM_GRBI <- raster::addLayer(SDM_GRBI, logpred)
+      RCP45 <- raster::addLayer(RCP45, logpred)
     }
 
   # # Name layer
-  names(SDM_GRBI)[[i]] <- paste0(scenarios[i])
+  names(RCP45)[[i]] <- paste0(scenarios[i])
 }
 
-# Save projections
-saveRDS(SDM_GRBI, "./SDM/results/projections_GRBI.RDS")
+# Save predictions
+filenames <- paste0("./SDM/results/BITH_", names(RCP45), ".tif")
+raster::writeRaster(RCP45, filename=filenames, bylayer=TRUE, overwrite=TRUE)
 
 
 # 2 - Patch metrics -------------------------------------------------------
 
 
 # Dependencies
-source("./SDM/patch_metrics.R")
+source("./SDM/patch_metrics_functions.R")
 
 # Compute patch metrics over full distribution
 # # Limit analysis to current distribution
 e <- raster::extent(c(xmin = -75, xmax = -64, ymin = 45, ymax = 49.5))
-SDM_QC <- raster::crop(SDM_GRBI, e)
-metrics_QC <- patch.metrics(SDM_QC, RL_cutoff = 0.05, a = c(1, 1/5, 1/50, 1/200, 1/500))
-#saveRDS(metrics_QC, "./SDM/results/metrics_QC.RDS")
+RCP45_QC <- raster::crop(RCP45, e)
+metrics_RCP45_QC <- patch.metrics(RCP45_QC, RL_cutoff = 0.05, a = c(1, 1/5, 1/50, 1/200, 1/500))
+#saveRDS(metrics_RCP45_QC, "./SDM/results/BITH_metrics_RCP45_QC.RDS")
 
 # Patch metrics over EasternTownships
 e_ET <- raster::extent(c(xmin = -73, xmax = -70, ymin = 45, ymax = 46))
-SDM_ET <- raster::crop(SDM_GRBI, e_ET)
-metrics_ET <- patch.metrics(SDM_ET, RL_cutoff = 0.05, a = c(1, 1/5, 1/50, 1/200, 1/500))
-#saveRDS(metrics_ET, "./SDM/results/metrics_ET.RDS")
+RCP45_ET <- raster::crop(RCP45, e_ET)
+metrics_RCP45_ET <- patch.metrics(RCP45_ET, RL_cutoff = 0.05, a = c(1, 1/5, 1/50, 1/200, 1/500))
+#saveRDS(metrics_RCP45_ET, "./SDM/results/metrics_RCP45_ET.RDS")
 
-# Patch metrics over forêt Montmorency
+# Patch metrics over Réserve faunique des Laurentides
 e_RL <- raster::extent(c(xmin = -72.2, xmax = -70, ymin = 46.8, ymax = 48.2))
-SDM_RL <- raster::crop(SDM_GRBI, e_RL)
-metrics_M <- patch.metrics(SDM_M, RL_cutoff = 0.05, a = c(1, 1/5, 1/50, 1/200, 1/500))
-#saveRDS(metrics_M, "./SDM/results/metrics_M.RDS")
+RCP45_RL <- raster::crop(RCP45, e_RL)
+metrics_RCP45_RL <- patch.metrics(RCP45_RL, RL_cutoff = 0.05, a = c(1, 1/5, 1/50, 1/200, 1/500))
+#saveRDS(metrics_RCP45_RL, "./SDM/results/metrics_RCP45_RL.RDS")
 
 
 # 3 - Plot predictions ----------------------------------------------------
