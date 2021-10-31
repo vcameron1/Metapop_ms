@@ -1,64 +1,54 @@
 #############################################################
-## Generate an template raster* for the south of Quebec
-## Victor Cameron 
+## Generate an template raster* for the south of Quebec and regions
+## Victor Cameron
 ## July 2021
 #############################################################
 
 #############################################################
-## Data downloaded from https://www.worldclim.org/data/worldclim21.html
-## Elevation data was downloaded at a precision of 30 seconds (~1 km2)
+## Data are projected in lcc
+## Resolution is of 250x250m
 #############################################################
 
 
-# 1 - Download data -------------------------------------------------------
+# 1 - Full extent ---------------------------------------------------------
 
 
-# Url to access data
-url <- "https://biogeo.ucdavis.edu/data/worldclim/v2.1/base/wc2.1_30s_elev.zip"
+# Initiate raster based upon forest biomass projections
+load("RCP45_GrowthBudwormBaselineFire_ABIE.BAL_0_merged.RData")
+template <- MergedRasters >= 0
 
-# Directories and files
-dir <- "./data_raw/"
-destFile <- paste0(dir, "wc2.1_30s_elev.zip")
-
-# Download file
-download.file(url, destFile)
-
-# Unzip file
-unzip(destFile[1], exdir = dir)
+# Save template
+raster::writeRaster(template, filename="./data_clean/templateRaster.tif", overwrite=TRUE)
 
 
-# 2 - Import data ---------------------------------------------------------
+# 2 - Québec region -------------------------------------------------------
 
 
-# Import data
-elev <- raster::raster("./data_raw/wc2.1_30s_elev.tif")
+tempale_QC <- template
+
+raster::extent(tempale_QC) <- c(xmin = -612379,
+                                xmax = 376211,
+                                ymin = 118014.3,
+                                ymax = 820678)
 
 
-# 3 - Crop elevation map to south of Quebec -------------------------------
+# 3 - Réserve faunique des Laurentides region -----------------------------
 
 
-# Crop to Québec meridional
-e <- raster::extent(sf::st_bbox(readRDS("./data_clean/forestCover_raw.RDS")$geom)) # May require to download forest cover data in steps 1-2 of get_forest_cover.R script
-elev <- raster::crop(elev, e)
+tempale_RL <- template
+
+raster::extent(tempale_RL) <- c(xmin = -282986,
+                                xmax = -109983,
+                                ymin = 311761,
+                                ymax = 475079)
 
 
-# 4 - Increase resolution of raster* --------------------------------------
+# 4 - Easter Townships region ---------------------------------------------
 
 
-# Split raster cells into 4 smaller cells (~250m2)
-elev <- raster::disaggregate(elev, fact=4)
+tempale_ET <- template
 
-
-# 5 - Save transformed data -----------------------------------------------
-
-
-# Save data
-saveRDS(elev, "./data_clean/templateRaster_sQ.RDS")
-
-
-# 6 - Remove downloaded files to save memory space ------------------------
-
-
-# Remove all downloaded files to free memory space
-unlink(destFile, recursive = TRUE)
-unlink("./data_raw/wc2.1_30s_elev.tif", recursive = TRUE)
+raster::extent(tempale_ET) <- c(xmin = -356488,
+                                xmax = -115085,
+                                ymin = 111680,
+                                ymax = 234873)
