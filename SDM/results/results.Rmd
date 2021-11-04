@@ -297,10 +297,10 @@ if(!file.exists("/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/capac
 if(!file.exists("/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/capacities_ET.RDS")) compute.capacity(metrics_ET, cc, totalArea_ET, file.name = "/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/capacities_ET.RDS")
 ```
 
-```{r capacity vs. area, fig.align='center', out.width = "100%", out.height = "75%", fig.asp = .6, echo=FALSE, eval=FALSE}
+```{r capacity vs. area, fig.align='center', out.width = "100%", fig.asp = .5, echo=FALSE, eval=TRUE}
 
 # Function to return capacity plot
-plot.capacity <- function(cc, totalArea, file.name, alpha = c(1, 5, 50, 200, 500)){
+plot.capacity <- function(cc, totalArea, file.name, main = "", alpha = c(1, 5, 50, 200, 500)){
     
     # Load data
     capacity <- readRDS(file.name)    
@@ -315,7 +315,7 @@ plot.capacity <- function(cc, totalArea, file.name, alpha = c(1, 5, 50, 200, 500
                 geom_smooth(aes(weight=totalArea_ET$weight), se=FALSE, col = "black", size=0.5) +
                 scale_x_continuous(name="Temperature warming (°C)", limits=c(0,4)) +
                 scale_y_continuous(name = "") +
-                ggtitle("Eastern Townships") +
+                ggtitle(main) +
                 theme_classic() +
                 theme(axis.text.y = element_blank())
 
@@ -330,16 +330,20 @@ plot.capacity <- function(cc, totalArea, file.name, alpha = c(1, 5, 50, 200, 500
     return(p_cap)
 }
 
-# 
-p_capQC <- plot.capacity(cc, totalArea_QC, compute.cap = TRUE, file.name = "/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/capacities_QC.RDS")
-p_capM <- plot.capacity(cc, totalArea_M, compute.cap = TRUE, file.name = "/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/capacities_M.RDS")
-p_capET <- plot.capacity(cc, totalArea_ET, file.name = "/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/capacities_ET.RDS")
+colo <- colorRampPalette(c("grey90", "steelblue4", 
+                            "steelblue2", "steelblue1", 
+                            "gold", "red1", "red4"))(5)
 
-ggarrange(p_capQC, p_capM, p_capET, ncol = 3)
+# 
+p_capQC <- plot.capacity(cc, totalArea_QC, main = "Québec", file.name = "/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/capacities_QC.RDS")
+p_capM <- plot.capacity(cc, totalArea_M, main = "Forêt Montmorency", file.name = "/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/capacities_M.RDS")
+p_capET <- plot.capacity(cc, totalArea_ET, main = "Eastern Townships", file.name = "/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/capacities_ET.RDS")
+
+ggarrange(p_capQC + rremove("xlab"), p_capM, p_capET + rremove("xlab"), ncol = 3, align = "h")
 ````
 
 Metapopulation capacities are shown for alpha values of 1, 5, 50, 200, and 500km.
-```{r metapop effect, fig.align='center', out.width = "100%", out.height = "75%", fig.asp = .6, echo=FALSE, eval=TRUE}
+```{r metapop effect, fig.align='center', out.width = "100%", out.height = "75%", fig.asp = .6, echo=FALSE, eval=FALSE}
 capacity <- bind_rows(cap_QC, cap_M, cap_ET, , .id = "id") %>%
                mutate(id=replace(id, id==1, "QC")) %>%
                mutate(id=replace(id, id==2, "M")) %>%
