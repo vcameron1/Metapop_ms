@@ -17,14 +17,20 @@ source("./SDM/SDM_functions.R")
 # 1 - Load data -----------------------------------------------------------
 
 
-# Rasterized GRBI occurences for south of Québec
-GRBI_points <- readRDS("./data_clean/GRBI_rasterPoints.RDS")
+# Rasterized BITH occurences for south of Québec
+BITH <- data.table::fread("./data_clean/GRBI_rasterized.csv")
+#GRBI_points <- readRDS("./data_clean/GRBI_rasterPoints.RDS")
 
 # Explanatory variables
-load("./SDM/explana_dat_df.RData")
+#explana_dat <- read.csv("./SDM/explana_dat_df.csv")
+explana_dat <- data.table::fread("./SDM/explana_dat_df.csv")
+
+# Template
+template <- raster::raster("./data_clean/templateRaster.tif")
 
 # Polygon of the region boundaries
-load("./SDM/spacePoly.RData")
+#spacePoly <- rgdal::readOGR(dsn = "./SDM", layer = "spacePoly")
+#spacePoly <- readRDS("./SDM/spacePoly.RDS")
 
 
 # 2 - Explore data --------------------------------------------------------
@@ -83,16 +89,16 @@ if(false){
 set.seed(123)
 n.quad = c(1000, 5000, 10000, 50000, 100000, 500000, 1000000) # Model does not converge with > 1000000 quadrature points
 
-for(i in 1:3){
+for(i in 1){
     loglik = rep(NA, length(n.quad))
 
     for(j in 1:length(n.quad)){
-    res <- SDM.glm(spacePoly=spacePoly, 
-                 GRBI_points=GRBI_points,
-                 covariables = ".", 
-                 pred = explana_dat,
-                 nquad = n.quad[j],         
-                 quadOverlay = TRUE)
+    res <- SDM.glm(template=template,
+                   BITH=BITH,
+                   covariables = c("temp + temp2 + prec + elevation + abie.balPropBiomass + abie.balBiomass"), 
+                   pred = explana_dat[,-"V1"],
+                   nquad = n.quad[j], 
+                   quadOverlay = TRUE)
     model <- res[["model"]]
 
     ## Compute log likelihood
@@ -135,18 +141,19 @@ for(i in 1:3){
 cov <- c("temp * temp2 * prec * elevation + abie.balPropBiomass * abie.balBiomass")
 
 # Downweighted poisson regression (point process model)
-res <- SDM.glm(spacePoly=spacePoly, 
-                  GRBI_points=GRBI_points,
+res <- SDM.glm(template=template,
+                  BITH=BITH,
                   covariables = cov, 
                   pred = explana_dat,
                   nquad = 1000000,
                   quadOverlay = TRUE,
                   nquadWanted = FALSE)
+saveRDS(model, "./SDM/model.RDS")
 model <- res[["model"]]
 summary(model)
 
 # Plot predictions
-SDM.plot(model, newdata = explana_dat, logPred = TRUE, GRBI_points, points = FALSE, main = "GLM prediction (log)")
+SDM.plot(template, model, newdata = explana_dat, logPred = TRUE, BITH, points = TRUE, main = "GLM prediction (log)")
 # Predictions for Eastern Townships
 SDM.plot(model, newdata = explana_dat, logPred = TRUE, GRBI_points, points = FALSE, main = "GLM prediction EasternTownships (log)", xlim=c(-73,-70), ylim=c(45,46))
 SDM.AUC(model, newdata=explana_dat, GRBI_points=GRBI_points, RL_cutoff = 0.05, plot_prediction = FALSE)
@@ -156,15 +163,14 @@ SDM.AUC(model, newdata=explana_dat, GRBI_points=GRBI_points, RL_cutoff = 0.05, p
 
 
 # Temperature gradient
-temp <- seq(from=min(raster::values(explana_dat[["temp"]]), na.rm = TRUE), to=max(raster::values(explana_dat[["temp"]]), na.rm = TRUE), length.out=100)
+temp <- seq(from=min(explana_dat[["temp"]], na.rm = TRUE), to=max(explana_dat[["temp"]], na.rm = TRUE), length.out=100)
 temp2 <- temp^2
 
 # Fix other variables
-dat <- as.data.frame(raster::values(explana_dat))[1:100,]
-dat$prec <- mean(raster::values(explana_dat[["prec"]]), na.rm = TRUE)
-dat$type_couv <- 1
-dat$cl_dens <- 1
-dat$cl_haut <- 7
+dat <- explana_dat[1:100,]
+dat$prec <- mean(explana_dat[["prec"]], na.rm = TRUE)
+dat$abie.balPropBiomass <- mean(explana_dat[["abie.balPropBiomass"]], na.rm = TRUE)
+dat$abie.balBiomass <- mean(explana_dat[["abie.balBiomass"]], na.rm = TRUE)
 dat$temp <- temp
 dat$temp2 <- temp2
 elev <- seq(500, 1200, by = 25)
@@ -182,7 +188,7 @@ colo <- colorRampPalette(c("grey90", "steelblue4",
                           "gold", "red1", "red4"))(length(elev))
 
 # Plot prediction
-plot(y = log(intensity[[length(elev)]]), x = dat$temp, col = colo[length(elev)],ylab="log(intensity)", type="l",
+plot(y = log(intensity[[length(elev)]]), x = dat$temp, col = colo[length(elev)], ylab="log(intensity)", type="l",
     xlab = "Temperature (°C)")
 for(i in 1:(length(elev)-1)){
   lines(y = log(intensity[[i]]), x = dat$temp, col=colo[i])

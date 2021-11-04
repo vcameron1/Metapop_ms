@@ -52,6 +52,7 @@ vignettes/*.pdf
 *.gri
 *.gif
 *.html
+*.tif
 mapSpecies/*
 graveyard/*
 trash/*

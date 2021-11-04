@@ -5,36 +5,42 @@
 # 1 - Projections ---------------------------------------------------------
 
 
-# Get bioclim projections
-bioclim_proj <- readRDS("./data_clean/bioclim_proj_sQ.RDS")
+if(false){
+  # Load RCP45 projections
+  RCP45_2020_df <- read.csv("./SDM/RCP45_2020_df.csv")
+  RCP45_2040_df <- read.csv("./SDM/RCP45_2040_df.csv")
+  RCP45_2070_df <- read.csv("./SDM/RCP45_2070_df.csv")
+  RCP45_2100_df <- read.csv("./SDM/RCP45_2100_df.csv")
 
-# Get explana_dat
-explana_dat <- readRDS("./SDM/explana_dat.RDS")
+  # Load biomass projections
+  biomass_2020_df <- read.csv("./SDM/biomass_2020_df.csv")
+  biomass_2040_df <- read.csv("./SDM/biomass_2040_df.csv")
+  biomass_2070_df <- read.csv("./SDM/biomass_2070_df.csv")
+  biomass_2100_df <- read.csv("./SDM/biomass_2100_df.csv") 
+}
+
+# Load model
+load("./SDM/BITH_SDM.RData")
 
 # Scenarios
-scenarios <- c("1981_2010", "RCP45_2011_2040",
-               "RCP45_2041_2070", "RCP45_2071_2100")
+scenarios <- c("RCP45_2020", "RCP45_2040", "RCP45_2070", "RCP45_2100",
+               "biomass_2020", "biomass_2040", "biomass_2070", "biomass_2100")
 
 # Compute predictions per scenario
 for (i in seq_along(scenarios)) {
 
-  # # Projected temperature data
-  explana_scenario <- explana_dat
-  raster::values(explana_scenario[["temp"]]) <- raster::values(bioclim_proj[[paste0("temp_", scenarios[i])]])
-  explana_scenario[["temp2"]] <- explana_scenario[["temp"]]
-  raster::values(explana_scenario[["temp2"]])<- raster::values(explana_scenario[["temp"]])^2
+  # # Load data
+  ## Reduces greatly the pressure on the memory
+  dat <- read.csv(paste0("./SDM/",scenarios[i], "_df.csv"))
 
-  # # Projected precipitation data
-  raster::values(explana_scenario[["prec"]]) <- raster::values(bioclim_proj[[paste0("prec_", scenarios[i])]])
-
-  # # New data 
-  dat <- as.data.frame(raster::values(explana_scenario))
-
-  # # Predict
+  # # Predict according to scenario
   intensityMap <- predict(model,
                             newdata = dat,
                             type = "response")
 
+  # # Save projection
+  write.csv(intensityMap, paste0("./SDM/results/BITH_", scenarios[i], ".csv"))
+  
   # # Build the raster objects
   prediction <- raster::raster(explana_scenario[["temp"]]) 
   raster::values(prediction) <- intensityMap
@@ -46,18 +52,18 @@ for (i in seq_along(scenarios)) {
 
   # # Stack
   if(i == 1){ 
-    RCP45 <- logpred
+    BITH_2020_2100 <- logpred
     }else{
-      RCP45 <- raster::addLayer(RCP45, logpred)
+      BITH_2020_2100 <- raster::addLayer(BITH_2020_2100, logpred)
     }
 
   # # Name layer
-  names(RCP45)[[i]] <- paste0(scenarios[i])
+  names(BITH_2020_2100)[[i]] <- paste0(scenarios[i])
 }
 
 # Save predictions
-filenames <- paste0("./SDM/results/BITH_", names(RCP45), ".tif")
-raster::writeRaster(RCP45, filename=filenames, bylayer=TRUE, overwrite=TRUE)
+filenames <- paste0("./SDM/results/BITH_", names(BITH_2020_2100), ".tif")
+raster::writeRaster(BITH_2020_2100, filename=filenames, bylayer=TRUE, overwrite=TRUE)
 
 
 # 2 - Patch metrics -------------------------------------------------------
@@ -68,19 +74,19 @@ source("./SDM/patch_metrics_functions.R")
 
 # Compute patch metrics over full distribution
 # # Limit analysis to current distribution
-e <- raster::extent(c(xmin = -75, xmax = -64, ymin = 45, ymax = 49.5))
+e <- raster::extent(c(xmin = -514009, xmax = 356398, ymin = 110389, ymax = 633143))
 RCP45_QC <- raster::crop(RCP45, e)
 metrics_RCP45_QC <- patch.metrics(RCP45_QC, RL_cutoff = 0.05, a = c(1, 1/5, 1/50, 1/200, 1/500))
 #saveRDS(metrics_RCP45_QC, "./SDM/results/BITH_metrics_RCP45_QC.RDS")
 
 # Patch metrics over EasternTownships
-e_ET <- raster::extent(c(xmin = -73, xmax = -70, ymin = 45, ymax = 46))
+e_ET <- raster::extent(c(xmin = -356488, xmax = -115085, ymin = 111680, ymax = 234873))
 RCP45_ET <- raster::crop(RCP45, e_ET)
 metrics_RCP45_ET <- patch.metrics(RCP45_ET, RL_cutoff = 0.05, a = c(1, 1/5, 1/50, 1/200, 1/500))
 #saveRDS(metrics_RCP45_ET, "./SDM/results/metrics_RCP45_ET.RDS")
 
 # Patch metrics over Réserve faunique des Laurentides
-e_RL <- raster::extent(c(xmin = -72.2, xmax = -70, ymin = 46.8, ymax = 48.2))
+e_RL <- raster::extent(c(xmin = -282986, xmax = -109983, ymin = 311761, ymax = 475079))
 RCP45_RL <- raster::crop(RCP45, e_RL)
 metrics_RCP45_RL <- patch.metrics(RCP45_RL, RL_cutoff = 0.05, a = c(1, 1/5, 1/50, 1/200, 1/500))
 #saveRDS(metrics_RCP45_RL, "./SDM/results/metrics_RCP45_RL.RDS")

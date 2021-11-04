@@ -80,24 +80,15 @@ GRBI <- GRBI[GRBI$USAGE == "Nidification",]
 # Load reference raster
 template <- raster::raster("./data_clean/templateRaster.tif")
 
-# Load reference spatialPolygons
-load("./SDM/spacePoly.RData")
-
-# Load LatLong non projected spacepoly
-latlongPoly <- readRDS("./SDM/spacePoly.RDS")
-
 # Coordinates to spatial points
-GRBI_points <- sp::SpatialPoints(cbind(GRBI$'LONGITUDE_SIGN GÉO ASSOCIÉ À LA MENTION', GRBI$'LATITUDE_SIGN GÉO ASSOCIÉ À LA MENTION'), proj4string = latlongPoly@proj4string)
+GRBI_points <- sp::SpatialPoints(cbind(GRBI$'LONGITUDE_SIGN GÉO ASSOCIÉ À LA MENTION', GRBI$'LATITUDE_SIGN GÉO ASSOCIÉ À LA MENTION'), proj4string = raster::crs("+proj=longlat +datum=WGS84 +no_defs"))
 
 # Reproject points
-GRBI_points <- rgdal::spTransform(GRBI_points, spacePoly@proj4string)
+GRBI_points <- sp::spTransform(GRBI_points, raster::crs(template))
 
 
 # 4 - Rasterize GRBI occurences -------------------------------------------
 
-
-# Load reference spatialPolygons
-spacePoly <- readRDS("./SDM/spacePoly.RDS")
 
 # Rasterize GRBI occurences as presences/absences
 #GRBI_points <- sp::SpatialPoints(cbind(GRBI$'LONGITUDE_SIGN GÉO ASSOCIÉ À LA MENTION', GRBI$'LATITUDE_SIGN GÉO ASSOCIÉ À LA MENTION'), proj4string = spacePoly@proj4string)
@@ -107,20 +98,22 @@ GRBI <- raster::rasterize(GRBI_points, template, fun='count')
 # 5 - Crop GRBI data to region of interest --------------------------------
 
 
-GRBI <- mask(GRBI, spacePoly)
+GRBI <- raster::crop(GRBI, template)
+GRBI <- raster::mask(GRBI, template)
+
+# Set presences as 1
+GRBI[GRBI > 0] <- 1
 
 
 # 6 - GRBI raster back to spatialPoints -----------------------------------
 
 
 # Back to spatialPoints
-GRBI[GRBI > 0] <- 1
-GRBI_points <- raster::rasterToPoints(GRBI) # Keep cell centroids
-GRBI_points <- sp::SpatialPoints(GRBI_points,
-                                  proj4string = spacePoly@proj4string)
+#GRBI_points <- raster::rasterToPoints(GRBI) # Keep cell centroids
+#GRBI_points <- sp::SpatialPoints(GRBI_points, proj4string = raster::crs(template))
 
 
 # 7 - Save rasterized GRBI occurences -----------------------------------
 
-
-saveRDS(GRBI_points, "./data_clean/GRBI_rasterPoints.RDS")
+write.csv(raster::values(GRBI), "./data_clean/GRBI_rasterized.csv")
+#saveRDS(GRBI_points, "./data_clean/GRBI_rasterPoints.RDS")

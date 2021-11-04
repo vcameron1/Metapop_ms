@@ -11,46 +11,29 @@
 # spatial SDMs 
 #==========================
 
-SDM.glm <- function(spacePoly, GRBI_points, covariables = ".", pred, nquad = 10000, quadOverlay = TRUE, nquadWanted = FALSE){
+SDM.glm <- function(template, BITH, covariables = ".", pred, nquad = 10000, quadOverlay = TRUE, nquadWanted = FALSE){
   # quadOverlay if true, quadrature points are randomly placed, if false, those overlaying GRBI points are excluded
     
-    # Find the area of the survey region
-    areaRegion <- raster::area(spacePoly)/1000000
+    # Find the area (km2) of the survey region
+    areaRegion <- sum(raster::values(template), na.rm=TRUE) * 0.25 * 0.25
 
     # Define random samples
     set.seed(12)
-    xSmpl <- runif(5000000, raster::xmin(spacePoly), raster::xmax(spacePoly))
-    ySmpl <- runif(5000000, raster::ymin(spacePoly), raster::ymax(spacePoly))
-    
-    # Organise them into a SpatialPoints object
-    xySmpl <- sp::SpatialPoints(cbind(xSmpl, ySmpl), proj4string = spacePoly@proj4string)
-    ## Reject those where there are GRBI points
-    if(!quadOverlay){
-      xySmpl_raster <- raster::rasterize(raster::coordinates(xySmpl)[,1:2], pred[[1]], fun='count', background=0)
-      xySmpl_raster[xySmpl_raster>=1] <- 1
-      GRBI_raster <- raster::rasterize(raster::coordinates(GRBI_points)[,1:2], pred[[1]], fun='count', background=0)
-      xySmpl_raster[GRBI_raster > 0] <- 0
-      xySmpl <- sp::SpatialPoints(xySmpl_raster, proj4string = spacePoly@proj4string)
-    }
-
-    # Construct a SpatialPolygons object
-    landPoly <- maptools::unionSpatialPolygons(spacePoly, ID = rep(1,length(spacePoly)))
-    
-    # Find which one is in landPoly
-    quadIntersect <- raster::intersect(xySmpl, landPoly) 
-    
-    # Select nquad of the selected points
-    quadSel <- raster::coordinates(quadIntersect)[1:nquad,]
+    # # Candidate cells within region
+    candidates <- seq_along(pred$temp)[!is.na(raster::values(template))]
+    # # Reject those where there are BTIH points (if option selected)
+    if(!quadOverlay) candidates <- seq_along(pred$temp)[!is.na(raster::values(template)) & is.na(BITH[,2])]
+    # # Select nquad cells
+    quadSel <- sample(candidates, nquad, replace = FALSE)
     
     # Organise coordinates
-    spQuadxy <- rbind(raster::coordinates(GRBI_points)[,1:2], quadSel)
+    spQuadCell <- c(which(!is.na(BITH[,2])), quadSel)
     
     # Extract variables
-    datSpQuad <- raster::extract(pred, raster::coordinates(spQuadxy), method = "simple")
-    datSpQuad <- as.data.frame(datSpQuad)
+    datSpQuad <- pred[spQuadCell,]
     
     # Build response variable
-    spQuad <- c(rep(1, length(GRBI_points)), rep(0, nquad))
+    spQuad <- c(rep(1, length(which(BITH[,2] == 1))), rep(0, nquad))
 
     # Build weight
     Weight <- rep(1/nquad, length(spQuad)) 
@@ -65,7 +48,7 @@ SDM.glm <- function(spacePoly, GRBI_points, covariables = ".", pred, nquad = 100
     # Check if enough quadrature points were used
     # # Calculate the estimated intensity at the quadrature points
     if(nquadWanted){
-        predQuad <- datSpQuad[-(1:length(GRBI_points)),]
+        predQuad <- datSpQuad[-(seq_along(which(BITH[,2] == 1))),]
         intensityQuad <- predict(model,
                                 newdata = predQuad,
                                 type = "response")
@@ -85,17 +68,16 @@ SDM.glm <- function(spacePoly, GRBI_points, covariables = ".", pred, nquad = 100
 # spatial SDMs 
 #==========================
 
-SDM.plot <- function(model, newdata, logPred = TRUE, GRBI_points, points = TRUE, ...){
+SDM.plot <- function(template, model, newdata, logPred = TRUE, BITH, points = TRUE, ...){
 
 
-    dat <- as.data.frame(raster::values(newdata))
     if(length(names(newdata)) == 1) names(dat) <- "datSpQuad"
     intensityMap <- predict(model,
-                            newdata = dat,
+                            newdata = newdata,
                             type = "response")
     
     # Build the raster objects
-    prediction <- raster::raster(newdata) 
+    prediction <- template
     raster::values(prediction) <- intensityMap
 
     # Draw the map
@@ -106,16 +88,18 @@ SDM.plot <- function(model, newdata, logPred = TRUE, GRBI_points, points = TRUE,
     dev.new()
     par(mar=c(0,0,2,0))
     if(!logPred){
-      raster::plot(prediction, col = colo,  zlim = c(0, max(raster::values(prediction), na.rm = TRUE)), axes = FALSE, box = FALSE, ...)
+      raster::plot(prediction, col = colo,  zlim = c(0, max(raster::values(prediction), na.rm = TRUE)), axes = FALSE, box = FALSE, bg = "grey", ...)
     }else{
       prediction[prediction < 0.01] <- 0.01
       logpred <- log(prediction)
       logpred[prediction == -Inf] <- 0
-      raster::plot(logpred, col = colo,  zlim = c(-5,10), axes = FALSE, box = FALSE, ...)
+      raster::plot(logpred, col = colo,  zlim = c(-5,10), axes = FALSE, box = FALSE, bg = "grey", ...)
       print("Intensity predictions were log-transformed")
     }
     
-    if(points) points(raster::coordinates(GRBI_points), pch = 3, cex = 0.05)
+    if(points){
+      GRBI_points <- readRDS("./data_clean/GRBI_rasterPoints.RDS")
+      points(raster::coordinates(GRBI_points), pch = 3, cex = 0.05)}
 
 }
 
