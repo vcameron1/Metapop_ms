@@ -25,6 +25,7 @@ patch.metrics <- function(projRaster, RL_cutoff = 0.05, a = 1/2){
     # Loop accros projections to compute metrics
     for(i in seq_along(names(projRaster))){
         raster = projRaster[[i]]
+        cat("processing ", (names(raster)), "\n")
         # Check if any values excced RL_cutoff
         if(raster::maxValue(raster) < RL_cutoff){
             n[i] = 0
