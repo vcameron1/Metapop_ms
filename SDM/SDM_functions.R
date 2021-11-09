@@ -98,8 +98,9 @@ SDM.plot <- function(template, model, newdata, logPred = TRUE, BITH, points = TR
     }
     
     if(points){
-      GRBI_points <- readRDS("./data_clean/GRBI_rasterPoints.RDS")
-      points(raster::coordinates(GRBI_points), pch = 3, cex = 0.05)}
+      BITH_points <- template
+      raster::values(BITH_points) <- BITH
+      points(raster::coordinates(BITH_points), pch = 3, cex = 0.05)}
 
 }
 
@@ -108,30 +109,31 @@ SDM.plot <- function(template, model, newdata, logPred = TRUE, BITH, points = TR
 # Function to compute GLM model AUC
 #==========================
 
-SDM.AUC <- function(model, newdata, GRBI_points, RL_cutoff, plot_prediction = FALSE, points = TRUE,...){
+SDM.AUC <- function(model, newdata, BITH, RL_cutoff, template, plot_prediction = FALSE, points = FALSE,...){
   
   # Projection of the model from new data
-  dat <- as.data.frame(raster::values(newdata))
-  if(length(names(newdata)) == 1) names(dat) <- "datSpQuad"
-  pred <- predict(model, newdata = dat, type = "response")
-
-  # GRBI presence raster
-  GRBI_raster <- raster::rasterize(raster::coordinates(GRBI_points)[,1:2], newdata[[1]], fun='count', background=0)  
+  if(length(names(newdata)) == 1) names(newdata) <- "datSpQuad"
+  pred <- predict(model, newdata = newdata, type = "response")
 
   # Projected distribution raster
   pred[pred >= RL_cutoff] <- 1
   pred[pred < RL_cutoff] <- 0
-  r <- newdata
+  r <- template
   raster::values(r) <- pred
   
   # Plot prediction
   if(plot_prediction){
-    dev.new()
-    raster::plot(r[[1]], axes = FALSE, box = FALSE, ...) 
-    if(points) points(GRBI_points, pch=19, cex=0.02)
+    #dev.new()
+    raster::plot(r[[1]], axes = FALSE, box = FALSE, legend = FALSE, ...) 
+    if(points) {
+      BITH_points <- template
+      raster::values(BITH_points) <- BITH
+      points(raster::coordinates(BITH_points), pch = 3, cex = 0.05)}
   }
 
   # Compute AUC 
-  pROC::auc(raster::values(GRBI_raster), pred) # Observed vs predicted (GRBI = raster values)
+  response <- BITH$x
+  response[raster::values(template)==1 & is.na(response)] <- 0
+  pROC::auc(response, pred) # Observed vs predicted
 }
 
