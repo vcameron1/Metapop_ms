@@ -1,0 +1,351 @@
+---
+title: "My attempt at organizing the optimization process of the BITH SDM"
+author: "Victor Cameron"
+date: "09/2021"
+output: html_document
+---
+
+Here are presented the BITH SDM outputs for various parameter values. I test different options in the attempt to identify the **best model**. 
+
+Different metrics are used to compare and select models when appropriate. 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      warning = FALSE, 
+                      message = FALSE)
+```
+
+```{r dependencies, include=FALSE}
+# Functions
+source("/Users/victorcameron/Documents/Git/Metapop_ms/SDM/SDM_functions.R")
+
+# Data
+# # Rasterized BITH occurences for south of Québec
+BITH <- data.table::fread("/Users/victorcameron/Documents/Git/Metapop_ms/data_clean/GRBI_rasterized.csv")
+
+# # Explanatory variables
+explana_dat <- data.table::fread("/Users/victorcameron/Documents/Git/Metapop_ms/SDM/explana_dat_df.csv")
+
+# # Template
+template <- raster::raster("/Users/victorcameron/Documents/Git/Metapop_ms/data_clean/templateRaster.tif")
+```
+
+```{r useful functions, include=FALSE}
+#########################
+# Function to test model 
+#########################
+
+model.elevBehavior <- function(model, explana_dat, ...){
+    # Temperature gradient
+    temp <- seq(from=min(explana_dat[["temp"]], na.rm = TRUE), to=max(explana_dat[["temp"]], na.rm = TRUE), length.out=100)
+    temp2 <- temp^2
+
+    # Fix other variables
+    dat <- explana_dat[1:100,]
+    dat$prec <- mean(explana_dat[["prec"]], na.rm = TRUE)
+    dat$abie.balPropBiomass <- 0.8#mean(explana_dat[["abie.balPropBiomass"]], na.rm = TRUE)
+    dat$abie.balBiomass <- 30#mean(explana_dat[["abie.balBiomass"]], na.rm = TRUE)
+    dat$temp <- temp
+    dat$temp2 <- temp2
+    elev <- seq(500, 1200, by = 25)
+
+    # Predict
+    intensity <- list()
+    for(i in 1:length(elev)){
+    dat$elevation <- elev[i]
+    intensity[[i]] <- predict(model, newdata = dat, type = "response")
+    }
+
+    # Cols
+    colo <- colorRampPalette(c("grey90", "steelblue4", 
+                            "steelblue2", "steelblue1", 
+                            "gold", "red1", "red4"))(length(elev))
+
+    # Plot prediction
+    plot(y = log(intensity[[length(elev)]]), x = dat$temp, col = colo[length(elev)], ylab="log(intensity)", type="l", xlab = "Temperature (°C)", ...)
+    polygon(x = c(min(explana_dat[["temp"]], na.rm = TRUE), -2, -2, min(explana_dat[["temp"]], na.rm = TRUE)),                           # X-Coordinates of polygon
+        y = c(-10000, -10000, 10000, 10000),                             # Y-Coordinates of polygon
+        col = rgb(211,211,211, max=255, alpha=127),
+        border=rgb(211,211,211, max=255, alpha=127))   
+    for(i in 1:(length(elev)-1)){
+    lines(y = log(intensity[[i]]), x = dat$temp, col=colo[i])
+    }
+    legend(3.6, max(log(unlist(intensity))), legend = elev, fill = colo, ncol = 2, title = "Elevation (m)", bty = 'n', cex = 0.5)
+}
+
+model.biomassBehavior <- function(model, explana_dat, ...){
+    # Temperature gradient
+    temp <- seq(from=min(explana_dat[["temp"]], na.rm = TRUE), to=max(explana_dat[["temp"]], na.rm = TRUE), length.out=100)
+    temp2 <- temp^2
+
+    # Fix other variables
+    dat <- explana_dat[1:100,]
+    dat$prec <- mean(explana_dat[["prec"]], na.rm = TRUE)
+    abie.balPropBiomass <- seq(0,1,le=8)
+    dat$abie.balBiomass <- 30
+    dat$temp <- temp
+    dat$temp2 <- temp2
+    dat$elevation <- 1000
+
+    # Predict
+    intensity <- list()
+    for(i in 1:length(abie.balPropBiomass)){
+    dat$abie.balPropBiomass <- abie.balPropBiomass[i]
+    intensity[[i]] <- predict(model, newdata = dat, type = "response")
+    }
+
+    # Cols
+    colo <- colorRampPalette(c("grey90", "steelblue4", 
+                            "steelblue2", "steelblue1", 
+                            "gold", "red1", "red4"))(length(abie.balPropBiomass))
+
+    # Plot prediction
+    plot(y = log(intensity[[length(abie.balPropBiomass)]]), x = dat$temp, col = colo[length(abie.balPropBiomass)], ylab="log(intensity)", type="l", xlab = "Temperature (°C)", ylim = c(min(log(unlist(intensity))),max(log(unlist(intensity)))), ...)
+    polygon(x = c(min(explana_dat[["temp"]], na.rm = TRUE), -2, -2, min(explana_dat[["temp"]], na.rm = TRUE)),                           # X-Coordinates of polygon
+        y = c(-10000, -10000, 10000, 10000),                             # Y-Coordinates of polygon
+        col = rgb(211,211,211, max=255, alpha=127),
+        border=rgb(211,211,211, max=255, alpha=127))   
+    for(i in 1:(length(abie.balPropBiomass)-1)){
+    lines(y = log(intensity[[i]]), x = dat$temp, col=colo[i])
+    }
+    legend(3.6, max(log(unlist(intensity)), na.rm=T), legend = round(abie.balPropBiomass,1), fill = colo, title = "propBiomass", bty = 'n', cex = 0.5)
+}
+```
+
+## Base model
+
+I start with the model I believe *a priori* to be the best. Based on expert knowledge (COSEWIC, 2009), I define an interaction between temperature and precipitation, and between fir biomass and proportional biomass. 
+
+Fir biomass and proportional biomass hopefully capture the habitat preference of the BITH with abundance of fir and with the disturbed dense forests in regeneration.
+
+I also select 1000000 pseudo-absences as Renner (2015) suggests to capture a maximum of the environmental conditions.
+
+| Parameter   | Value |
+| :---------- | :---- |
+| Cov         | "temp * temp2 * prec + abie.balPropBiomass * abie.balBiomass" |
+| nquad       | 1000000 |
+| quadOverlay | TRUE |
+
+```{r baseModel, echo=FALSE}
+cov <- c("temp * temp2 * prec + abie.balPropBiomass * abie.balBiomass")
+
+res <- SDM.glm(template=template,
+                  BITH=BITH,
+                  covariables = cov, 
+                  pred = explana_dat,
+                  nquad = 1000000,
+                  quadOverlay = TRUE,
+                  nquadWanted = FALSE)
+baseModel <- res[["model"]]
+summary(baseModel)
+```
+
+```{r baseModel behavior, echo=FALSE, eval=TRUE}
+model.elevBehavior(baseModel, explana_dat)
+```
+```{r baseModel AUC, echo=FALSE}
+SDM.AUC(baseModel, newdata=explana_dat, BITH=BITH, RL_cutoff = 0.05, template = template, plot_prediction = FALSE)
+```
+
+## What formulae is most appropriate?
+
+```{r elev models, echo=FALSE}
+# Elevation added to formulae
+cov <- c("temp * temp2 * prec + elevation + abie.balPropBiomass * abie.balBiomass")
+
+res <- SDM.glm(template=template,
+                  BITH=BITH,
+                  covariables = cov, 
+                  pred = explana_dat,
+                  nquad = 1000000,
+                  quadOverlay = TRUE,
+                  nquadWanted = FALSE)
+elevModel <- res[["model"]]
+
+# Elevation added in interaction with climate 
+cov <- c("temp * temp2 * prec * elevation + abie.balPropBiomass * abie.balBiomass")
+
+res <- SDM.glm(template=template,
+                  BITH=BITH,
+                  covariables = cov, 
+                  pred = explana_dat,
+                  nquad = 1000000,
+                  quadOverlay = TRUE,
+                  nquadWanted = FALSE)
+elevIntModel <- res[["model"]]
+```
+
+```{r elev models AUC, echo=FALSE, eval=FALSE}
+SDM.AUC(elevModel, newdata=explana_dat, BITH=BITH, RL_cutoff = 0.05, template = template, plot_prediction = FALSE)
+SDM.AUC(elevIntModel, newdata=explana_dat, BITH=BITH, RL_cutoff = 0.05, template = template, plot_prediction = FALSE)
+```
+
+| Parameter   | baseModel | elevModel | elevIntModel |
+| :---------- | :-------- | :-------- | :----------- |
+| Cov         | "temp * temp2 * prec + abie.balPropBiomass * abie.balBiomass" | "temp * temp2 * prec + elevation + abie.balPropBiomass * abie.balBiomass" | "temp * temp2 * prec * elevation + elevation + abie.balPropBiomass * abie.balBiomass" |
+| nquad       | 1000000 | 1000000 | 1000000 |
+| quadOverlay | TRUE | TRUE | TRUE |
+| AUC         | 0.7181 | 0.8602 | 0.866 |
+
+### Model behavior
+
+```{r elevation model behavior, echo=FALSE, eval=TRUE}
+par(mfrow=c(2,3))
+model.elevBehavior(baseModel, explana_dat, main="baseModel")
+model.elevBehavior(elevModel, explana_dat, main="elevModel")
+model.elevBehavior(elevIntModel, explana_dat, main="elevIntModel")
+
+model.biomassBehavior(baseModel, explana_dat)
+model.biomassBehavior(elevModel, explana_dat)
+model.biomassBehavior(elevIntModel, explana_dat)
+```
+
+### Model summaries
+
+```{r elevation model summaries, echo=TRUE, eval=TRUE}
+summary(elevModel)
+summary(elevIntModel)
+```
+
+
+## What about quadrature points?
+
+I selected the best fitting model according to AUC, model behavior and AIC values (elevModel) to then select the best number of quadrature points.
+
+Valavi (2021) argues that class overlap is among the most important issues in SDM estimation. At least with RF algorithms.
+
+On the other hand, Renner (2015) says that the background points should sample the full environmental space, even where the species has been observed.
+
+I will therefore select thebest fitted model between overlapping and non-overlapping quadrature points.
+
+```{r quad models, echo=FALSE}
+# Select the number of quadrature points with saturated model
+set.seed(123)
+n.quad = c(1000, 10000, 100000, 1000000, 500000) 
+cov <- c("temp * temp2 * prec + elevation + abie.balPropBiomass * abie.balBiomass")
+
+# With overlap
+    AUC = rep(NA, length(n.quad))
+    nquadWanted = rep(NA, length(n.quad))
+
+    for(j in seq_along(n.quad)){
+    res <- SDM.glm(template=template,
+                   BITH=BITH,
+                   covariables = cov, 
+                   pred = explana_dat,
+                   nquad = n.quad[j], 
+                   quadOverlay = TRUE,
+                   nquadWanted = TRUE)
+    model <- res[["model"]]
+    assign(paste0("model_", j), model)
+
+    ## Compute AUC
+    AUC[j] <- SDM.AUC(model, newdata=explana_dat, BITH=BITH, RL_cutoff = 0.05, template = template, plot_prediction = FALSE)
+
+    ## Save estimated number of quad. points
+    nquadWanted[j] <- res[["nquadWanted"]]
+    }
+
+# Without overlap
+    AUC_noOverlap = rep(NA, length(n.quad))
+    nquadWanted_noOverlap = rep(NA, length(n.quad))
+
+    for(j in seq_along(n.quad)){
+    res <- SDM.glm(template=template,
+                   BITH=BITH,
+                   covariables = cov, 
+                   pred = explana_dat,
+                   nquad = n.quad[j], 
+                   quadOverlay = FALSE,
+                   nquadWanted = TRUE)
+    model <- res[["model"]]
+     assign(paste0("model_noOverlap_", j), model)
+
+    ## Compute AUC
+    AUC_noOverlap[j] <- SDM.AUC(model, newdata=explana_dat, BITH=BITH, RL_cutoff = 0.05, template = template, plot_prediction = FALSE)
+
+    ## Save estimated number of quad. points
+    nquadWanted_noOverlap[j] <- res[["nquadWanted"]]
+    }
+```
+
+The estimated required number of quadrature point to achieve sufficient acurate estimates is computed as A) the maximum AUC and B) the estimation of the loglikelihood within a standard error of two of its true value (Renner 2015):
+
+```{r nquad plot, echo=FALSE, eval=TRUE}
+par(mfrow=c(2,2))
+plot(n.quad, AUC, log = "x", type = "o", main = "overlap of quad. points")
+plot(n.quad, AUC_noOverlap, log = "x", type = "o", main = "No overlap of quad. points")
+plot(n.quad, nquadWanted, log = "x", type = "o", main = "overlap")
+plot(n.quad, nquadWanted_noOverlap, log = "x", type = "o", main = "noOverlap")
+```
+
+```{r nquad behavior, echo=FALSE, eval=TRUE}
+par(mfrow=c(2,4))
+for(i in c(1,3,5,7)){
+    model.biomassBehavior(get(paste0("model_",i)), explana_dat, main=paste0("model_",n.quad[i]))
+    model.biomassBehavior(get(paste0("model_noOverlap_",i)), explana_dat, main=paste0("model_noOverlap_",n.quad[i]))
+}
+```
+
+
+Printing the summary of the best fit model according to AUC:
+```{r summary best model AUC, echo=FALSE, eval=TRUE}
+if(max(AUC, na.rm=TRUE) > max(AUC_noOverlap, na.rm=TRUE)){
+   cat("The best fitting model is with overlap of quadrature points with observations and with ", n.quad[which.max(AUC)], " quad. points\n")
+    bestModel_AUC <- get(paste0("model_", which.max(AUC)))
+    summary(bestModel_AUC)
+}else{
+    cat("The best fitting model is without overlap of quadrature points with observations and with ", n.quad[which.max(AUC_noOverlap)], " quad. points\n")
+    bestModel_AUC <- get(paste0("model_noOverlap_", which.max(AUC_noOverlap)))
+    summary(bestModel_AUC)
+}
+```
+
+Printing the summary of the best fit model according to the estimation of the loglikelihood within a standard error of two of its true value:
+```{r summary best model nquadwanted, echo=FALSE, eval=TRUE}
+if(max(nquadWanted, na.rm=TRUE) > max(nquadWanted_noOverlap, na.rm=TRUE)){
+   cat("The best fitting model is with overlap of quadrature points with observations and with ", n.quad[which.max(nquadWanted)], " quad. points\n")
+    bestModel_nQuadWanted <- get(paste0("model_", which.max(nquadWanted)))
+    summary(bestModel_nQuadWanted)
+}else{
+    cat("The best fitting model is without overlap of quadrature points with observations and with ", n.quad[which.max(nquadWanted_noOverlap)], " quad. points\n")
+    bestModel_nQuadWanted <- get(paste0("model_noOverlap_", which.max(nquadWanted_noOverlap)))
+    summary(bestModel_nQuadWanted)
+}
+```
+
+
+## Test for the best threshold value to set the range limit
+
+Using AUC values to test the accuracy of the prediction against the observations, I test what the best intensity threshold is to set the range limit:
+
+```{r best threshold, echo=FALSE, eval=TRUE}
+RangeLimit <- c(0.01, 0.03, 0.05, 0.07, 0.09, 0.11, 0.15, 0.2, 0.5)
+cutoff_AUC <- c()
+cutoff_nQuadWanted <- c()
+i=1
+for (cutoff in RangeLimit){
+    cutoff_AUC[i] <- SDM.AUC(bestModel_AUC, newdata=explana_dat, BITH=BITH, RL_cutoff = cutoff, template = template, plot_prediction = FALSE, main = paste0("AUC_", cutoff))
+    cutoff_nQuadWanted[i] <- SDM.AUC(bestModel_nQuadWanted, newdata=explana_dat, BITH=BITH, RL_cutoff = cutoff, template = template, plot_prediction = FALSE, main = paste0("nQuadWanted_", cutoff))
+    i=i+1
+}
+```
+
+```{r cutoff plot, echo=FALSE, eval=TRUE}
+par(mfrow=c(1,2))
+plot(RangeLimit, cutoff_AUC, log = "x", type = "o", main = "AUC by RL cutoff for \nbestModel_AUC")
+plot(RangeLimit, cutoff_nQuadWanted, log = "x", type = "o", main = "AUC by RL cutoff for \nbestModel_nQuadWanted")
+```
+
+
+```{r plot best pred, echo=FALSE, eval=TRUE}
+if(max(cutoff_AUC, na.rm=TRUE) > max(cutoff_nQuadWanted, na.rm=TRUE)){
+    bestCutoff <- RangeLimit[which.max(cutoff_AUC)]
+    SDM.AUC(bestModel_AUC, newdata=explana_dat, BITH=BITH, RL_cutoff = bestCutoff, template = template, plot_prediction = TRUE, main = "best model")
+}else{
+    bestCutoff <- RangeLimit[which.max(cutoff_nQuadWanted)]
+    SDM.AUC(bestModel_nQuadWanted, newdata=explana_dat, BITH=BITH, RL_cutoff = bestCutoff, template = template, plot_prediction = TRUE, main = "best model")
+}
+
+
+```
