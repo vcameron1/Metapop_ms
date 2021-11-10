@@ -338,6 +338,24 @@ plot(RangeLimit, cutoff_AUC, log = "x", type = "o", main = "AUC by RL cutoff for
 plot(RangeLimit, cutoff_nQuadWanted, log = "x", type = "o", main = "AUC by RL cutoff for \nbestModel_nQuadWanted")
 ```
 
+Following Renner (2015), I define the best model as the closest one to the number of quad points wanted according to the likelihood estimation. 
+
+```{r Best model, echo=TRUE, eval=FALSE}
+# Best model
+cov <- c("temp * temp2 * prec + elevation + abie.balPropBiomass * abie.balBiomass")
+
+res <- SDM.glm(template=template,
+                  BITH=BITH,
+                  covariables = cov, 
+                  pred = explana_dat,
+                  nquad = 5000000,
+                  quadOverlay = TRUE,
+                  nquadWanted = FALSE)
+
+# Best intensity cutoff value to set the breeding range limit
+RL_cutoff <- 0.005
+```
+
 ```{r plot best pred, echo=FALSE, eval=TRUE}
 if(max(cutoff_AUC, na.rm=TRUE) > max(cutoff_nQuadWanted, na.rm=TRUE)){
     bestCutoff <- RangeLimit[which.max(cutoff_AUC)]
