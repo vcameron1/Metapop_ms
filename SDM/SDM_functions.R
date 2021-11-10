@@ -109,7 +109,7 @@ SDM.plot <- function(template, model, newdata, logPred = TRUE, BITH, points = TR
 # Function to compute GLM model AUC
 #==========================
 
-SDM.AUC <- function(model, newdata, BITH, RL_cutoff, template, plot_prediction = FALSE, points = FALSE,...){
+SDM.AUC <- function(model, newdata, BITH, RL_cutoff, template, plot_prediction = FALSE, points = FALSE, dev.new = TRUE,...){
   
   # Projection of the model from new data
   if(length(names(newdata)) == 1) names(newdata) <- "datSpQuad"
@@ -123,7 +123,7 @@ SDM.AUC <- function(model, newdata, BITH, RL_cutoff, template, plot_prediction =
   
   # Plot prediction
   if(plot_prediction){
-    #dev.new()
+    if(dev.new) dev.new()
     raster::plot(r, axes = FALSE, box = FALSE, legend = FALSE, ...) 
     if(points) {
       BITH_points <- template

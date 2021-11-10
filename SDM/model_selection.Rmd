@@ -359,10 +359,10 @@ RL_cutoff <- 0.005
 ```{r plot best pred, echo=FALSE, eval=TRUE}
 if(max(cutoff_AUC, na.rm=TRUE) > max(cutoff_nQuadWanted, na.rm=TRUE)){
     bestCutoff <- RangeLimit[which.max(cutoff_AUC)]
-    SDM.AUC(bestModel_AUC, newdata=explana_dat, BITH=BITH, RL_cutoff = bestCutoff, template = template, plot_prediction = TRUE, points = TRUE, main = "best model")
+    SDM.AUC(bestModel_AUC, newdata=explana_dat, BITH=BITH, RL_cutoff = bestCutoff, template = template, plot_prediction = TRUE, points = TRUE, dev.new = FALSE, main = "best model")
 }else{
     bestCutoff <- RangeLimit[which.max(cutoff_nQuadWanted)]
-    SDM.AUC(bestModel_nQuadWanted, newdata=explana_dat, BITH=BITH, RL_cutoff = bestCutoff, template = template, plot_prediction = TRUE, points = TRUE, main = "best model")
+    SDM.AUC(bestModel_nQuadWanted, newdata=explana_dat, BITH=BITH, RL_cutoff = bestCutoff, template = template, plot_prediction = TRUE, points = TRUE, dev.new = FALSE, main = "best model")
 }
 ```
 
