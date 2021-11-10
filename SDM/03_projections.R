@@ -31,7 +31,8 @@ for (i in seq_along(scenarios)) {
 
   # # Load data
   ## Reduces greatly the pressure on the memory
-  dat <- read.csv(paste0("./SDM/",scenarios[i], "_df.csv"))
+  dat <- data.table::fread(paste0("./SDM/",scenarios[i], "_df.csv"))
+
 
   # # Predict according to scenario
   intensityMap <- predict(model,
@@ -39,7 +40,7 @@ for (i in seq_along(scenarios)) {
                             type = "response")
 
   # # Save projection
-  write.csv(intensityMap, paste0("./SDM/results/BITH_", scenarios[i], ".csv"))
+  #write.csv(intensityMap, paste0("./SDM/results/BITH_", scenarios[i], ".csv"))
   
   # # Build the raster objects
   prediction <- raster::raster(explana_scenario[["temp"]]) 
@@ -62,7 +63,7 @@ for (i in seq_along(scenarios)) {
 }
 
 # Save predictions
-filenames <- paste0("./SDM/results/BITH_", names(BITH_2020_2100), ".tif")
+filenames <- paste0("./SDM/results/BITH_", scenarios, ".tif")
 raster::writeRaster(BITH_2020_2100, filename=filenames, bylayer=TRUE, overwrite=TRUE)
 
 

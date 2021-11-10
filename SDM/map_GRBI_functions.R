@@ -41,25 +41,36 @@ plot.map <- function(projRaster_path = "./SDM/results/projections_GRBI.RDS", ext
     dev.off()
 }
 
-plot.map3 <- function(projRaster_path = "/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/projections_GRBI.RDS", extent = c(xmin = -75, xmax = -64, ymin = 45, ymax = 49.5)){
-    
-    
-    # 1 - Import projections --------------------------------------------------
+plot.map3 <- function(projRaster_path = "/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/projections_BITH.RDS", RL_cutoff = 0.005, extent = c(xmin = -514009, xmax = 356398, ymin = 110389, ymax = 633143)){
+    #### Scenarios ####
 
+    scenarios <- c("RCP45_2020", "biomass_2020",
+                  "RCP45_2040", "biomass_2040", 
+                  "RCP45_2070", "biomass_2070",
+                  "RCP45_2100", "biomass_2100")
 
-    SDM <- readRDS(projRaster_path)
+    filenames <- paste0("./SDM/results/BITH_", scenarios, ".tif")
 
-    # # Limit analysis to current distribution
-    e <- raster::extent(extent)
-    SDM_sub <- raster::crop(SDM, e)
+    #### Loop through scenarios and plot them ####
 
+    # Set up plot layout
+    par(mfrow=c(4,2), mar=c(3,3,1,1))
 
-    # 2 - Draw the map --------------------------------------------------------
+    # Loop
+    i=1
+    for (map in filenames){
 
+        # # Import projection
+        r <- raster::raster(map)
 
-    par(mfrow=c(raster::nlayers(SDM)/2,2), mar=c(3,3,1,1))
-    for(i in 1:raster::nlayers(SDM)){
-        raster::plot(SDM_sub[[i]]>=log(0.05), legend = F, bty = "o", yaxs="i", xaxs="i",  col = c("darkkhaki", "darkgreen"), colNA = rgb(193/256,236/256,250/256), main = names(SDM_sub[[i]]))
+        # # Limit analysis to current distribution
+        e <- raster::extent(extent)
+        r_sub <- raster::crop(r, e)
+
+        # # Draw the map
+        raster::plot(SDM_sub>=log(RL_cutoff), legend = FALSE, bty = "o", yaxs="i", xaxs="i",  col = c("darkkhaki", "darkgreen"), colNA = rgb(193/256,236/256,250/256), main = names(scenarios[i]))
+
+        i = i + 1
     }
 }
 
