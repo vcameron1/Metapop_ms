@@ -127,7 +127,7 @@ SDM.AUC <- function(model, newdata, BITH, RL_cutoff, template, plot_prediction =
     raster::plot(r[[1]], axes = FALSE, box = FALSE, legend = FALSE, ...) 
     if(points) {
       BITH_points <- template
-      raster::values(BITH_points) <- BITH
+      raster::values(BITH_points) <- BITH$x
       points(raster::coordinates(BITH_points), pch = 3, cex = 0.05)}
   }
 
