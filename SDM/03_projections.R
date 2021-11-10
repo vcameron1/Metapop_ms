@@ -99,8 +99,9 @@ metrics_RCP45_RL <- patch.metrics(RCP45_RL, RL_cutoff = 0.05, a = c(1, 1/5, 1/50
 # Function to plot climate warming as a gif
 if(!require(magic)) install.packages("magick")
 library(animation)
-plot.gif <- function(raster, file.name, xlim, ylim,
-                     frames.interval = 0.5, zlim = c(-5,10), ...){
+
+plot.gif <- function(raster, file.name, xlim, ylim, frames.interval = 0.5, zlim = c(-5,10), ...){
+
   colo <- colorRampPalette(c("grey90", "steelblue4", 
                           "steelblue2", "steelblue1", 
                           "gold", "red1", "red4"))(200)
@@ -117,15 +118,13 @@ plot.gif <- function(raster, file.name, xlim, ylim,
 }
 
 # Gif for EasternTownships
-plot.gif(SDM_GRBI, file.name = "./SDM/results/GRBI_QC.gif", xlim=c(-75,-64), ylim=c(45,49.5),
-        frames.interval = 0.5, zlim = c(-5,10), main = "")
+plot.gif(BITH_2020_2100[[1:4]], file.name = "./SDM/results/BITH_RCP54_QC.gif", xlim=c(-514009,356398), ylim=c(110389,633143), frames.interval = 0.5, zlim = c(-5,10), main = "")
+plot.gif(BITH_2020_2100[[5:8]], file.name = "./SDM/results/BITH_biomass_QC.gif", xlim=c(-514009,356398), ylim=c(110389,633143), frames.interval = 0.5, zlim = c(-5,10), main = "")
 
 # Gif for EasternTownships
-plot.gif(SDM_GRBI, file.name = "./SDM/results/GRBI_ET.gif", xlim=c(-73,-70), ylim=c(45,46),
+plot.gif(SDM_GRBI, file.name = "./SDM/results/GRBI_ET.gif", xlim=c(-356488,-115085), ylim=c(111680,234873),
         frames.interval = 0.5, zlim = c(-5,10), main = "")
 
 # Gif for Réserve faunique des Laurentides
-plot.gif(SDM_GRBI, file.name = "./SDM/results/GRBI_RL.gif", xlim=c(-72.2,-70), ylim=c(46.8,48.2), 
+plot.gif(SDM_GRBI, file.name = "./SDM/results/GRBI_RL.gif", xlim=c(-282986,-109983), ylim=c(311761,475079), 
          frames.interval = 0.5, zlim = c(-5,10), main = "")
-
-
