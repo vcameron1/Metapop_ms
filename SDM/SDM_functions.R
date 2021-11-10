@@ -124,11 +124,14 @@ SDM.AUC <- function(model, newdata, BITH, RL_cutoff, template, plot_prediction =
   # Plot prediction
   if(plot_prediction){
     #dev.new()
-    raster::plot(r[[1]], axes = FALSE, box = FALSE, legend = FALSE, ...) 
+    raster::plot(r, axes = FALSE, box = FALSE, legend = FALSE, ...) 
     if(points) {
       BITH_points <- template
       raster::values(BITH_points) <- BITH$x
-      points(raster::coordinates(BITH_points), pch = 3, cex = 0.05)}
+      BITH_points[BITH_points==0] <- NA
+      BITH_points <- raster::rasterToPoints(BITH_points) # Keep cell centroids
+      BITH_points <- sp::SpatialPoints(BITH_points, proj4string = raster::crs(template))
+      points(BITH_points, pch = 3, cex = 0.05)}
   }
 
   # Compute AUC 
