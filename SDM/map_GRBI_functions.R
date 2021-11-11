@@ -41,14 +41,13 @@ plot.map <- function(projRaster_path = "./SDM/results/projections_GRBI.RDS", ext
     dev.off()
 }
 
-plot.map3 <- function(projRaster_path = "/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/projections_BITH.RDS", RL_cutoff = 0.005, extent = c(xmin = -514009, xmax = 356398, ymin = 110389, ymax = 633143)){
+plot.map3 <- function(scenarios <- c("RCP45_2020", "biomass_2020",
+                                     "RCP45_2040", "biomass_2040", 
+                                     "RCP45_2070", "biomass_2070",
+                                     "RCP45_2100", "biomass_2100"),
+                                     RL_cutoff = 0.005, extent = c(xmin = -514009, xmax = 356398, ymin = 110389, ymax = 633143)){
+    
     #### Scenarios ####
-
-    scenarios <- c("RCP45_2020", "biomass_2020",
-                  "RCP45_2040", "biomass_2040", 
-                  "RCP45_2070", "biomass_2070",
-                  "RCP45_2100", "biomass_2100")
-
     filenames <- paste0("./SDM/results/BITH_", scenarios, ".tif")
 
     #### Loop through scenarios and plot them ####
@@ -68,7 +67,7 @@ plot.map3 <- function(projRaster_path = "/Users/victorcameron/Documents/Git/Meta
         r_sub <- raster::crop(r, e)
 
         # # Draw the map
-        raster::plot(SDM_sub>=log(RL_cutoff), legend = FALSE, bty = "o", yaxs="i", xaxs="i",  col = c("darkkhaki", "darkgreen"), colNA = rgb(193/256,236/256,250/256), main = names(scenarios[i]))
+        raster::plot(r_sub>=log(RL_cutoff), legend = FALSE, bty = "o", yaxs="i", xaxs="i",  col = c("darkkhaki", "darkgreen"), colNA = rgb(193/256,236/256,250/256), main = scenarios[i])
 
         i = i + 1
     }
