@@ -138,7 +138,8 @@ for(i in 1){
 
 # Model fomula
 #cov <- c("temp * temp2 * prec * elevation + type_couv + cl_dens + cl_haut")
-cov <- c("temp * temp2 * prec * elevation + abie.balPropBiomass * abie.balBiomass")
+#cov <- c("temp * temp2 * prec * elevation + abie.balPropBiomass * abie.balBiomass")
+cov <- c("temp * temp2 * prec + elevation + abie.balPropBiomass * abie.balBiomass")
 
 # Downweighted poisson regression (point process model)
 res <- SDM.glm(template=template,
@@ -148,50 +149,109 @@ res <- SDM.glm(template=template,
                   nquad = 1000000,
                   quadOverlay = TRUE,
                   nquadWanted = FALSE)
-saveRDS(model, "./SDM/model.RDS")
 model <- res[["model"]]
+saveRDS(model, "./SDM/BITH_SDM.RDS")
 summary(model)
+
+# Best intensity cutoff value to set the breeding range limit
+RL_cutoff <- 0.00625 # 1 indv / km2
 
 # Plot predictions
 SDM.plot(template, model, newdata = explana_dat, logPred = TRUE, BITH, points = TRUE, main = "GLM prediction (log)")
 # Predictions for Eastern Townships
 SDM.plot(model, newdata = explana_dat, logPred = TRUE, GRBI_points, points = FALSE, main = "GLM prediction EasternTownships (log)", xlim=c(-73,-70), ylim=c(45,46))
-SDM.AUC(model, newdata=explana_dat, GRBI_points=GRBI_points, RL_cutoff = 0.05, plot_prediction = FALSE)
+SDM.AUC(model, newdata=explana_dat, BITH=BITH, RL_cutoff = RL_cutoff, template = template, plot_prediction = TRUE)
 
 
 # 6 - Test model ----------------------------------------------------------
 
 
-# Temperature gradient
-temp <- seq(from=min(explana_dat[["temp"]], na.rm = TRUE), to=max(explana_dat[["temp"]], na.rm = TRUE), length.out=100)
-temp2 <- temp^2
+#########################
+# Functions to test model 
+#########################
 
-# Fix other variables
-dat <- explana_dat[1:100,]
-dat$prec <- mean(explana_dat[["prec"]], na.rm = TRUE)
-dat$abie.balPropBiomass <- mean(explana_dat[["abie.balPropBiomass"]], na.rm = TRUE)
-dat$abie.balBiomass <- mean(explana_dat[["abie.balBiomass"]], na.rm = TRUE)
-dat$temp <- temp
-dat$temp2 <- temp2
-elev <- seq(500, 1200, by = 25)
+model.elevBehavior <- function(model, explana_dat, RL_cutoff = NULL, ...){
+    # Temperature gradient
+    temp <- seq(from=min(explana_dat[["temp"]], na.rm = TRUE), to=max(explana_dat[["temp"]], na.rm = TRUE), length.out=100)
+    temp2 <- temp^2
 
-# Predict
-intensity <- list()
-for(i in 1:length(elev)){
-  dat$elevation <- elev[i]
-  intensity[[i]] <- predict(model, newdata = dat, type = "response")
+    # Fix other variables
+    dat <- explana_dat[1:100,]
+    dat$prec <- mean(explana_dat[["prec"]], na.rm = TRUE)
+    dat$abie.balPropBiomass <- 0.5#mean(explana_dat[["abie.balPropBiomass"]], na.rm = TRUE)
+    dat$abie.balBiomass <- 30#mean(explana_dat[["abie.balBiomass"]], na.rm = TRUE)
+    dat$temp <- temp
+    dat$temp2 <- temp2
+    elev <- seq(500, 1200, by = 25)
+
+    # Predict
+    intensity <- list()
+    for(i in 1:length(elev)){
+    dat$elevation <- elev[i]
+    intensity[[i]] <- predict(model, newdata = dat, type = "response")
+    }
+
+    # Cols
+    colo <- colorRampPalette(c("grey90", "steelblue4", 
+                            "steelblue2", "steelblue1", 
+                            "gold", "red1", "red4"))(length(elev))
+
+    # Plot prediction
+    plot(y = log(intensity[[length(elev)]]), x = dat$temp, col = colo[length(elev)], ylab="log(intensity)", type="l", xlab = "Temperature (°C)", ...)
+    polygon(x = c(min(explana_dat[["temp"]], na.rm = TRUE), -2, -2, min(explana_dat[["temp"]], na.rm = TRUE)),                           # X-Coordinates of polygon
+        y = c(-10000, -10000, 10000, 10000),                             # Y-Coordinates of polygon
+        col = rgb(211,211,211, max=255, alpha=127),
+        border=rgb(211,211,211, max=255, alpha=127))   
+    for(i in 1:(length(elev)-1)){
+    lines(y = log(intensity[[i]]), x = dat$temp, col=colo[i])
+    }
+    if(!is.null(RL_cutoff)) abline(h = log(RL_cutoff), lty = 2, col = "black")
+    legend(3.6, max(log(unlist(intensity))), legend = elev, fill = colo, ncol = 2, title = "Elevation (m)", bty = 'n', cex = 0.5)
 }
 
-# Cols
-colo <- colorRampPalette(c("grey90", "steelblue4", 
-                          "steelblue2", "steelblue1", 
-                          "gold", "red1", "red4"))(length(elev))
+model.biomassBehavior <- function(model, explana_dat, RL_cutoff = NULL, ...){
+    # Temperature gradient
+    temp <- seq(from=min(explana_dat[["temp"]], na.rm = TRUE), to=max(explana_dat[["temp"]], na.rm = TRUE), length.out=100)
+    temp2 <- temp^2
 
-# Plot prediction
-plot(y = log(intensity[[length(elev)]]), x = dat$temp, col = colo[length(elev)], ylab="log(intensity)", type="l",
-    xlab = "Temperature (°C)")
-for(i in 1:(length(elev)-1)){
-  lines(y = log(intensity[[i]]), x = dat$temp, col=colo[i])
+    # Fix other variables
+    dat <- explana_dat[1:100,]
+    dat$prec <- mean(explana_dat[["prec"]], na.rm = TRUE)
+    abie.balPropBiomass <- seq(0,1,le=8)
+    dat$abie.balBiomass <- 30
+    dat$temp <- temp
+    dat$temp2 <- temp2
+    dat$elevation <- 750
+
+    # Predict
+    intensity <- list()
+    for(i in 1:length(abie.balPropBiomass)){
+    dat$abie.balPropBiomass <- abie.balPropBiomass[i]
+    intensity[[i]] <- predict(model, newdata = dat, type = "response")
+    }
+
+    # Cols
+    colo <- colorRampPalette(c("grey90", "steelblue4", 
+                            "steelblue2", "steelblue1", 
+                            "gold", "red1", "red4"))(length(abie.balPropBiomass))
+
+    # Plot prediction
+    plot(y = log(intensity[[length(abie.balPropBiomass)]]), x = dat$temp, col = colo[length(abie.balPropBiomass)], ylab="log(intensity)", type="l", xlab = "Temperature (°C)", ylim = c(min(log(unlist(intensity))),max(log(unlist(intensity)))), ...)
+    polygon(x = c(min(explana_dat[["temp"]], na.rm = TRUE), -2, -2, min(explana_dat[["temp"]], na.rm = TRUE)),                           # X-Coordinates of polygon
+        y = c(-10000, -10000, 10000, 10000),                             # Y-Coordinates of polygon
+        col = rgb(211,211,211, max=255, alpha=127),
+        border=rgb(211,211,211, max=255, alpha=127))   
+    for(i in 1:(length(abie.balPropBiomass)-1)){
+    lines(y = log(intensity[[i]]), x = dat$temp, col=colo[i])
+    }
+    if(!is.null(RL_cutoff)) abline(h = log(RL_cutoff), lty = 2, col = "black")
+    legend(3.6, max(log(unlist(intensity)), na.rm=T), legend = round(abie.balPropBiomass,1), fill = colo, title = "propBiomass", bty = 'n', cex = 0.5)
 }
-legend(3.6, 14, legend = elev, fill = colo, ncol = 2, title = "Elevation (m)", bty = 'n')
 
+
+#########################
+# Test model 
+#########################
+
+model.elevBehavior(model, explana_dat, RL_cutoff = RL_cutoff)
+model.biomassBehavior(model, explana_dat, RL_cutoff = RL_cutoff)
