@@ -36,9 +36,8 @@ patch.metrics <- function(projRaster, RL_cutoff = 0.05, a = 1/2){
         }else{
             #### Compute total habitat size ####
             raster[raster < RL_cutoff] <- NA
-            area <- raster::area(raster, na.rm=TRUE) # in km2
-            area <- area[!is.na(area)]
-            totalArea[i] <- sum(area, na.rm = TRUE)
+            area <- raster[!is.na((raster))]
+            totalArea[i] <- (length(area) * raster::res(raster)[1] * raster::res(raster)[2]) / 1000^2 # in km2
             
             # Identify groups of cells that are connected
             clump <- raster::clump(raster >= RL_cutoff)
@@ -50,9 +49,8 @@ patch.metrics <- function(projRaster, RL_cutoff = 0.05, a = 1/2){
                 # # Compute clump area 
                 clumpX <- clump
                 clumpX[clumpX != patch] <- NA
-                clumpArea <- raster::area(clumpX, na.rm = TRUE)
-                clumpArea <- clumpArea[!is.na(clumpArea)]
-                clumpArea <- sum(clumpArea, na.rm = TRUE)
+                clumpX <- clumpX[!is.na(clumpX)]
+                clumpArea <- (length(clumpX) * raster::res(raster)[1] * raster::res(raster)[2]) / 1000^2 # in km2
                     
                 # # Save in df
                 patchArea <- rbind(patchArea, c(patch, clumpArea, names(raster)))
@@ -66,7 +64,7 @@ patch.metrics <- function(projRaster, RL_cutoff = 0.05, a = 1/2){
 
             #### Inter-patch distance ####
             clumpPoly <- raster::rasterToPolygons(clump, dissolve = TRUE)
-            d_ij[[i]] <- rgeos::gDistance(clumpPoly, byid = TRUE)
+            d_ij[[i]] <- rgeos::gDistance(clumpPoly, byid = TRUE) / 1000 # in km
 
 
             #### Metapop capacity ####
