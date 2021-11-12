@@ -14,12 +14,8 @@ patch.metrics <- function(projRaster, RL_cutoff = 0.05, a = 1/2){
     # Results containers
     n <- c()                  ## Number of patches
     totalArea <- c()          ## Total area
-    capacity <- data.frame(capacity = NA,
-                           alpha = NA,
-                           scenario = NA)           ## Metapopulation capacity
-    patchArea <- data.frame(patch = NA,
-                            area = NA,
-                            scenario = NA) ## individual patch areas
+    capacity <- setNames(data.frame(matrix(ncol = 3, nrow = 0)), c("capacity", "alpha", "scenario")) ## Metapopulation capacity
+    patchArea <- setNames(data.frame(matrix(ncol = 3, nrow = 0)), c("patch", "area", "scenario")) ## individual patch areas
     d_ij <- list()            ## inter-patch distance matrices
 
     # Loop accros projections to compute metrics
@@ -30,8 +26,8 @@ patch.metrics <- function(projRaster, RL_cutoff = 0.05, a = 1/2){
         if(raster::maxValue(raster) < RL_cutoff){
             n[i] = 0
             totalArea[i] = 0
-            capacity[i] = 0
-            patchArea = rbind(patchArea, c(0,0,names(raster)))
+            capacity <- rbind(capacity, data.frame(capacity = rep(0,length(a)), alpha = a, scenario = names(raster)))
+            patchArea <- rbind(patchArea, data.frame(patch = NA, area = 0, scenario = names(raster)))
             d_ij[[i]] = 0
         }else{
             #### Compute total habitat size ####
@@ -53,10 +49,10 @@ patch.metrics <- function(projRaster, RL_cutoff = 0.05, a = 1/2){
                 clumpArea <- (length(clumpX) * raster::res(raster)[1] * raster::res(raster)[2]) / 1000^2 # in km2
                     
                 # # Save in df
-                patchArea <- rbind(patchArea, c(patch, clumpArea, names(raster)))
+                patchArea <- rbind(patchArea, data.frame(patch = patch, area = clumpArea, scenario = names(raster)))
             }
-            patchArea <- patchArea[!is.na(patchArea$area),]
-            patchArea$area <- as.numeric(patchArea$area)
+            #patchArea <- patchArea[!is.na(patchArea$area),]
+            #patchArea$area <- as.numeric(patchArea$area)
 
             #### Number of patches ####
             n[i] = length(patchArea[patchArea$scenario==names(raster), "patch"])
@@ -82,9 +78,9 @@ patch.metrics <- function(projRaster, RL_cutoff = 0.05, a = 1/2){
                     }
                 }
                 # Metapop capacity
-                capacity <- rbind(capacity, c(eigen(land)$values[1], alpha, names(raster)))
-                capacity <- capacity[!is.na(capacity$capacity),]
-                capacity$capacity <- as.numeric(capacity$capacity)
+                capacity <- rbind(capacity, data.frame(capacity = eigen(land)$values[1], alpha = alpha, scenario = names(raster)))
+                #capacity <- capacity[!is.na(capacity$capacity),]
+                #capacity$capacity <- as.numeric(capacity$capacity)
             }
         }
     }

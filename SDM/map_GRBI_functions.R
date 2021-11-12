@@ -41,7 +41,7 @@ plot.map <- function(projRaster_path = "./SDM/results/projections_GRBI.RDS", ext
     dev.off()
 }
 
-plot.map3 <- function(scenarios <- c("RCP45_2020", "biomass_2020",
+plot.map3 <- function(scenarios = c("RCP45_2020", "biomass_2020",
                                      "RCP45_2040", "biomass_2040", 
                                      "RCP45_2070", "biomass_2070",
                                      "RCP45_2100", "biomass_2100"),
