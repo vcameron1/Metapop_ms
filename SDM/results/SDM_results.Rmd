@@ -1,0 +1,332 @@
+---
+title: "SDM results"
+author: "Victor Cameron"
+date: "08/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      warning = FALSE, 
+                      message = FALSE)
+```
+
+
+```{r dependencies, echo=FALSE}
+library(dplyr)
+library(ggplot2)
+library(hrbrthemes)
+library(ggpubr)
+source("/Users/victorcameron/Documents/Git/Metapop_ms/SDM/patch_metrics_functions.R")
+source("/Users/victorcameron/Documents/Git/Metapop_ms/SDM/map_GRBI_functions.R")
+```
+
+```{r load data, echo=FALSE}
+# Metrics
+BITH_metrics_QC <- readRDS("/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/BITH_metrics_QC.RDS")
+BITH_metrics_ET <- readRDS("/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/BITH_metrics_ET.RDS")
+BITH_metrics_RL <- readRDS("/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/BITH_metrics_RL.RDS")
+```
+
+```{r fig params, echo=FALSE}
+# Colors
+cols <- c(QC = "blue4", RL = "green4", ET = "brown3")
+
+# Best intensity cutoff value to set the breeding range limit
+RL_cutoff <- 0.00625 # 1 indv / km2
+```
+
+## Maps
+
+<center>
+
+<div class = "row">
+  
+<div class = "col-md-6">
+![](/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/BITH_RCP54_QC.gif)
+</div>
+  
+<div class = "col-md-6">
+![](/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/BITH_biomass_QC.gif)
+</div>
+
+</div>
+
+</center>
+
+### **Fig 1**. Bicknell's thrush predicted breeding range
+
+```{r 4 range map, fig.align='center', out.width = "100%", out.height = "300%", echo=FALSE}
+plot.map3(RL_cutoff = RL_cutoff)
+```
+
+**Fig 1**. Bicknell's thrush predicted breeding range. Breeding range is presented for projections of climate warming and habitat change between 2020 and 2100.
+
+## **Fig 2**. Number of patches
+
+```{r fig.2, fig.align='center', out.width = "100%", fig.asp = .4, echo=FALSE}
+# Organize data frame
+n_QC <- data.frame(n = BITH_metrics_QC$n, Time = c(2020, 2040, 2070, 2100), scenario = c(rep("RCP4.5",4),rep("biomass",4)))
+n_RL <- data.frame(n = BITH_metrics_RL$n, Time = c(2020, 2040, 2070, 2100), scenario = c(rep("RCP4.5",4),rep("biomass",4)))
+n_ET <- data.frame(n = BITH_metrics_ET$n, Time = c(2020, 2040, 2070, 2100), scenario = c(rep("RCP4.5",4),rep("biomass",4)))
+
+pn_QC <- ggplot(n_QC, aes(x=Time, y=n, group=scenario, linetype = scenario)) +
+           geom_smooth(color=cols["QC"], se=FALSE, size=0.5, span = 0.7) +
+           scale_y_continuous(name="Number of patches") +
+           theme_classic() +
+           theme(legend.position = c(.95, .95), legend.justification = c("right", "top"), legend.key.size = unit(0.5, 'cm'), legend.text = element_text(size=7), legend.title=element_blank()) 
+
+pn_RL <- ggplot(n_RL, aes(x=Time, y=n, group=scenario, linetype = scenario)) +
+           geom_smooth(color=cols["RL"], se=FALSE, size=0.5, span = 0.7) +
+           theme_classic() +
+           theme(legend.position = c(.95, .95), legend.justification = c("right", "top"), legend.key.size = unit(0.5, 'cm'), legend.text = element_text(size=7), legend.title=element_blank()) 
+
+pn_ET <- ggplot(n_ET, aes(x=Time, y=n, group=scenario, linetype = scenario)) +
+           geom_smooth(color=cols["ET"], se=FALSE, size=0.5, span = 0.7) +
+           scale_y_continuous(name="Number of patches") +
+           theme_classic() +
+           theme(legend.position = c(.95, .95), legend.justification = c("right", "top"), legend.key.size = unit(0.5, 'cm'), legend.text = element_text(size=7), legend.title=element_blank()) 
+
+ggarrange(pn_QC, pn_RL + rremove("legend") + rremove("ylab"), pn_ET + rremove("legend") + rremove("ylab"), align = "v", ncol = 3, nrow = 1)
+```
+
+**Fig. 2**: Number of patch through time for climate forcing scenario and habitat presented by region.
+
+## **Fig 3**. Change in spatial configuration of the distribution
+
+```{r fig.3, fig.align='center', out.width = "100%", echo=FALSE}
+#### Organize data frame ####
+
+# # Area QC
+area_QC <- data.frame(area = BITH_metrics_QC$patchArea$area, Time = BITH_metrics_QC$patchArea$scenario, scenario = BITH_metrics_QC$patchArea$scenario) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2020","BITH_biomass_2020"), 2020)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2040","BITH_biomass_2040"), 2040)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2070","BITH_biomass_2070"), 2070)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2100","BITH_biomass_2100"), 2100)) %>%
+    mutate(Time = as.factor(Time)) %>%
+    mutate(scenario=replace(scenario, scenario %in% c("BITH_RCP45_2020","BITH_RCP45_2040","BITH_RCP45_2070","BITH_RCP45_2100"), "RCP4.5")) %>%
+    mutate(scenario=replace(scenario, scenario %in% c("BITH_biomass_2020","BITH_biomass_2040","BITH_biomass_2070","BITH_biomass_2100"), "biomass"))
+# # Area ET
+area_ET <- data.frame(area = BITH_metrics_ET$patchArea$area, Time = BITH_metrics_ET$patchArea$scenario, scenario = BITH_metrics_ET$patchArea$scenario) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2020","BITH_biomass_2020"), 2020)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2040","BITH_biomass_2040"), 2040)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2070","BITH_biomass_2070"), 2070)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2100","BITH_biomass_2100"), 2100)) %>%
+    mutate(Time = as.factor(Time)) %>%
+    mutate(scenario=replace(scenario, scenario %in% c("BITH_RCP45_2020","BITH_RCP45_2040","BITH_RCP45_2070","BITH_RCP45_2100"), "RCP4.5")) %>%
+    mutate(scenario=replace(scenario, scenario %in% c("BITH_biomass_2020","BITH_biomass_2040","BITH_biomass_2070","BITH_biomass_2100"), "biomass"))
+# # Area RL
+area_RL <- data.frame(area = BITH_metrics_RL$patchArea$area, Time = BITH_metrics_RL$patchArea$scenario, scenario = BITH_metrics_RL$patchArea$scenario) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2020","BITH_biomass_2020"), 2020)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2040","BITH_biomass_2040"), 2040)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2070","BITH_biomass_2070"), 2070)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2100","BITH_biomass_2100"), 2100)) %>%
+    mutate(Time = as.factor(Time)) %>%
+    mutate(scenario=replace(scenario, scenario %in% c("BITH_RCP45_2020","BITH_RCP45_2040","BITH_RCP45_2070","BITH_RCP45_2100"), "RCP4.5")) %>%
+    mutate(scenario=replace(scenario, scenario %in% c("BITH_biomass_2020","BITH_biomass_2040","BITH_biomass_2070","BITH_biomass_2100"), "biomass"))
+
+#### Distance ####
+
+extract.dist <- function(metrics){
+    dist <- setNames(data.frame(matrix(ncol = 2, nrow = 0)), c("dist", "scenario"))
+    for(i in seq_along(metrics$n)){
+        if(metrics$n[i] == 0) next
+        dij <- metrics$d_ij[[i]][lower.tri(metrics$d_ij[[i]], diag = FALSE)]
+        scenario <- names(metrics$d_ij[i])
+
+        dist <- rbind(dist, data.frame(dij, scenario))
+    }
+    colnames(dist) <- c("dist", "scenario")
+    #dist$scenario <- as.factor(dist$scenario)
+    
+    return(dist)
+}
+# # Distance QC
+dist_QC <- cbind(extract.dist(BITH_metrics_QC), Time = 2020) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2020","BITH_biomass_2020"), 2020)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2040","BITH_biomass_2040"), 2040)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2070","BITH_biomass_2070"), 2070)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2100","BITH_biomass_2100"), 2100)) %>%
+    mutate(Time = as.factor(Time)) %>%
+    mutate(scenario=replace(scenario, scenario %in% c("BITH_RCP45_2020","BITH_RCP45_2040","BITH_RCP45_2070","BITH_RCP45_2100"), "RCP4.5")) %>%
+    mutate(scenario=replace(scenario, scenario %in% c("BITH_biomass_2020","BITH_biomass_2040","BITH_biomass_2070","BITH_biomass_2100"), "biomass"))
+# # Distance ET
+dist_ET <- cbind(extract.dist(BITH_metrics_ET), Time = 2020) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2020","BITH_biomass_2020"), 2020)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2040","BITH_biomass_2040"), 2040)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2070","BITH_biomass_2070"), 2070)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2100","BITH_biomass_2100"), 2100)) %>%
+    mutate(Time = as.factor(Time)) %>%
+    mutate(scenario=replace(scenario, scenario %in% c("BITH_RCP45_2020","BITH_RCP45_2040","BITH_RCP45_2070","BITH_RCP45_2100"), "RCP4.5")) %>%
+    mutate(scenario=replace(scenario, scenario %in% c("BITH_biomass_2020","BITH_biomass_2040","BITH_biomass_2070","BITH_biomass_2100"), "biomass"))
+# # Distance RL
+dist_RL <- cbind(extract.dist(BITH_metrics_RL), Time = 2020) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2020","BITH_biomass_2020"), 2020)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2040","BITH_biomass_2040"), 2040)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2070","BITH_biomass_2070"), 2070)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2100","BITH_biomass_2100"), 2100)) %>%
+    mutate(Time = as.factor(Time)) %>%
+    mutate(scenario=replace(scenario, scenario %in% c("BITH_RCP45_2020","BITH_RCP45_2040","BITH_RCP45_2070","BITH_RCP45_2100"), "RCP4.5")) %>%
+    mutate(scenario=replace(scenario, scenario %in% c("BITH_biomass_2020","BITH_biomass_2040","BITH_biomass_2070","BITH_biomass_2100"), "biomass"))
+
+#### Plots ####
+
+# # Area QC
+parea_QC <- ggplot(area_QC, aes(fill=scenario, y=(area), x=Time)) +
+                geom_violin(position="dodge", alpha=0.5, trim = TRUE, adjust = 0.5) +
+                theme_classic() +
+                ylab("Area (km2)") +
+                ggtitle("QC")
+# # Area ET
+parea_ET <- ggplot(area_ET, aes(fill=scenario, y=(area), x=Time)) +
+                geom_violin(position="dodge", alpha=0.5, trim = TRUE, adjust = 0.5) +
+                theme_classic() +
+                ylab("Area (km2)") +
+                ggtitle("ET")
+# # Area RL
+parea_RL <- ggplot(area_RL, aes(fill=scenario, y=(area), x=Time)) +
+                geom_violin(position="dodge", alpha=0.5, trim = TRUE, adjust = 0.5) +
+                theme_classic() +
+                ylab("Area (km2)") +
+                ggtitle("RL")
+
+# # Distance QC
+pdist_QC <- ggplot(dist_QC, aes(fill=scenario, y=(dist), x=Time)) +
+                geom_violin(position="dodge", alpha=0.5, trim = TRUE, adjust = 0.5) +
+                theme_classic() +
+                ylab("Distance (km)") +
+                ggtitle("QC")
+# # Distance ET
+pdist_ET <- ggplot(dist_ET, aes(fill=scenario, y=(dist), x=Time)) +
+                geom_violin(position="dodge", alpha=0.5, trim = TRUE, adjust = 0.5) +
+                theme_classic() +
+                ylab("Distance (km)") +
+                ggtitle("ET")
+# # Distance RL
+pdist_RL <- ggplot(dist_RL, aes(fill=scenario, y=(dist), x=Time)) +
+                geom_violin(position="dodge", alpha=0.5, trim = TRUE, adjust = 0.5) +
+                theme_classic() +
+                ylab("Distance (km)") +
+                ggtitle("RL")
+
+
+#### Arrange all plots ####
+
+ggarrange(parea_QC + rremove("xlab"), pdist_QC + rremove("legend") + rremove("xlab"), parea_ET + rremove("legend") + rremove("xlab"), pdist_ET + rremove("legend") + rremove("xlab"), parea_RL + rremove("legend"), pdist_RL + rremove("legend"), align = "h", ncol = 2, nrow = 3)
+```
+
+**Gig. 3**: Density distribution of area and inter-patch distance through time for climate forcing and habitat scenarios.
+
+
+## **Fig 4**. Metapopulation effect
+
+```{r fig.4, fig.align='center', out.width = "100%", echo=FALSE}
+# Function to return capacity plot
+plot.capacity <- function(cap, totalArea, col = "black", main = ""){  
+
+    # Alpha values
+    a = unique(capacity$alpha)
+
+    # Cols
+    colo <- colorRampPalette(c("grey90", "steelblue4", 
+                            "steelblue2", "steelblue1", 
+                            "gold", "red1", "red4"))(length(a))
+
+    # Weights given to force all lines at single origin
+    weight <- c(1000,rep(1,nrow(totalArea)-1))
+
+    # Base plot
+    p_cap <- ggplot(data=totalArea, aes(x=Time, y=totalArea/totalArea[1])) +
+                geom_smooth(aes(weight=weight), se=FALSE, size=0.5, color=cols["RL"], span = 0.7) +
+                scale_x_continuous(name="Time") +
+                scale_y_continuous(name = "") +
+                ggtitle(main) +
+                theme_classic() +
+                theme(axis.text.y = element_blank())
+
+    # Set capacity as proportion of initial value
+    cap <- cap %>% 
+            mutate(capacity=ifelse(alpha==a[1],capacity/capacity[1], capacity)) %>%
+            mutate(capacity=ifelse(alpha==a[2],capacity/capacity[2], capacity)) %>%
+            mutate(capacity=ifelse(alpha==a[3],capacity/capacity[3], capacity)) %>%
+            mutate(capacity=ifelse(alpha==a[4],capacity/capacity[4], capacity)) %>%
+            mutate(capacity=ifelse(alpha==a[5],capacity/capacity[5], capacity))
+
+    # Add lines
+    p_cap <- p_cap + 
+            geom_smooth(data=cap, aes(y=capacity, weight=rep(weight,length(a)), group=alpha, color=alpha), linetype=2, se=FALSE,  size=0.5, span = 0.7) +
+            scale_color_manual(values=colo)
+
+    return(p_cap)
+}
+
+#### Data ####
+
+# Total area
+totalArea_QC <- data.frame(totalArea = BITH_metrics_QC$totalArea, scenario = names(BITH_metrics_QC$totalArea), Time = 2020) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2020","BITH_biomass_2020"), 2020)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2040","BITH_biomass_2040"), 2040)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2070","BITH_biomass_2070"), 2070)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2100","BITH_biomass_2100"), 2100)) %>%
+    mutate(scenario=replace(scenario, scenario %in% c("BITH_RCP45_2020","BITH_RCP45_2040","BITH_RCP45_2070","BITH_RCP45_2100"), "RCP4.5")) %>%
+    mutate(scenario=replace(scenario, scenario %in% c("BITH_biomass_2020","BITH_biomass_2040","BITH_biomass_2070","BITH_biomass_2100"), "biomass"))
+
+totalArea_ET <- data.frame(totalArea = BITH_metrics_ET$totalArea, scenario = names(BITH_metrics_ET$totalArea), Time = 2020) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2020","BITH_biomass_2020"), 2020)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2040","BITH_biomass_2040"), 2040)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2070","BITH_biomass_2070"), 2070)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2100","BITH_biomass_2100"), 2100)) %>%
+    mutate(scenario=replace(scenario, scenario %in% c("BITH_RCP45_2020","BITH_RCP45_2040","BITH_RCP45_2070","BITH_RCP45_2100"), "RCP4.5")) %>%
+    mutate(scenario=replace(scenario, scenario %in% c("BITH_biomass_2020","BITH_biomass_2040","BITH_biomass_2070","BITH_biomass_2100"), "biomass"))
+
+totalArea_RL <- data.frame(totalArea = BITH_metrics_RL$totalArea, scenario = names(BITH_metrics_RL$totalArea), Time = 2020) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2020","BITH_biomass_2020"), 2020)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2040","BITH_biomass_2040"), 2040)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2070","BITH_biomass_2070"), 2070)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2100","BITH_biomass_2100"), 2100)) %>%
+    mutate(scenario=replace(scenario, scenario %in% c("BITH_RCP45_2020","BITH_RCP45_2040","BITH_RCP45_2070","BITH_RCP45_2100"), "RCP4.5")) %>%
+    mutate(scenario=replace(scenario, scenario %in% c("BITH_biomass_2020","BITH_biomass_2040","BITH_biomass_2070","BITH_biomass_2100"), "biomass"))
+
+
+# Capacity
+capacity_QC <-  cbind(BITH_metrics_QC$capacity, Time = 2020) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2020","BITH_biomass_2020"), 2020)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2040","BITH_biomass_2040"), 2040)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2070","BITH_biomass_2070"), 2070)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2100","BITH_biomass_2100"), 2100)) %>%
+    mutate(alpha = as.factor(alpha)) %>%
+    mutate(scenario=replace(scenario, scenario %in% c("BITH_RCP45_2020","BITH_RCP45_2040","BITH_RCP45_2070","BITH_RCP45_2100"), "RCP4.5")) %>%
+    mutate(scenario=replace(scenario, scenario %in% c("BITH_biomass_2020","BITH_biomass_2040","BITH_biomass_2070","BITH_biomass_2100"), "biomass"))
+
+capacity_ET <-  cbind(BITH_metrics_ET$capacity, Time = 2020) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2020","BITH_biomass_2020"), 2020)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2040","BITH_biomass_2040"), 2040)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2070","BITH_biomass_2070"), 2070)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2100","BITH_biomass_2100"), 2100)) %>%
+    mutate(alpha = as.factor(alpha)) %>%
+    mutate(scenario=replace(scenario, scenario %in% c("BITH_RCP45_2020","BITH_RCP45_2040","BITH_RCP45_2070","BITH_RCP45_2100"), "RCP4.5")) %>%
+    mutate(scenario=replace(scenario, scenario %in% c("BITH_biomass_2020","BITH_biomass_2040","BITH_biomass_2070","BITH_biomass_2100"), "biomass"))
+
+capacity_RL <-  cbind(BITH_metrics_RL$capacity, Time = 2020) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2020","BITH_biomass_2020"), 2020)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2040","BITH_biomass_2040"), 2040)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2070","BITH_biomass_2070"), 2070)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2100","BITH_biomass_2100"), 2100)) %>%
+    mutate(alpha = as.factor(alpha)) %>%
+    mutate(scenario=replace(scenario, scenario %in% c("BITH_RCP45_2020","BITH_RCP45_2040","BITH_RCP45_2070","BITH_RCP45_2100"), "RCP4.5")) %>%
+    mutate(scenario=replace(scenario, scenario %in% c("BITH_biomass_2020","BITH_biomass_2040","BITH_biomass_2070","BITH_biomass_2100"), "biomass"))
+
+#### Generate plots ####
+
+pcap_QC_RCP45 <- plot.capacity(capacity_QC[capacity_QC$scenario=="RCP4.5",], totalArea_QC[totalArea_QC$scenario=="RCP4.5",], col = cols["QC"], main = "QC")
+pcap_ET_RCP45 <- plot.capacity(capacity_ET[capacity_ET$scenario=="RCP4.5",], totalArea_ET[totalArea_ET$scenario=="RCP4.5",], col = cols["ET"], main = "ET")
+pcap_RL_RCP45 <- plot.capacity(capacity_RL[capacity_RL$scenario=="RCP4.5",], totalArea_RL[totalArea_RL$scenario=="RCP4.5",], col = cols["RL"], main = "RL")
+
+pcap_QC_biomass <- plot.capacity(capacity_QC[capacity_QC$scenario=="biomass",], totalArea_QC[totalArea_QC$scenario=="biomass",], col = cols["QC"], main = "QC")
+pcap_ET_biomass <- plot.capacity(capacity_ET[capacity_ET$scenario=="biomass",], totalArea_ET[totalArea_ET$scenario=="biomass",], col = cols["ET"], main = "ET")
+pcap_RL_biomass <- plot.capacity(capacity_RL[capacity_RL$scenario=="biomass",], totalArea_RL[totalArea_RL$scenario=="biomass",], col = cols["RL"], main = "RL")
+
+#### Arrange plots ####
+
+ggarrange(pcap_QC_RCP45 + rremove("xlab"), pcap_ET_RCP45 + rremove("legend") + rremove("xlab"), pcap_RL_RCP45 + rremove("legend") + rremove("xlab"), pcap_QC_biomass + rremove("legend"), pcap_ET_biomass + rremove("legend"), pcap_RL_biomass + rremove("legend"), align = "h", ncol = 3, nrow = 2)
+```
