@@ -20,7 +20,13 @@ if(false){
 }
 
 # Load model
-load("./SDM/BITH_SDM.RData")
+model <- readRDS("./SDM/BITH_SDM.RDS")
+
+# Best intensity cutoff value to set the breeding range limit
+RL_cutoff <- 0.00625 # 1 indv / km2
+
+# Load template
+template <- raster::raster("./data_clean/templateRaster.tif")
 
 # Scenarios
 scenarios <- c("RCP45_2020", "RCP45_2040", "RCP45_2070", "RCP45_2100",
@@ -39,17 +45,18 @@ for (i in seq_along(scenarios)) {
                             newdata = dat,
                             type = "response")
 
+  # Remove df from memory
+  rm("dat")
+
   # # Save projection
   #write.csv(intensityMap, paste0("./SDM/results/BITH_", scenarios[i], ".csv"))
   
   # # Build the raster objects
-  prediction <- raster::raster(explana_scenario[["temp"]]) 
+  prediction <- template
   raster::values(prediction) <- intensityMap
 
   # # Log predictions
-  prediction[prediction < 0.01] <- 0.01
   logpred <- log(prediction)
-  logpred[prediction == -Inf] <- 0
 
   # # Stack
   if(i == 1){ 
@@ -70,27 +77,36 @@ raster::writeRaster(BITH_2020_2100, filename=filenames, bylayer=TRUE, overwrite=
 # 2 - Patch metrics -------------------------------------------------------
 
 
+# If needed, load BITH_2020_2100
+if (FALSE){
+  BITH_2020_2100 <- raster::raster(filenames[1])
+  for (file in filenames[-1]){
+    r <- raster::raster(file)
+    BITH_2020_2100 <- raster::addLayer(BITH_2020_2100, file)
+  }
+}
+
 # Dependencies
 source("./SDM/patch_metrics_functions.R")
 
 # Compute patch metrics over full distribution
 # # Limit analysis to current distribution
 e <- raster::extent(c(xmin = -514009, xmax = 356398, ymin = 110389, ymax = 633143))
-RCP45_QC <- raster::crop(RCP45, e)
-metrics_RCP45_QC <- patch.metrics(RCP45_QC, RL_cutoff = 0.05, a = c(1, 1/5, 1/50, 1/200, 1/500))
+BITH_2020_2100_QC <- raster::crop(BITH_2020_2100, e)
+BITH_metrics_QC <- patch.metrics(BITH_2020_2100_QC, RL_cutoff = RL_cutoff, a = c(1, 1/5, 1/50, 1/200, 1/500))
 #saveRDS(metrics_RCP45_QC, "./SDM/results/BITH_metrics_RCP45_QC.RDS")
 
 # Patch metrics over EasternTownships
 e_ET <- raster::extent(c(xmin = -356488, xmax = -115085, ymin = 111680, ymax = 234873))
-RCP45_ET <- raster::crop(RCP45, e_ET)
-metrics_RCP45_ET <- patch.metrics(RCP45_ET, RL_cutoff = 0.05, a = c(1, 1/5, 1/50, 1/200, 1/500))
-#saveRDS(metrics_RCP45_ET, "./SDM/results/metrics_RCP45_ET.RDS")
+BITH_2020_2100_ET <- raster::crop(BITH_2020_2100, e_ET)
+BITH_metrics_ET <- patch.metrics(BITH_2020_2100_ET, RL_cutoff = RL_cutoff, a = c(1, 1/5, 1/50, 1/200, 1/500))
+#saveRDS(BITH_metrics_ET, "./SDM/results/BITH_metrics_ET.RDS")
 
 # Patch metrics over Réserve faunique des Laurentides
 e_RL <- raster::extent(c(xmin = -282986, xmax = -109983, ymin = 311761, ymax = 475079))
-RCP45_RL <- raster::crop(RCP45, e_RL)
-metrics_RCP45_RL <- patch.metrics(RCP45_RL, RL_cutoff = 0.05, a = c(1, 1/5, 1/50, 1/200, 1/500))
-#saveRDS(metrics_RCP45_RL, "./SDM/results/metrics_RCP45_RL.RDS")
+BITH_2020_2100_RL <- raster::crop(BITH_2020_2100, e_RL)
+BITH_metrics_RL <- patch.metrics(BITH_2020_2100_RL, RL_cutoff = RL_cutoff, a = c(1, 1/5, 1/50, 1/200, 1/500))
+#saveRDS(BITH_metrics_RL, "./SDM/results/BITH_metrics_RL.RDS")
 
 
 # 3 - Plot predictions ----------------------------------------------------
@@ -98,16 +114,19 @@ metrics_RCP45_RL <- patch.metrics(RCP45_RL, RL_cutoff = 0.05, a = c(1, 1/5, 1/50
 
 # Function to plot climate warming as a gif
 if(!require(magic)) install.packages("magick")
-library(animation)
 
 plot.gif <- function(raster, file.name, xlim, ylim, frames.interval = 0.5, zlim = c(-5,10), ...){
 
   colo <- colorRampPalette(c("grey90", "steelblue4", 
                           "steelblue2", "steelblue1", 
                           "gold", "red1", "red4"))(200)
+
+  # Set min value to lower zlim
+  raster[raster<zlim[1]] <- zlim[1]
+
   par(mar=c(0,0,0,0))
-  ani.options(interval = frames.interval)
-  saveGIF({
+  animation::ani.options(interval = frames.interval)
+  animation::saveGIF({
     for (i in 1:raster::nlayers(raster)){
       raster::plot(raster[[i]], col = colo, maxpixels = raster::ncell(raster),  
                    zlim = zlim, axes = FALSE, box = FALSE, legend = FALSE, 
@@ -117,9 +136,9 @@ plot.gif <- function(raster, file.name, xlim, ylim, frames.interval = 0.5, zlim 
   movie.name = file.name) 
 }
 
-# Gif for EasternTownships
-plot.gif(BITH_2020_2100[[1:4]], file.name = "./SDM/results/BITH_RCP54_QC.gif", xlim=c(-514009,356398), ylim=c(110389,633143), frames.interval = 0.5, zlim = c(-5,10), main = "")
-plot.gif(BITH_2020_2100[[5:8]], file.name = "./SDM/results/BITH_biomass_QC.gif", xlim=c(-514009,356398), ylim=c(110389,633143), frames.interval = 0.5, zlim = c(-5,10), main = "")
+# Gif for Québec
+plot.gif(BITH_2020_2100[[1:4]], file.name = "BITH_RCP45_QC.gif", xlim=c(-514009,356398), ylim=c(110389,633143), frames.interval = 0.5, zlim = c(-5,5), main = "RCP4.5")
+plot.gif(BITH_2020_2100[[5:8]], file.name = "./BITH_biomass_QC.gif", xlim=c(-514009,356398), ylim=c(110389,633143), frames.interval = 0.5, zlim = c(-5,5), main = "biomass")
 
 # Gif for EasternTownships
 plot.gif(SDM_GRBI, file.name = "./SDM/results/GRBI_ET.gif", xlim=c(-356488,-115085), ylim=c(111680,234873),
