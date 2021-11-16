@@ -99,8 +99,11 @@ SDM.plot <- function(template, model, newdata, logPred = TRUE, BITH, points = TR
     
     if(points){
       BITH_points <- template
-      raster::values(BITH_points) <- BITH
-      points(raster::coordinates(BITH_points), pch = 3, cex = 0.05)}
+      raster::values(BITH_points) <- BITH$x
+      BITH_points[BITH_points==0] <- NA
+      BITH_points <- raster::rasterToPoints(BITH_points) # Keep cell centroids
+      BITH_points <- sp::SpatialPoints(BITH_points, proj4string = raster::crs(template))
+      points(BITH_points, pch = 3, cex = 0.05)}
 
 }
 
