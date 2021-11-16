@@ -28,7 +28,8 @@ patch.metrics <- function(projRaster, RL_cutoff = 0.05, a = 1/2){
             totalArea[i] = 0
             capacity <- rbind(capacity, data.frame(capacity = rep(0,length(a)), alpha = a, scenario = names(raster)))
             patchArea <- rbind(patchArea, data.frame(patch = NA, area = 0, scenario = names(raster)))
-            d_ij[[i]] = 0
+            patchArea <- rbind(patchArea, data.frame(patch = NA, area = 0, scenario = names(raster))) ## Double row so it doesn't get dropped when plotting results
+            d_ij[[i]] = matrix(0,2,2)
         }else{
             #### Compute total habitat size ####
             raster[raster < RL_cutoff] <- NA
