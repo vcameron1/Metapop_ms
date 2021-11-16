@@ -141,9 +141,9 @@ plot.gif(BITH_2020_2100[[1:4]], file.name = "BITH_RCP45_QC.gif", xlim=c(-514009,
 plot.gif(BITH_2020_2100[[5:8]], file.name = "./BITH_biomass_QC.gif", xlim=c(-514009,356398), ylim=c(110389,633143), frames.interval = 0.5, zlim = c(-5,5), main = "biomass")
 
 # Gif for EasternTownships
-plot.gif(SDM_GRBI, file.name = "./SDM/results/GRBI_ET.gif", xlim=c(-356488,-115085), ylim=c(111680,234873),
-        frames.interval = 0.5, zlim = c(-5,10), main = "")
+plot.gif(BITH_2020_2100[[1:4]], file.name = "BITH_RCP45_ET.gif", xlim=c(-356488,-115085), ylim=c(111680,234873), frames.interval = 0.5, zlim = c(-5,5), main = "RCP4.5")
+plot.gif(BITH_2020_2100[[5:8]], file.name = "./BITH_biomass_ET.gif", xlim=c(-356488,-115085), ylim=c(111680,234873), frames.interval = 0.5, zlim = c(-5,5), main = "biomass")
 
 # Gif for Réserve faunique des Laurentides
-plot.gif(SDM_GRBI, file.name = "./SDM/results/GRBI_RL.gif", xlim=c(-282986,-109983), ylim=c(311761,475079), 
-         frames.interval = 0.5, zlim = c(-5,10), main = "")
+plot.gif(BITH_2020_2100[[1:4]], file.name = "BITH_RCP45_RL.gif", xlim=c(-282986,-109983), ylim=c(311761,475079), frames.interval = 0.5, zlim = c(-5,5), main = "RCP4.5")
+plot.gif(BITH_2020_2100[[5:8]], file.name = "./BITH_biomass_RL.gif", xlim=c(-282986,-109983), ylim=c(311761,475079), frames.interval = 0.5, zlim = c(-5,5), main = "biomass")
