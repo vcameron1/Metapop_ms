@@ -48,7 +48,7 @@ plot.map3 <- function(scenarios = c("RCP45_2020", "biomass_2020",
                                      RL_cutoff = 0.005, extent = c(xmin = -514009, xmax = 356398, ymin = 110389, ymax = 633143)){
     
     #### Scenarios ####
-    filenames <- paste0("./SDM/results/BITH_", scenarios, ".tif")
+    filenames <- paste0("/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/BITH_", scenarios, ".tif")
 
     #### Loop through scenarios and plot them ####
 
