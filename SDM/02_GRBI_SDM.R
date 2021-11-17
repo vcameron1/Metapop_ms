@@ -146,9 +146,9 @@ cov <- c("temp * temp2 * prec + elevation + abie.balPropBiomass * abie.balBiomas
 # Downweighted poisson regression (point process model)
 res <- SDM.glm(template=template,
                   BITH=BITH,
-                  covariables = cov, 
+                  covariables = cov,
                   pred = explana_dat,
-                  nquad = 1000000,
+                  nquad = 5000000,
                   quadOverlay = TRUE,
                   nquadWanted = FALSE)
 model <- res[["model"]]
@@ -169,7 +169,7 @@ SDM.AUC(model, newdata=explana_dat, BITH=BITH, RL_cutoff = RL_cutoff, template =
 
 
 #########################
-# Functions to test model 
+# Functions to test model
 #########################
 
 model.elevBehavior <- function(model, explana_dat, RL_cutoff = NULL, ...){
