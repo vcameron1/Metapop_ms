@@ -85,35 +85,37 @@ if(false){
 # 3 - Likelihood for different numbers of quadrature points ---------------
 
 
-# Select the number of quadrature points with saturated model
-set.seed(123)
-n.quad = c(1000, 5000, 10000, 50000, 100000, 500000, 1000000) # Model does not converge with > 1000000 quadrature points
+if(false){
+  # Select the number of quadrature points with saturated model
+  set.seed(123)
+  n.quad = c(1000, 5000, 10000, 50000, 100000, 500000, 1000000) # Model does not converge with > 1000000 quadrature points
 
-for(i in 1){
-    loglik = rep(NA, length(n.quad))
+  for(i in 1){
+      loglik = rep(NA, length(n.quad))
 
-    for(j in 1:length(n.quad)){
-    res <- SDM.glm(template=template,
-                   BITH=BITH,
-                   covariables = c("temp + temp2 + prec + elevation + abie.balPropBiomass + abie.balBiomass"), 
-                   pred = explana_dat[,-"V1"],
-                   nquad = n.quad[j], 
-                   quadOverlay = TRUE)
-    model <- res[["model"]]
+      for(j in 1:length(n.quad)){
+      res <- SDM.glm(template=template,
+                    BITH=BITH,
+                    covariables = c("temp + temp2 + prec + elevation + abie.balPropBiomass + abie.balBiomass"), 
+                    pred = explana_dat[,-"V1"],
+                    nquad = n.quad[j], 
+                    quadOverlay = TRUE)
+      model <- res[["model"]]
 
-    ## Compute log likelihood
-    mu <- model$fitted
-    y <- res[["y"]]
-    weights <- res[["weights"]]
-    loglik[j] <- sum(weights*(y*log(mu) - mu))
-    }
+      ## Compute log likelihood
+      mu <- model$fitted
+      y <- res[["y"]]
+      weights <- res[["weights"]]
+      loglik[j] <- sum(weights*(y*log(mu) - mu))
+      }
 
-    if(i==1){
-        dev.new()
-        plot(n.quad, loglik, log = "x", type = "o")
-    }else{
-        lines(n.quad, loglik, type = "o", col="red")
-    }
+      if(i==1){
+          dev.new()
+          plot(n.quad, loglik, log = "x", type = "o")
+      }else{
+          lines(n.quad, loglik, type = "o", col="red")
+      }
+  }
 }
 
 
@@ -150,7 +152,7 @@ res <- SDM.glm(template=template,
                   quadOverlay = TRUE,
                   nquadWanted = FALSE)
 model <- res[["model"]]
-saveRDS(model, "./SDM/BITH_SDM.RDS")
+#saveRDS(model, "./SDM/BITH_SDM.RDS")
 summary(model)
 
 # Best intensity cutoff value to set the breeding range limit
