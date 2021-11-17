@@ -30,7 +30,7 @@ BITH_metrics_RL <- readRDS("/Users/victorcameron/Documents/Git/Metapop_ms/SDM/re
 
 ```{r fig params, echo=FALSE}
 # Colors
-cols <- c(QC = "blue4", RL = "green4", ET = "brown3")
+cols <- c(QC_biomass = "darkblue", QC_RCP = "blue", RL_biomass = "darkgreen", RL_RCP = "green", ET_biomass = "darkred", ET_RCP = "red")
 
 # Best intensity cutoff value to set the breeding range limit
 RL_cutoff <- 0.00625 # 1 indv / km2
@@ -43,7 +43,7 @@ RL_cutoff <- 0.00625 # 1 indv / km2
 <div class = "row">
   
 <div class = "col-md-6">
-![](/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/BITH_RCP54_QC.gif)
+![](/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/BITH_RCP45_QC.gif)
 </div>
   
 <div class = "col-md-6">
@@ -70,22 +70,25 @@ n_QC <- data.frame(n = BITH_metrics_QC$n, Time = c(2020, 2040, 2070, 2100), scen
 n_RL <- data.frame(n = BITH_metrics_RL$n, Time = c(2020, 2040, 2070, 2100), scenario = c(rep("RCP4.5",4),rep("biomass",4)))
 n_ET <- data.frame(n = BITH_metrics_ET$n, Time = c(2020, 2040, 2070, 2100), scenario = c(rep("RCP4.5",4),rep("biomass",4)))
 
-pn_QC <- ggplot(n_QC, aes(x=Time, y=n, group=scenario, linetype = scenario)) +
-           geom_smooth(color=cols["QC"], se=FALSE, size=0.5, span = 0.7) +
+pn_QC <- ggplot(n_QC, aes(x=Time, y=n, group=scenario, color = scenario)) +
+           geom_smooth(se=FALSE, size=0.5, span = 0.7) +
            scale_y_continuous(name="Number of patches") +
            theme_classic() +
-           theme(legend.position = c(.95, .95), legend.justification = c("right", "top"), legend.key.size = unit(0.5, 'cm'), legend.text = element_text(size=7), legend.title=element_blank()) 
+           theme(legend.position = c(.95, .95), legend.justification = c("right", "top"), legend.key.size = unit(0.5, 'cm'), legend.text = element_text(size=7), legend.title=element_blank())  +
+                ggtitle("QC")
 
-pn_RL <- ggplot(n_RL, aes(x=Time, y=n, group=scenario, linetype = scenario)) +
-           geom_smooth(color=cols["RL"], se=FALSE, size=0.5, span = 0.7) +
+pn_RL <- ggplot(n_RL, aes(x=Time, y=n, group=scenario, color=scenario)) +
+           geom_smooth(se=FALSE, size=0.5, span = 0.7) +
            theme_classic() +
-           theme(legend.position = c(.95, .95), legend.justification = c("right", "top"), legend.key.size = unit(0.5, 'cm'), legend.text = element_text(size=7), legend.title=element_blank()) 
+           theme(legend.position = c(.95, .95), legend.justification = c("right", "top"), legend.key.size = unit(0.5, 'cm'), legend.text = element_text(size=7), legend.title=element_blank())  +
+                ggtitle("RL")
 
-pn_ET <- ggplot(n_ET, aes(x=Time, y=n, group=scenario, linetype = scenario)) +
-           geom_smooth(color=cols["ET"], se=FALSE, size=0.5, span = 0.7) +
+pn_ET <- ggplot(n_ET, aes(x=Time, y=n, group=scenario, color = scenario)) +
+           geom_smooth(se=FALSE, size=0.5, span = 0.7) +
            scale_y_continuous(name="Number of patches") +
            theme_classic() +
-           theme(legend.position = c(.95, .95), legend.justification = c("right", "top"), legend.key.size = unit(0.5, 'cm'), legend.text = element_text(size=7), legend.title=element_blank()) 
+           theme(legend.position = c(.95, .95), legend.justification = c("right", "top"), legend.key.size = unit(0.5, 'cm'), legend.text = element_text(size=7), legend.title=element_blank())  +
+                ggtitle("ET")
 
 ggarrange(pn_QC, pn_RL + rremove("legend") + rremove("ylab"), pn_ET + rremove("legend") + rremove("ylab"), align = "v", ncol = 3, nrow = 1)
 ```
@@ -105,7 +108,7 @@ area_QC <- data.frame(area = BITH_metrics_QC$patchArea$area, Time = BITH_metrics
     mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2100","BITH_biomass_2100"), 2100)) %>%
     mutate(Time = as.factor(Time)) %>%
     mutate(scenario=replace(scenario, scenario %in% c("BITH_RCP45_2020","BITH_RCP45_2040","BITH_RCP45_2070","BITH_RCP45_2100"), "RCP4.5")) %>%
-    mutate(scenario=replace(scenario, scenario %in% c("BITH_biomass_2020","BITH_biomass_2040","BITH_biomass_2070","BITH_biomass_2100"), "biomass"))
+    mutate(scenario=replace(scenario, scenario %in% c("BITH_biomass_2020","BITH_biomass_2040","BITH_biomass_2070","BITH_biomass_2100"), "biomass")) 
 # # Area ET
 area_ET <- data.frame(area = BITH_metrics_ET$patchArea$area, Time = BITH_metrics_ET$patchArea$scenario, scenario = BITH_metrics_ET$patchArea$scenario) %>%
     mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2020","BITH_biomass_2020"), 2020)) %>%
@@ -114,7 +117,11 @@ area_ET <- data.frame(area = BITH_metrics_ET$patchArea$area, Time = BITH_metrics
     mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2100","BITH_biomass_2100"), 2100)) %>%
     mutate(Time = as.factor(Time)) %>%
     mutate(scenario=replace(scenario, scenario %in% c("BITH_RCP45_2020","BITH_RCP45_2040","BITH_RCP45_2070","BITH_RCP45_2100"), "RCP4.5")) %>%
-    mutate(scenario=replace(scenario, scenario %in% c("BITH_biomass_2020","BITH_biomass_2040","BITH_biomass_2070","BITH_biomass_2100"), "biomass"))
+    mutate(scenario=replace(scenario, scenario %in% c("BITH_biomass_2020","BITH_biomass_2040","BITH_biomass_2070","BITH_biomass_2100"), "biomass")) %>%
+    mutate(area=replace(area, area == 0, min(.$area[.$area>0]))) %>%
+    ## Add row so that data does not det dropped
+    add_row(area = min(.$area[.$area>0]), scenario = "RCP4.5", Time = "2070") %>%
+    add_row(area = min(.$area[.$area>0]), scenario = "RCP4.5", Time = "2100")
 # # Area RL
 area_RL <- data.frame(area = BITH_metrics_RL$patchArea$area, Time = BITH_metrics_RL$patchArea$scenario, scenario = BITH_metrics_RL$patchArea$scenario) %>%
     mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2020","BITH_biomass_2020"), 2020)) %>%
@@ -123,8 +130,7 @@ area_RL <- data.frame(area = BITH_metrics_RL$patchArea$area, Time = BITH_metrics
     mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2100","BITH_biomass_2100"), 2100)) %>%
     mutate(Time = as.factor(Time)) %>%
     mutate(scenario=replace(scenario, scenario %in% c("BITH_RCP45_2020","BITH_RCP45_2040","BITH_RCP45_2070","BITH_RCP45_2100"), "RCP4.5")) %>%
-    mutate(scenario=replace(scenario, scenario %in% c("BITH_biomass_2020","BITH_biomass_2040","BITH_biomass_2070","BITH_biomass_2100"), "biomass"))
-
+    mutate(scenario=replace(scenario, scenario %in% c("BITH_biomass_2020","BITH_biomass_2040","BITH_biomass_2070","BITH_biomass_2100"), "biomass")) 
 #### Distance ####
 
 extract.dist <- function(metrics){
@@ -149,7 +155,7 @@ dist_QC <- cbind(extract.dist(BITH_metrics_QC), Time = 2020) %>%
     mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2100","BITH_biomass_2100"), 2100)) %>%
     mutate(Time = as.factor(Time)) %>%
     mutate(scenario=replace(scenario, scenario %in% c("BITH_RCP45_2020","BITH_RCP45_2040","BITH_RCP45_2070","BITH_RCP45_2100"), "RCP4.5")) %>%
-    mutate(scenario=replace(scenario, scenario %in% c("BITH_biomass_2020","BITH_biomass_2040","BITH_biomass_2070","BITH_biomass_2100"), "biomass"))
+    mutate(scenario=replace(scenario, scenario %in% c("BITH_biomass_2020","BITH_biomass_2040","BITH_biomass_2070","BITH_biomass_2100"), "biomass")) 
 # # Distance ET
 dist_ET <- cbind(extract.dist(BITH_metrics_ET), Time = 2020) %>%
     mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2020","BITH_biomass_2020"), 2020)) %>%
@@ -158,7 +164,12 @@ dist_ET <- cbind(extract.dist(BITH_metrics_ET), Time = 2020) %>%
     mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2100","BITH_biomass_2100"), 2100)) %>%
     mutate(Time = as.factor(Time)) %>%
     mutate(scenario=replace(scenario, scenario %in% c("BITH_RCP45_2020","BITH_RCP45_2040","BITH_RCP45_2070","BITH_RCP45_2100"), "RCP4.5")) %>%
-    mutate(scenario=replace(scenario, scenario %in% c("BITH_biomass_2020","BITH_biomass_2040","BITH_biomass_2070","BITH_biomass_2100"), "biomass"))
+    mutate(scenario=replace(scenario, scenario %in% c("BITH_biomass_2020","BITH_biomass_2040","BITH_biomass_2070","BITH_biomass_2100"), "biomass")) %>%
+    ## Add rows so that data does not det dropped
+    add_row(dist = min(.$dist[.$dist>0]), scenario = "RCP4.5", Time = "2070") %>%
+    add_row(dist = min(.$dist[.$dist>0]), scenario = "RCP4.5", Time = "2070") %>%
+    add_row(dist = min(.$dist[.$dist>0]), scenario = "RCP4.5", Time = "2100") %>%
+    add_row(dist = min(.$dist[.$dist>0]), scenario = "RCP4.5", Time = "2100")
 # # Distance RL
 dist_RL <- cbind(extract.dist(BITH_metrics_RL), Time = 2020) %>%
     mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2020","BITH_biomass_2020"), 2020)) %>%
@@ -172,41 +183,43 @@ dist_RL <- cbind(extract.dist(BITH_metrics_RL), Time = 2020) %>%
 #### Plots ####
 
 # # Area QC
-parea_QC <- ggplot(area_QC, aes(fill=scenario, y=(area), x=Time)) +
-                geom_violin(position="dodge", alpha=0.5, trim = TRUE, adjust = 0.5) +
+parea_QC <- ggplot(area_QC, aes(fill=scenario, y=log(area), x=Time)) +
+                geom_violin(position="dodge", alpha=0.5, trim = TRUE, adjust = 0.5, scale = "area") +
                 theme_classic() +
-                ylab("Area (km2)") +
-                ggtitle("QC")
+                ylab("Area (log km2)") +
+                ggtitle("QC") +
+                theme(legend.position = c(.95, .95), legend.justification = c("right", "top"), legend.key.size = unit(0.5, 'cm'), legend.text = element_text(size=7)) 
+
 # # Area ET
-parea_ET <- ggplot(area_ET, aes(fill=scenario, y=(area), x=Time)) +
+parea_ET <- ggplot(area_ET, aes(fill=scenario, y=log(area), x=Time)) +
                 geom_violin(position="dodge", alpha=0.5, trim = TRUE, adjust = 0.5) +
                 theme_classic() +
-                ylab("Area (km2)") +
+                ylab("Area (log km2)") +
                 ggtitle("ET")
 # # Area RL
-parea_RL <- ggplot(area_RL, aes(fill=scenario, y=(area), x=Time)) +
+parea_RL <- ggplot(area_RL, aes(fill=scenario, y=log(area), x=Time)) +
                 geom_violin(position="dodge", alpha=0.5, trim = TRUE, adjust = 0.5) +
                 theme_classic() +
-                ylab("Area (km2)") +
+                ylab("Area (log km2)") +
                 ggtitle("RL")
 
 # # Distance QC
-pdist_QC <- ggplot(dist_QC, aes(fill=scenario, y=(dist), x=Time)) +
+pdist_QC <- ggplot(dist_QC, aes(fill=scenario, y=log(dist), x=Time)) +
                 geom_violin(position="dodge", alpha=0.5, trim = TRUE, adjust = 0.5) +
                 theme_classic() +
-                ylab("Distance (km)") +
+                ylab("Distance (log km)") +
                 ggtitle("QC")
 # # Distance ET
-pdist_ET <- ggplot(dist_ET, aes(fill=scenario, y=(dist), x=Time)) +
+pdist_ET <- ggplot(dist_ET, aes(fill=scenario, y=log(dist), x=Time)) +
                 geom_violin(position="dodge", alpha=0.5, trim = TRUE, adjust = 0.5) +
                 theme_classic() +
-                ylab("Distance (km)") +
+                ylab("Distance (log km)") +
                 ggtitle("ET")
 # # Distance RL
-pdist_RL <- ggplot(dist_RL, aes(fill=scenario, y=(dist), x=Time)) +
+pdist_RL <- ggplot(dist_RL, aes(fill=scenario, y=log(dist), x=Time)) +
                 geom_violin(position="dodge", alpha=0.5, trim = TRUE, adjust = 0.5) +
                 theme_classic() +
-                ylab("Distance (km)") +
+                ylab("Distance (log km)") +
                 ggtitle("RL")
 
 
@@ -215,7 +228,7 @@ pdist_RL <- ggplot(dist_RL, aes(fill=scenario, y=(dist), x=Time)) +
 ggarrange(parea_QC + rremove("xlab"), pdist_QC + rremove("legend") + rremove("xlab"), parea_ET + rremove("legend") + rremove("xlab"), pdist_ET + rremove("legend") + rremove("xlab"), parea_RL + rremove("legend"), pdist_RL + rremove("legend"), align = "h", ncol = 2, nrow = 3)
 ```
 
-**Gig. 3**: Density distribution of area and inter-patch distance through time for climate forcing and habitat scenarios.
+**Fig. 3**: Density distribution of area and inter-patch distance through time for climate forcing and habitat scenarios.
 
 
 ## **Fig 4**. Metapopulation effect
@@ -225,7 +238,7 @@ ggarrange(parea_QC + rremove("xlab"), pdist_QC + rremove("legend") + rremove("xl
 plot.capacity <- function(cap, totalArea, col = "black", main = ""){  
 
     # Alpha values
-    a = unique(capacity$alpha)
+    a = unique(cap$alpha)
 
     # Cols
     colo <- colorRampPalette(c("grey90", "steelblue4", 
@@ -237,12 +250,12 @@ plot.capacity <- function(cap, totalArea, col = "black", main = ""){
 
     # Base plot
     p_cap <- ggplot(data=totalArea, aes(x=Time, y=totalArea/totalArea[1])) +
-                geom_smooth(aes(weight=weight), se=FALSE, size=0.5, color=cols["RL"], span = 0.7) +
+                geom_smooth(aes(weight=weight), se=FALSE, size=0.5, color=col, span = 0.7) +
                 scale_x_continuous(name="Time") +
                 scale_y_continuous(name = "") +
                 ggtitle(main) +
                 theme_classic() +
-                theme(axis.text.y = element_blank())
+                theme(axis.text.y = element_blank(), legend.position = c(.95, .95), legend.justification = c("right", "top"), legend.key.size = unit(0.5, 'cm'), legend.text = element_text(size=7)) 
 
     # Set capacity as proportion of initial value
     cap <- cap %>% 
@@ -318,15 +331,20 @@ capacity_RL <-  cbind(BITH_metrics_RL$capacity, Time = 2020) %>%
 
 #### Generate plots ####
 
-pcap_QC_RCP45 <- plot.capacity(capacity_QC[capacity_QC$scenario=="RCP4.5",], totalArea_QC[totalArea_QC$scenario=="RCP4.5",], col = cols["QC"], main = "QC")
-pcap_ET_RCP45 <- plot.capacity(capacity_ET[capacity_ET$scenario=="RCP4.5",], totalArea_ET[totalArea_ET$scenario=="RCP4.5",], col = cols["ET"], main = "ET")
-pcap_RL_RCP45 <- plot.capacity(capacity_RL[capacity_RL$scenario=="RCP4.5",], totalArea_RL[totalArea_RL$scenario=="RCP4.5",], col = cols["RL"], main = "RL")
+pcap_QC_RCP45 <- plot.capacity(capacity_QC[capacity_QC$scenario=="RCP4.5",], totalArea_QC[totalArea_QC$scenario=="RCP4.5",], col = "#00BFC4", main = "QC")
+pcap_ET_RCP45 <- plot.capacity(capacity_ET[capacity_ET$scenario=="RCP4.5",], totalArea_ET[totalArea_ET$scenario=="RCP4.5",], col = "#00BFC4", main = "ET")
+pcap_RL_RCP45 <- plot.capacity(capacity_RL[capacity_RL$scenario=="RCP4.5",], totalArea_RL[totalArea_RL$scenario=="RCP4.5",], col = "#00BFC4", main = "RL")
 
-pcap_QC_biomass <- plot.capacity(capacity_QC[capacity_QC$scenario=="biomass",], totalArea_QC[totalArea_QC$scenario=="biomass",], col = cols["QC"], main = "QC")
-pcap_ET_biomass <- plot.capacity(capacity_ET[capacity_ET$scenario=="biomass",], totalArea_ET[totalArea_ET$scenario=="biomass",], col = cols["ET"], main = "ET")
-pcap_RL_biomass <- plot.capacity(capacity_RL[capacity_RL$scenario=="biomass",], totalArea_RL[totalArea_RL$scenario=="biomass",], col = cols["RL"], main = "RL")
+pcap_QC_biomass <- plot.capacity(capacity_QC[capacity_QC$scenario=="biomass",], totalArea_QC[totalArea_QC$scenario=="biomass",], col = "#F8766D", main = "QC")
+pcap_ET_biomass <- plot.capacity(capacity_ET[capacity_ET$scenario=="biomass",], totalArea_ET[totalArea_ET$scenario=="biomass",], col = "#F8766D", main = "ET")
+pcap_RL_biomass <- plot.capacity(capacity_RL[capacity_RL$scenario=="biomass",], totalArea_RL[totalArea_RL$scenario=="biomass",], col = "#F8766D", main = "RL")
 
 #### Arrange plots ####
 
-ggarrange(pcap_QC_RCP45 + rremove("xlab"), pcap_ET_RCP45 + rremove("legend") + rremove("xlab"), pcap_RL_RCP45 + rremove("legend") + rremove("xlab"), pcap_QC_biomass + rremove("legend"), pcap_ET_biomass + rremove("legend"), pcap_RL_biomass + rremove("legend"), align = "h", ncol = 3, nrow = 2)
+ggarrange(pcap_QC_RCP45 + rremove("xlab"), pcap_ET_RCP45 + rremove("legend") + rremove("xlab"), pcap_RL_RCP45 + rremove("legend") + rremove("xlab"), pcap_QC_biomass + rremove("legend") + rremove("xlab"), pcap_ET_biomass + rremove("legend"), pcap_RL_biomass + rremove("legend") + rremove("xlab"), align = "h", ncol = 3, nrow = 2)
 ```
+
+**Fig. 4**: Habitat amount does not represent distribution change 
+
+Landscape connectivity is driven by landscape spatial distribution
+Connectivity is important
