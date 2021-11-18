@@ -96,12 +96,10 @@ Our results show that a metapopulation approach can project distribution changes
 **DG** Mettre emphase surtout sur les éléments qui rendent la grive intéressants : associé aux sommets de montagne, structure naturellement en patch. Dépendance au climat et à l'habitat. Espèce à statut précaire. 
 
 The model was inspired by the Bicknell's thrush, a threatened bird characteristic of species of interest to decision makers and policy [COSEWIC].
-The Bicknell's thrush is found during its breeeding season on mountaintops dominated by dense fir forests and cool climate [COSEWIC, Cadieux 2019].
-Unfavorable climatic conditions are predicted to increase at the edges of boreal forest patches with the warming of climate and the lag in boreal species response [BOX, COSEWIC, @vissault_slow_2020].
-With preferences for habitats and specific climate requirements, the Bicknell's thrush is a good example of a species with a fragmented distribution structure.
-As a result, its breeding range is highly restricted in Canada.
+The Bicknell's thrush is know to be associated with perturbed, dense fir forests, mostly at high elevations, resulting in a fragmented and highly restricted distribution in Canada [@cadieux_spatially_2019].
+Unfavorable climatic conditions are predicted to increase at the edges of mountaintops fir forest patches with the warming of climate and the limited response capacity of boreal tree species [BOX, COSEWIC, @vissault_slow_2020].
 Climate change could therefore pose a major threat to the persistence of the Bicknell's thrush in Canada.
-In the following sections, we demonstrate the added value of the metapopulation approach to project the Bicknell's thrush distribution in Northestern America.
+In the following sections, we demonstrate the added value of the metapopulation approach to project the Bicknell's thrush distribution in Canada.
 
 
 
@@ -109,11 +107,11 @@ In the following sections, we demonstrate the added value of the metapopulation 
 
 ### Studied region
 
-*The Bicknell's thrush breeding range was projected for the region where the majority of its habitat is identified [between -75° and -64°N and 45° and 49.5°W]*\
-The Bicknell's thrush breeding range was projected for the region where the majority of the canadian occurences are identified [between -75° and -64°N and 45° and 49.5°W] [cosewic].
-Populations were primarily found in the province of Québec, in the regions of the Eastern Townships, Gaspésie, and Forêt Montmorency [fig. 1].
-The landcape is characterized by a mix of boreal, mixed and temperate forest driven by important latitudinal and elevational gradients in climate.
-Boreal forest type increases in prevalence with altitude and latitude while Temperate forest type is associated with lower elevations and warmer climates and Mixed forest type characterises the transition from Boreal to Temperate.
+*The Bicknell's thrush breeding range was projected for the region where the majority of its habitat is identified*\
+The Bicknell's thrush breeding range was projected for the region where the majority of the canadian occurences are identified [cosewic].
+Populations were primarily found in the province of Québec, in the regions of the Eastern Townships, Gaspésie, and Réserve faunique des Laurentides [fig. 1].
+The landcape is characterized by a mix of boreal, mixed and temperate tree species driven by important latitudinal and elevational gradients in climate.
+Abundance of fir increases in prevalence with altitude and latitude.
 Mean annual temperatures ranges from -3.8 to 7°C and mean annual precipitations from 793 to 1735 mm [SOURCE].
 climate data were interpolated from climate station records for the 1981-2010 period to produce a time series of annual means using BioSim [https://cfs.nrcan.gc.ca/projects/133] [McKenney 2013?!?].
 Data on elevation was gathered using the elevatr R package [SOURCE] and maxed at 1535m.
@@ -121,15 +119,33 @@ All data were rasterized at a 250m2 resolution.
 
 ### Bicknell's thrush breeding range
 
+We estimated the number of observation per 250m2 (intensity) of Bicknell's thrush using downweighted poisson regression [@renner_point_2015]. 
+We modeled observation reccords and speudo absences as a function of climate, elevation, and forest habitat composition (weighted_presence_and_pseudoAbsences ~ mean_annual_temperature * mean_annual_temperature^2 * mean_annual_precipitations + elevation + fir_biomass * fir_proportional_biomass).
+We randomly positioned pseudo absences to cover most environmental variability such to maximize the accuracy of the likelihood estimation [@renner_point_2015].
+Mean annual temperature (-16.04) and precipitations (-0.0014), elevation (-0.017), and proportional fir biomass (3.51) are strongly associated with Bicknell's thrush breeding range.
+The quadratic temperature term is significantly negative (-0.67), consistent with expert expectations [COSEWIC].
+The model shows a decrease in Bicknell's thrush intensity at low elevation of the southern end and at the northern end of its distribution area.
+
+*We defined the extent of the breeding range using these maps along ith a threshold of one individual per square kilometer which was the value that yielded the best match between predictions and observations according to AUC measures.*
+
+### Data
+
+
+<!----
 *The Bicknell's thrush breeding range was modeled using a downweighted poisson regression in combination with unpublished data of CDPNQ*\
 The Bicknell's thrush breeding range was modeled using a downweighted poisson regression adapted from @renner_point_2015 in combination with unpublished data of the Centre de données sur le patrimoine naturel du Québec [@sos-pop_banque_2021].
-The dataset consisted of 6079 observations of nidification behaviours made between 1994 and 2020.
-We rasterized occurences on a 250m2 square grid to remove any potential effects of temporal and spatial speudo replication.
-We used a saturated model to find the number of pseudo absences that optimized the likelihood and selected 1,000,000 pseudo absences - corresponding to the computational limit imposed by the algorithm - that were randomly distributed accross the landscape [from -76° to -64°N and 45° to 52°W, @renner_point_2015].  
-We set the weights to some small values at presence locations while pseudo absences locations were given large values equal to the area of the study region divided by the number of points [@renner_point_2015].
-We obtained from the model intensity maps corresponding to the limiting expected number of presence points per unit area [abundance].
+The dataset consisted of 6079 observations of nidification behaviours between 1994 and 2020.
+We rasterized occurences on a 250m2 square grid to remove any potential effects of temporal and spatial speudo replication to obtain a observed-not observed map.
+We defined 5,000,000 pseudo absences - corresponding to the computational limit imposed by the algorithm - randomly distributed accross the landscape [@renner_point_2015] and set weights to some small values at presence locations and to large values to the area of the study region divided by the number of points at pseudo absences locations [@renner_point_2015].
+The model returned intensity maps corresponding to the limiting expected number of presence points per unit area [abundance per 250m^2 cell].
+We defined the extent of the breeding range using these maps along ith a threshold of one individual per square kilometer which was the value that yielded the best match between predictions and observations according to AUC measures.
 
 *The model was designed using expert knowledge on habitat and climatic niche characteristics and identified a temperature threshold that interacts with elevation*\
+We defined the model using expert knowledge of the Bicknell's thrush to capture its main habitat and climate requirements.
+we used the interaction between fir biomass and proportional biomass as well as elevation to capture the preference for dense and disturbed forests characterized by dense fir stands.
+Climate preference was represented using the interaction between mean annual temperature and precipitations.
+
+
 - habitat: High elevation, coastal or boreal
 - Disturbed habitat: Dense boreal [coniferous] forests
 	- Habitat characterized by: forest type, forest density, and forest height
@@ -143,6 +159,7 @@ We obtained from the model intensity maps corresponding to the limiting expected
 
 ### Data
 
+--->
 
 ### Scenario and analyses
 
