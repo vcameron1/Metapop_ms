@@ -104,101 +104,73 @@ In the following sections, we demonstrate the added value of the metapopulation 
 
 
 ## Methods
-
+​
 ### Studied region
-
+​
 *The Bicknell's thrush breeding range was projected for the region where the majority of its habitat is identified*\
-The Bicknell's thrush breeding range was projected for the region where the majority of the canadian occurences are identified [cosewic].
-Populations were primarily found in the province of Québec, in the regions of the Eastern Townships, Gaspésie, and Réserve faunique des Laurentides [fig. 1].
-The landcape is characterized by a mix of boreal, mixed and temperate tree species driven by important latitudinal and elevational gradients in climate.
-Abundance of fir increases in prevalence with altitude and latitude.
-Mean annual temperatures ranges from -3.8 to 7°C and mean annual precipitations from 793 to 1735 mm [SOURCE].
-climate data were interpolated from climate station records for the 1981-2010 period to produce a time series of annual means using BioSim [https://cfs.nrcan.gc.ca/projects/133] [McKenney 2013?!?].
-Data on elevation was gathered using the elevatr R package [SOURCE] and maxed at 1535m.
-All data were rasterized at a 250m2 resolution. 
-
+The Bicknell's thrush breeding range was projected for the region where the majority of the Canadian occurrences are identified [cosewic].
+Populations are primarily found in the province of Québec, in the regions of the Eastern Townships, Gaspésie, and the Réserve faunique des Laurentides [fig. 1].
+The landscape is characterized by the presence of mountaineous formations with the Appalachian Mountains to the southeast and the Laurentians Mountains to the north of the St. Lawrence River.
+Forested habitats contain a mix of boreal, mixed and temperate tree species with distributions mainly driven by significant latitudinal and elevational gradients in climate.
+Mean annual temperatures range from -4.0 to 7.5°C, total annual precipitations range from 730 to 1950 mm, and the maximum elevation is of 1137 m.
+​
 ### Bicknell's thrush breeding range
-
-We estimated the number of observation per 250m2 (intensity) of Bicknell's thrush using downweighted poisson regression [@renner_point_2015]. 
-We modeled observation reccords and speudo absences as a function of climate, elevation, and forest habitat composition (weighted_presence_and_pseudoAbsences ~ mean_annual_temperature * mean_annual_temperature^2 * mean_annual_precipitations + elevation + fir_biomass * fir_proportional_biomass).
-We randomly positioned pseudo absences to cover most environmental variability such to maximize the accuracy of the likelihood estimation [@renner_point_2015].
-Mean annual temperature (-16.04) and precipitations (-0.0014), elevation (-0.017), and proportional fir biomass (3.51) are strongly associated with Bicknell's thrush breeding range.
-The quadratic temperature term is significantly negative (-0.67), consistent with expert expectations [COSEWIC].
-The model shows a decrease in Bicknell's thrush intensity at low elevation of the southern end and at the northern end of its distribution area.
-
-*We defined the extent of the breeding range using these maps along ith a threshold of one individual per square kilometer which was the value that yielded the best match between predictions and observations according to AUC measures.*
-
-### Data
-
-
-<!----
-*The Bicknell's thrush breeding range was modeled using a downweighted poisson regression in combination with unpublished data of CDPNQ*\
-The Bicknell's thrush breeding range was modeled using a downweighted poisson regression adapted from @renner_point_2015 in combination with unpublished data of the Centre de données sur le patrimoine naturel du Québec [@sos-pop_banque_2021].
-The dataset consisted of 6079 observations of nidification behaviours between 1994 and 2020.
-We rasterized occurences on a 250m2 square grid to remove any potential effects of temporal and spatial speudo replication to obtain a observed-not observed map.
-We defined 5,000,000 pseudo absences - corresponding to the computational limit imposed by the algorithm - randomly distributed accross the landscape [@renner_point_2015] and set weights to some small values at presence locations and to large values to the area of the study region divided by the number of points at pseudo absences locations [@renner_point_2015].
-The model returned intensity maps corresponding to the limiting expected number of presence points per unit area [abundance per 250m^2 cell].
-We defined the extent of the breeding range using these maps along ith a threshold of one individual per square kilometer which was the value that yielded the best match between predictions and observations according to AUC measures.
-
-*The model was designed using expert knowledge on habitat and climatic niche characteristics and identified a temperature threshold that interacts with elevation*\
-We defined the model using expert knowledge of the Bicknell's thrush to capture its main habitat and climate requirements.
-we used the interaction between fir biomass and proportional biomass as well as elevation to capture the preference for dense and disturbed forests characterized by dense fir stands.
-Climate preference was represented using the interaction between mean annual temperature and precipitations.
-
-
-- habitat: High elevation, coastal or boreal
-- Disturbed habitat: Dense boreal [coniferous] forests
-	- Habitat characterized by: forest type, forest density, and forest height
-- Interaction between elevation and MAT and MAP
-	- Population densities generally increase with elevation in adequate forest stands [cosewic2009]
-- [Intensity ~ MAT * MAP * Elevation + forest type + forest density + forest height]
-- Model coefficients summary
-	- Intensity increased with elevation. 
-	- Temperature had positive effect up to optimum then decrease predicted intensities
-
-
-### Data
-
---->
+​
+The Bicknell's thrush dataset consisted of 6079 observations of nesting behaviour between 1994 and 2020 from unpublished data from the Centre de données sur le patrimoine naturel du Québec [@sos-pop_banque_2021].
+Observations were rasterized on a grid of 250 m2 cells and coded as observed and not observed at cells to remove any potential effects of temporal and spatial pseudo replication.
+​
+We estimated the number of observation per cell [intensity] of the Bicknell's thrush using downweighted Poisson regression [see @renner_point_2015]. 
+We modeled observation records and pseudo absences as a function of climate, elevation, and forest habitat composition [weighted_presence_and_pseudoAbsences_at_cells ~ mean_annual_temperature * mean_annual_temperature^2 * mean_annual_precipitations + elevation + fir_biomass * fir_proportional_biomass], following expert knowledge of variables associated to the distribution of Bicknell's thrush [COSEWIC].
+We randomly positioned pseudo absences to cover most environmental variability, to maximize the accuracy of the likelihood estimation [@renner_point_2015].
+The breeding range extent was set using an intensity threshold of 1 individual per km2.
+We assessed model performance using visual inspection of the model fit **[see appendix XXX]** and AUC [Area Under the Curve, @Vene_can_2021,@valavi_modeling_2021].
+AUC measures the ability of the model to predict cells where the species was observed from those where it was not.
+While a perfect prediction would yield an AUC of 1, and a random prediction an AUC of 0.5, our model showed high performance and accurate breeding range prediction with a AUC of 0.96 [*auc* command from *pROC* package in R, @robin_pROC_2011].
+​
+Mean annual temperature [slope ± standard error, -16.04 ± 0.40 observations per cell] and proportional fir biomass [3.51 ± 0.46 observations per cell] are strongly associated with the breeding range of Bicknell's thrush.
+The quadratic temperature term is significantly negative [-0.67 ± 0.18 observations per cell], consistent with expert expectations [COSEWIC].
+Total annual precipitation [-0.0014 ± 0.00029 observations per cell] and elevation [-0.017 ± 0.00031 observations per cell] have significant effects on intensity.
+We found fir biomass not to be a significant predictor [0.0039 ± 0.0082 observations per cell], but its interaction with proportional fir biomass to be [-0.059 ± 0.013 observations per cell].
+All interactions between climatic variables are significantly associated with the distribution of the breeding range **[see appendix XXX]**.
+The model shows a decrease in Bicknell's thrush intensity at low elevations at the southern end and at the northern end of its distribution area.
 
 ### Scenario and analyses
-
-*To estimate the impacts of climate warming on Bicknell's thrush breeding range, we projected it for increasing climate temperatures where the habitat remained fixed*\
-- Temperature increased from current to +4°C [would corresponds to RCP ...]
-- lag in boreal species response [BOX, COSEWIC, @vissault_slow_2020]
-- **Uncertainty** ... ran X projections ?!?
-
-*Analyses were conducted for Québec and for two subregions of interest to metapopulation dynamics*\
-Analyses were conducted separately for the region of Québec as well as two subregions.
-The Réserve faunique des Laurentides is mountenous, being part of Laurentians mountain chain, and is part of the boreal forest.
-It is at the northern edge of the Bicknell's thrush distribution, but has a high concentration of populations.
-The Eastern Townships is situated in the southern most part of Québec where the dominating forest habitat type is temperate forest. 
-The landscape is characterized by the presence of the Appalachian mountain chain and the monteregiennes mountains creating a highly fragmented landscape for the bicknell's thrush.
-
-*We defined the extent of bicknell's thrush breeding range using an arbritrary intensity threshold of 0.05.*\
-We defined the extent of bicknell's thrush breeding range using the gridded intensity maps returned by the model. 
-We converted intensities to breeding range distributions by seting distribution limits using an arbritrary intensity threshold of 0.05.
-Individual habitat patches within the breeding range were defined as the ensembles of the immediate neighbouring cells.
-
-*We assessed changes in the distribution of the breeding range with measures of temporal [°C] trends in ...suitable... variables for each climate scenaro: i] n, ii] area, and iii] distance*\
-Changes to the breeding range and habitat distribution were assessed using the "raster" package.
-We determined the number of populations, the population sizes and the connectivity of the landscape using measures of the number of patches, the areas of patches [km2], and the inter-patch distances [km].
-Under initial conditions, Québec region contained 3954 patches in the Bicknell's thrush breeding range and **XXX** patches in its habitat map, the Réserve faunique des Laurentides 2295 and **XXX**, and the Eastern Townships 44 and **XXX**.
-Patch area varied from 0.04km2 to 2029.95km2 in the breeding range and **XXX**km2 to **XXX**km2 in its habitat map while interpatch distances varied from 0.002km to 9.964km
-
-
-*To quantify the habitat-climate mismatch [correlation between forest and climate distribution].*\
-
-
-*We evaluated the effects of change in the distribution of the breeding range on the Bicknell's thrush metapopulation dynamics [metapop effect] using metapopulation capacity*\
-We evaluated changes in landscape connectivity using the metapopulation capacity.
-Metapopulation capacity measures persistence of the metapopulation given the spatial configuration of the landscape by integrating effects of dispersal, patch areas and inter-patch distances [@hanski_metapopulation_2000].
-Dispersal was modeled as a decreasing exponential function evaluated for a range of average dispersal distances.
-
-
+​
+*Initial conditions*\
+We projected the Bicknell's thrush breeding range distribution at a 250 m resolution for two scenarios to contrast the impacts of climate warming and habitat dynamics over the 2020-2100 time period. 
+For the breeding range projection of the 2020 period, we used temperature [°C] and precipitation [mm] data interpolated from climate station records for the 1981-2010 period to produce a time series of annual means [@mckenney_spatial_2013]. 
+Data from georeferenced climate stations were projected to each 250 m grid cell centroid and adjusted for differences in latitude, longitude and elevation with spatial regression using BioSIM v11 [@régnière_biosim_2017].
+Fir biomass and proportional biomass in individual grid cell were obtained from provincial ecoforestry provincial maps and temporary forest inventory plots [see @boulanger_boreal_2021].
+Grid cells with less than 50% forest coverage were classified as inactive.
+Elevation data was obtained using the elevatr R package, then was rasterized at a 250m2 resolution [SOURCE].
+​
+*Climate scenario*\
+The Bicknell's thrush breeding range distribution was then projected over time for RCP 4.5 climate forcing scenario [Representative Concentration Pathways, @van_vuuren_representative_2011], keeping habitat variables and elevation constant.
+Future temperature and precipitation projections for 2021-2040, 2041-2070 and 2071-2100 periods were obtained for the RCP 4.5 scenario from the Canadian Earth System Model version 2 [CanESM2].
+Projections were first downscaled to a 10 km resolution using the ANUSPLIN method, and then the BioSIM model was used to interpolate them to a 250 m resolution.
+Digital elevation mapping [DEM] was used along with BioSIM to reduce biaises in the interpolation by providing elevation a drifting varibale to the model. 
+The results of 30 BioSIM simulations were then used to compute future climate variables that were assigned to the last year of the projection period (e.g., 2021-2040 period became 2040).
+​
+*Biomass scenario*\
+We then projected Bicknell's thrush breeding range over time for habitat change [biomass] scenario, keeping climate and elevation constant.
+Biomass projections for 2040, 2070, and 2100 were obtained from forest landscape projections of the commercial forests of Québec under RCP 4.5 with baseline level of fire and spruce budworm disturbances [see @boulanger_boreal_2021].
+Simulations were done from the 2020 biomass initial conditions using LANDIS-II model which accounts for disturbances, seed dispersal and forest succession.
+​
+*Analyses*\
+We assessed the impacts of climate change and habitat change on the Bicknell's thrush breeding range by contrasting distribution changes of the Bicknell's thrush breeding range between scenarios.
+A distribution may change with respect to the amount of available habitat [FARIGH2016], the spatial configuration of its patches, or in a species' ability to occupy available habitat [REFERENCE]. 
+Isolating the effect of the different elements helps to identify the drivers and their importance in distribution change.
+We therefore tested for temporal trends in habitat amount by measuring the total area of suitable habitat.
+We decomposed the landscape spatial configuration into three complementary elements: the number of patches, patch area, and the inter-patch distances.
+We then assessed and contrasted temporal trends in each of these elements.
+Species' ability to occupy the landscape was characterized using metapopulation capacity [@hanski_metapopulation_2000;@hanski_capacity_2001].
+Metapopulation capacity informs about the landscape ability to support species persistence as a function of its connectivity and species dispersal.
+We measured metapopulation capacity of the projected breeding range for different dispersal distances.
+We used a negative exponential shaped dispersal kernel to represent decreasing dispersal probability with increasing distance [@hanski_metapopulation_2000].
+​
 ### R code availability
-
-We performed all analyses in the R programming language [@r_core_team_r_2021] and provided all scripts to process the data and to run the analyses openly available in the github repository <https://github.com/vcameron1/Metapop_ms>.
+​
+We performed all analyses in the R programming language [@r_core_team_r_2021] and openly provided all scripts to process the data and to run the analyses in the github repository <https://github.com/vcameron1/Metapop_ms>.
 
 <!----
 ### Model structure 
