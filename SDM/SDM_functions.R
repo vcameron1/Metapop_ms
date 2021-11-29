@@ -11,14 +11,14 @@
 # spatial SDMs 
 #==========================
 
-SDM.glm <- function(template, BITH, covariables = ".", pred, nquad = 10000, quadOverlay = TRUE, nquadWanted = FALSE){
+SDM.glm <- function(template, BITH, covariables = ".", pred, nquad = 10000, quadOverlay = TRUE, nquadWanted = FALSE, seed = 12){
   # quadOverlay if true, quadrature points are randomly placed, if false, those overlaying GRBI points are excluded
     
     # Find the area (km2) of the survey region
     areaRegion <- sum(raster::values(template), na.rm=TRUE) * 0.25 * 0.25
 
     # Define random samples
-    set.seed(12)
+    set.seed(seed)
     # # Candidate cells within region
     candidates <- seq_along(pred$temp)[!is.na(raster::values(template))]
     # # Reject those where there are BTIH points (if option selected)

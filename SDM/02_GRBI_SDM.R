@@ -129,8 +129,9 @@ if(false){
 ## 3. indistrial forests of the north (dense, perturbed, coniferous, fir)
 ## dense fir forests non-perturbed
 ## perturbed fir forest in regeneration
-## Altitude is an important factor: 450m-1000m minimum
+## Altitude is an important factor: 450m-1000m minimum, and descends with latitude
 ## RL coincides with Mixed forest - boreal forest ecotone
+## Habitat variables: fir density, latitude, longitude, altitude (Lambert et al. 2005, Hart)
 ##################
 
 ##################
@@ -141,16 +142,24 @@ if(false){
 # Model fomula
 #cov <- c("temp * temp2 * prec * elevation + type_couv + cl_dens + cl_haut")
 #cov <- c("temp * temp2 * prec * elevation + abie.balPropBiomass * abie.balBiomass")
-cov <- c("temp * temp2 * prec + elevation + abie.balPropBiomass * abie.balBiomass")
+cova <- c("temp + temp2 + prec + elevation + abie.balPropBiomass * abie.balBiomass")
+
+
+# Check VIF (colinearity)
+#VIF>2-3 is ok
+source("./SDM/vif.R")
+mat <- model.matrix(formula(paste0("~ ", cova)), explana_dat)
+vif <- vif(mat[,-1])
 
 # Downweighted poisson regression (point process model)
 res <- SDM.glm(template=template,
                   BITH=BITH,
-                  covariables = cov,
+                  covariables = cova,
                   pred = explana_dat,
                   nquad = 5000000,
                   quadOverlay = TRUE,
-                  nquadWanted = FALSE)
+                  nquadWanted = FALSE,
+                  seed = 12)
 model <- res[["model"]]
 #saveRDS(model, "./SDM/BITH_SDM.RDS")
 summary(model)
