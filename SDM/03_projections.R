@@ -66,7 +66,7 @@ for (i in seq_along(scenarios)) {
     }
 
   # # Name layer
-  names(BITH_2020_2100)[[i]] <- paste0(scenarios[i])
+  names(BITH_2020_2100)[[i]] <- paste0("BITH_", scenarios[i])
 }
 
 # Save predictions
