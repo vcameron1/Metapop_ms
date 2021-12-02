@@ -119,7 +119,7 @@ if(false){
 }
 
 
-# 4 - Model ---------------------------------------------------------------
+# 4 - Variance inflated factors -------------------------------------------
 
 ##################
 # Habitat requirements of GRBI accoring to COSEWIC
@@ -150,6 +150,10 @@ cova <- c("temp + temp2 + prec + elevation + abie.balPropBiomass * abie.balBioma
 source("./SDM/vif.R")
 mat <- model.matrix(formula(paste0("~ ", cova)), explana_dat)
 vif <- vif(mat[,-1])
+
+
+# 5 - Model ---------------------------------------------------------------
+
 
 # Downweighted poisson regression (point process model)
 res <- SDM.glm(template=template,
@@ -259,10 +263,52 @@ model.biomassBehavior <- function(model, explana_dat, RL_cutoff = NULL, ...){
     legend(3.6, max(log(unlist(intensity)), na.rm=T), legend = round(abie.balPropBiomass,1), fill = colo, title = "propBiomass", bty = 'n', cex = 0.5)
 }
 
+model.behavior <- function(model, explana_dat, RL_cutoff = NULL, ...){
+    # Library
+    library(plotly)
+
+    # Temperature gradient
+    temp <- seq(from=min(explana_dat[["temp"]], na.rm = TRUE), to=max(explana_dat[["temp"]], na.rm = TRUE), length.out=20)
+
+    # Fix other variables
+    dat <- explana_dat[1,-1]
+    dat$prec <- mean(explana_dat[["prec"]], na.rm = TRUE)
+    abie.balPropBiomass <- seq(0,1,le=8)
+    dat$abie.balBiomass <- mean(explana_dat$abie.balBiomass[BITH$x==1], na.rm=TRUE)
+    elev <- seq(500, 1200, le = 8)
+
+    # Predict
+    intensity <- setNames(data.frame(matrix(ncol = 4, nrow = 0)), c("intensity", "elev", "propBiomass", "temperature"))
+    for(i in seq_along(temp)){
+        for(j in seq_along(elev)){
+            for(k in seq_along(abie.balPropBiomass)){
+                dat$temp <- temp[i]
+                dat$temp2 <- temp[i]^2
+                dat$elevation <- elev[j]
+                dat$abie.balPropBiomass <- abie.balPropBiomass[k]
+                intensity <- rbind(intensity, data.frame(intensity = predict(model, newdata = dat, type = "response"), elev = elev[j], propBiomass = abie.balPropBiomass[k], temperature = temp[i]))
+            }
+        }
+    }
+
+    # 
+    range <- intensity$intensity
+    range[intensityRL$intensity >= RL_cutoff] <- 1
+    range[intensityRL$intensity < RL_cutoff] <- 0
+
+    #
+    intensityRL <- intensity
+    intensityRL <- intensityRL[intensity$intensity>=RL_cutoff,]
+
+    # Plot
+    plot_ly(x = ~intensityRL$temp, y = ~intensityRL$propBiomass, z = ~intensityRL$elev, type = 'scatter3d', mode = "lines+markers")
+}
+
 
 #########################
-# Test model 
+# Test model
 #########################
 
 model.elevBehavior(model, explana_dat, RL_cutoff = RL_cutoff)
 model.biomassBehavior(model, explana_dat, RL_cutoff = RL_cutoff)
+model.behavior(model, explana_dat, RL_cutoff = RL_cutoff)
