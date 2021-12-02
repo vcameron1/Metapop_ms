@@ -6,7 +6,7 @@
 
 # This function returns a list of lists per time step. Each time step list contains the total area occupied by the species (sumArea), the total number of occupied patch (n), a data frame containing the area for each patch (patchArea), a matrix of the distance between each patch, and the metapop capacity of the landscape.
 
-patch.metrics <- function(projRaster, RL_cutoff = 0.05, a = 1/2){
+patch.metrics <- function(projRaster, RL_cutoff = 0.05, a = 1/2, x = 1){
 
     # 
     RL_cutoff = log(RL_cutoff) ## Log RL because projections were log
@@ -74,7 +74,7 @@ patch.metrics <- function(projRaster, RL_cutoff = 0.05, a = 1/2){
                     for(patch_j in seq_along(values)){
                     if(patch_i == patch_j) next
                     land[patch_i,patch_j] <- exp(-alpha*d_ij[[i]][patch_i,patch_j]) * 
-                                    patchArea[patchArea$scenario==names(raster) & patchArea$patch==patch_i,'area'] * 
+                                    patchArea[patchArea$scenario==names(raster) & patchArea$patch==patch_i,'area']^x * 
                                     patchArea[patchArea$scenario==names(raster) & patchArea$patch==patch_j,'area']
                     }
                 }
