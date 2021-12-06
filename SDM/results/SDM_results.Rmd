@@ -64,7 +64,7 @@ plot.map3(RL_cutoff = RL_cutoff)
 
 ## **Fig 2**. Number of patches
 
-```{r fig.2, fig.align='center', out.width = "100%", fig.asp = .4, echo=FALSE}
+```{r fig.x, fig.align='center', out.width = "100%", fig.asp = .4, echo=FALSE, eval=FALSE}
 # Organize data frame
 n_QC <- data.frame(n = BITH_metrics_QC$n, Time = c(2020, 2040, 2070, 2100), scenario = c(rep("RCP4.5",4),rep("biomass",4)))
 n_RL <- data.frame(n = BITH_metrics_RL$n, Time = c(2020, 2040, 2070, 2100), scenario = c(rep("RCP4.5",4),rep("biomass",4)))
@@ -95,9 +95,81 @@ ggarrange(pn_QC, pn_RL + rremove("legend") + rremove("ylab"), pn_ET + rremove("l
 
 **Fig. 2**: Number of patch through time for climate forcing scenario and habitat presented by region.
 
-## **Fig 3**. Change in spatial configuration of the distribution
+## **Fig 2**. Change in spatial configuration of the distribution
 
-```{r fig.3, fig.align='center', out.width = "100%", echo=FALSE}
+```{r fig.2, fig.align='center', out.width = "100%", fig.asp = .4, echo=FALSE, eval = TRUE}
+# number of patches
+n_QC <- data.frame(n = BITH_metrics_QC$n, Time = c(2020, 2040, 2070, 2100), scenario = c(rep("RCP4.5",4),rep("biomass",4)))
+
+p_n <- ggplot(n_QC, aes(x=Time, y=n, group=scenario, color = scenario)) +
+           geom_line() +
+           geom_point() +
+           #geom_smooth(se=FALSE, size=0.5, span = 0.7) +
+           scale_y_continuous(name="Number of patches") +
+           theme_classic() +
+           theme(legend.position = c(.95, .95), legend.justification = c("right", "top"), legend.key.size = unit(0.5, 'cm'), legend.text = element_text(size=7), legend.title=element_blank())
+
+# Area
+area_QC <- data.frame(area = BITH_metrics_QC$patchArea$area, Time = BITH_metrics_QC$patchArea$scenario, scenario = BITH_metrics_QC$patchArea$scenario) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2020","BITH_biomass_2020"), 2020)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2040","BITH_biomass_2040"), 2040)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2070","BITH_biomass_2070"), 2070)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2100","BITH_biomass_2100"), 2100)) %>%
+    mutate(Time = as.factor(Time)) %>%
+    mutate(scenario=replace(scenario, scenario %in% c("BITH_RCP45_2020","BITH_RCP45_2040","BITH_RCP45_2070","BITH_RCP45_2100"), "RCP4.5")) %>%
+    mutate(scenario=replace(scenario, scenario %in% c("BITH_biomass_2020","BITH_biomass_2040","BITH_biomass_2070","BITH_biomass_2100"), "biomass")) 
+
+forLabel_area <-
+  area_QC %>%
+  group_by(Time, scenario) %>%
+  summarise(Count = n(), Median = median(as.numeric(area),na.rm = TRUE), Max = max(as.numeric(area), na.rm=TRUE), Min = min(as.numeric(area), na.rm=TRUE)) %>%
+  mutate(Label = paste0(Time, "\n(n[b] = ", Count, ")", "\n(n[R] = ", Count[scenario=="RCP4.5"], ")"))
+
+print(forLabel_area[,1:6])
+
+p_area <- ggplot(forLabel_area, aes(y=Median, x=Time, color = scenario, group = scenario)) +
+            geom_line() +
+            geom_point() +
+            #scale_x_discrete(breaks = forLabel_area$Time, labels = forLabel_area$Label) +
+            ylab("Median patch area (km2)") +
+            theme_classic() +
+            theme(legend.position = c(.3, .95), legend.justification = c("right", "top"), legend.key.size = unit(0.5, 'cm'), legend.text = element_text(size=7))
+            
+
+# Distance
+dist_QC <- cbind(extract.dist(BITH_metrics_QC), Time = 2020) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2020","BITH_biomass_2020"), 2020)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2040","BITH_biomass_2040"), 2040)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2070","BITH_biomass_2070"), 2070)) %>%
+    mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2100","BITH_biomass_2100"), 2100)) %>%
+    mutate(Time = as.factor(Time)) %>%
+    mutate(scenario=replace(scenario, scenario %in% c("BITH_RCP45_2020","BITH_RCP45_2040","BITH_RCP45_2070","BITH_RCP45_2100"), "RCP4.5")) %>%
+    mutate(scenario=replace(scenario, scenario %in% c("BITH_biomass_2020","BITH_biomass_2040","BITH_biomass_2070","BITH_biomass_2100"), "biomass")) 
+
+forLabel_dist <-
+  dist_QC %>%
+  group_by(Time, scenario) %>%
+  summarise(Count = n(), Median = median(as.numeric(dist),na.rm = TRUE), Max = max(dist, na.rm=TRUE), Min = min(dist, na.rm=TRUE)) %>%
+  mutate(Label = paste0(Time, "\n(n[b] = ", Count, ")", "\n(n[R] = ", Count[scenario=="RCP4.5"], ")"))
+
+print(forLabel_dist[,1:6])
+
+p_dist <- ggplot(forLabel_dist, aes(y=Median, x=Time, group = scenario, color = scenario)) +
+            geom_line() +
+            geom_point() +
+            #scale_x_discrete(breaks = forLabel_dist$Time, labels = forLabel_dist$Label) +
+            ylab("Median inter-patch distance (km)") +
+            theme_classic()
+
+# Arrange plots in one figure
+ggarrange(p_n, p_area + rremove("legend"), p_dist + rremove("legend"), align = "h", ncol = 3)
+```
+
+**Fig. 2**: Change in the spatial configuration of the Bicknell's thrush breeding range distribution between 2020 and 2100.
+
+There is too much information contained within the density distributions. Simple trends of the median convay much better the information, summarizing important changes presented by the density distributions. I chose to present the median because it represent better the skewed distributions.
+
+```{r fig.3, fig.align='center', out.width = "100%", echo=FALSE, eval = FALSE}
 #### Organize data frame ####
 
 # # Area QC
@@ -228,10 +300,11 @@ pdist_RL <- ggplot(dist_RL, aes(fill=scenario, y=log(dist), x=Time)) +
 ggarrange(parea_QC + rremove("xlab"), pdist_QC + rremove("legend") + rremove("xlab"), parea_ET + rremove("legend") + rremove("xlab"), pdist_ET + rremove("legend") + rremove("xlab"), parea_RL + rremove("legend"), pdist_RL + rremove("legend"), align = "h", ncol = 2, nrow = 3)
 ```
 
+<!--
 **Fig. 3**: Density distribution of area and inter-patch distance through time for climate forcing and habitat scenarios.
+-->
 
-
-## **Fig 4**. Metapopulation effect
+## **Fig 3**. Metapopulation effect
 
 ```{r fig.4, fig.align='center', out.width = "100%", echo=FALSE}
 # Function to return capacity plot
@@ -284,6 +357,8 @@ totalArea_QC <- data.frame(totalArea = BITH_metrics_QC$totalArea, scenario = nam
     mutate(scenario=replace(scenario, scenario %in% c("BITH_RCP45_2020","BITH_RCP45_2040","BITH_RCP45_2070","BITH_RCP45_2100"), "RCP4.5")) %>%
     mutate(scenario=replace(scenario, scenario %in% c("BITH_biomass_2020","BITH_biomass_2040","BITH_biomass_2070","BITH_biomass_2100"), "biomass"))
 
+print(totalArea_QC)
+
 totalArea_ET <- data.frame(totalArea = BITH_metrics_ET$totalArea, scenario = names(BITH_metrics_ET$totalArea), Time = 2020) %>%
     mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2020","BITH_biomass_2020"), 2020)) %>%
     mutate(Time=replace(Time, scenario %in% c("BITH_RCP45_2040","BITH_biomass_2040"), 2040)) %>%
@@ -331,17 +406,20 @@ capacity_RL <-  cbind(BITH_metrics_RL$capacity, Time = 2020) %>%
 
 #### Generate plots ####
 
-pcap_QC_RCP45 <- plot.capacity(capacity_QC[capacity_QC$scenario=="RCP4.5",], totalArea_QC[totalArea_QC$scenario=="RCP4.5",], col = "#00BFC4", main = "QC")
-pcap_ET_RCP45 <- plot.capacity(capacity_ET[capacity_ET$scenario=="RCP4.5",], totalArea_ET[totalArea_ET$scenario=="RCP4.5",], col = "#00BFC4", main = "ET")
-pcap_RL_RCP45 <- plot.capacity(capacity_RL[capacity_RL$scenario=="RCP4.5",], totalArea_RL[totalArea_RL$scenario=="RCP4.5",], col = "#00BFC4", main = "RL")
+pcap_QC_RCP45 <- plot.capacity(capacity_QC[capacity_QC$scenario=="RCP4.5",], totalArea_QC[totalArea_QC$scenario=="RCP4.5",], col = "#00BFC4", main = "RCP 4.5")
+#pcap_ET_RCP45 <- plot.capacity(capacity_ET[capacity_ET$scenario=="RCP4.5",], totalArea_ET[totalArea_ET$scenario=="RCP4.5",], col = "#00BFC4", main = "ET")
+#pcap_RL_RCP45 <- plot.capacity(capacity_RL[capacity_RL$scenario=="RCP4.5",], totalArea_RL[totalArea_RL$scenario=="RCP4.5",], col = "#00BFC4", main = "RL")
 
-pcap_QC_biomass <- plot.capacity(capacity_QC[capacity_QC$scenario=="biomass",], totalArea_QC[totalArea_QC$scenario=="biomass",], col = "#F8766D", main = "QC")
-pcap_ET_biomass <- plot.capacity(capacity_ET[capacity_ET$scenario=="biomass",], totalArea_ET[totalArea_ET$scenario=="biomass",], col = "#F8766D", main = "ET")
-pcap_RL_biomass <- plot.capacity(capacity_RL[capacity_RL$scenario=="biomass",], totalArea_RL[totalArea_RL$scenario=="biomass",], col = "#F8766D", main = "RL")
+pcap_QC_biomass <- plot.capacity(capacity_QC[capacity_QC$scenario=="biomass",], totalArea_QC[totalArea_QC$scenario=="biomass",], col = "#F8766D", main = "biomass")
+#pcap_ET_biomass <- plot.capacity(capacity_ET[capacity_ET$scenario=="biomass",], totalArea_ET[totalArea_ET$scenario=="biomass",], col = "#F8766D", main = "ET")
+#pcap_RL_biomass <- plot.capacity(capacity_RL[capacity_RL$scenario=="biomass",], totalArea_RL[totalArea_RL$scenario=="biomass",], col = "#F8766D", main = "RL")
 
 #### Arrange plots ####
 
-ggarrange(pcap_QC_RCP45 + rremove("xlab"), pcap_ET_RCP45 + rremove("legend") + rremove("xlab"), pcap_RL_RCP45 + rremove("legend") + rremove("xlab"), pcap_QC_biomass + rremove("legend") + rremove("xlab"), pcap_ET_biomass + rremove("legend"), pcap_RL_biomass + rremove("legend") + rremove("xlab"), align = "h", ncol = 3, nrow = 2)
+#ggarrange(pcap_QC_RCP45 + rremove("xlab"), pcap_ET_RCP45 + rremove("legend") + rremove("xlab"), pcap_RL_RCP45 + rremove("legend") + rremove("xlab"), pcap_QC_biomass + rremove("legend") + rremove("xlab"), pcap_ET_biomass + rremove("legend"), pcap_RL_biomass + rremove("legend") + rremove("xlab"), align = "h", ncol = 3, nrow = 2)
+
+# Only show for QC
+ggarrange(pcap_QC_RCP45, pcap_QC_biomass + rremove("legend"), align = "h", ncol = 2)
 ```
 
 **Fig. 4**: Habitat amount does not represent distribution change 
