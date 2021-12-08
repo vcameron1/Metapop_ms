@@ -134,7 +134,22 @@ p_area <- ggplot(forLabel_area, aes(y=Median, x=Time, color = scenario, group = 
             ylab("Median patch area (km2)") +
             theme_classic() +
             theme(legend.position = c(.3, .95), legend.justification = c("right", "top"), legend.key.size = unit(0.5, 'cm'), legend.text = element_text(size=7))
-            
+
+# Function to extract distance
+extract.dist <- function(metrics){
+    dist <- setNames(data.frame(matrix(ncol = 2, nrow = 0)), c("dist", "scenario"))
+    for(i in seq_along(metrics$n)){
+        if(metrics$n[i] == 0) next
+        dij <- metrics$d_ij[[i]][lower.tri(metrics$d_ij[[i]], diag = FALSE)]
+        scenario <- names(metrics$d_ij[i])
+
+        dist <- rbind(dist, data.frame(dij, scenario))
+    }
+    colnames(dist) <- c("dist", "scenario")
+    #dist$scenario <- as.factor(dist$scenario)
+    
+    return(dist)
+}
 
 # Distance
 dist_QC <- cbind(extract.dist(BITH_metrics_QC), Time = 2020) %>%
@@ -308,7 +323,8 @@ ggarrange(parea_QC + rremove("xlab"), pdist_QC + rremove("legend") + rremove("xl
 
 ```{r fig.4, fig.align='center', out.width = "100%", echo=FALSE}
 # Function to return capacity plot
-plot.capacity <- function(cap, totalArea, col = "black", main = ""){  
+plot.capacity <- function(cap, totalArea, plot_alpha, col = "black", main = ""){
+    # plot_alpha: alpha values to be plotted
 
     # Alpha values
     a = unique(cap$alpha)
@@ -338,9 +354,12 @@ plot.capacity <- function(cap, totalArea, col = "black", main = ""){
             mutate(capacity=ifelse(alpha==a[4],capacity/capacity[4], capacity)) %>%
             mutate(capacity=ifelse(alpha==a[5],capacity/capacity[5], capacity))
 
+    # Select only 2 values of alpha
+    cap <- cap[cap$alpha%in%plot_alpha,]
+
     # Add lines
-    p_cap <- p_cap + 
-            geom_smooth(data=cap, aes(y=capacity, weight=rep(weight,length(a)), group=alpha, color=alpha), linetype=2, se=FALSE,  size=0.5, span = 0.7) +
+    p_cap <- p_cap +
+            geom_smooth(data=cap, aes(y=capacity, weight=rep(weight,each=length(unique(cap$alpha))), group=alpha, color=alpha), linetype=2, se=FALSE,  size=0.5, span = 0.7) +
             scale_color_manual(values=colo)
 
     return(p_cap)
@@ -406,11 +425,11 @@ capacity_RL <-  cbind(BITH_metrics_RL$capacity, Time = 2020) %>%
 
 #### Generate plots ####
 
-pcap_QC_RCP45 <- plot.capacity(capacity_QC[capacity_QC$scenario=="RCP4.5",], totalArea_QC[totalArea_QC$scenario=="RCP4.5",], col = "#00BFC4", main = "RCP 4.5")
+pcap_QC_RCP45 <- plot.capacity(capacity_QC[capacity_QC$scenario=="RCP4.5",], totalArea_QC[totalArea_QC$scenario=="RCP4.5",], col = "#00BFC4", main = "RCP 4.5", plot_alpha = c(1,0.002))
 #pcap_ET_RCP45 <- plot.capacity(capacity_ET[capacity_ET$scenario=="RCP4.5",], totalArea_ET[totalArea_ET$scenario=="RCP4.5",], col = "#00BFC4", main = "ET")
 #pcap_RL_RCP45 <- plot.capacity(capacity_RL[capacity_RL$scenario=="RCP4.5",], totalArea_RL[totalArea_RL$scenario=="RCP4.5",], col = "#00BFC4", main = "RL")
 
-pcap_QC_biomass <- plot.capacity(capacity_QC[capacity_QC$scenario=="biomass",], totalArea_QC[totalArea_QC$scenario=="biomass",], col = "#F8766D", main = "biomass")
+pcap_QC_biomass <- plot.capacity(capacity_QC[capacity_QC$scenario=="biomass",], totalArea_QC[totalArea_QC$scenario=="biomass",], col = "#F8766D", main = "biomass", plot_alpha = c(1,0.002))
 #pcap_ET_biomass <- plot.capacity(capacity_ET[capacity_ET$scenario=="biomass",], totalArea_ET[totalArea_ET$scenario=="biomass",], col = "#F8766D", main = "ET")
 #pcap_RL_biomass <- plot.capacity(capacity_RL[capacity_RL$scenario=="biomass",], totalArea_RL[totalArea_RL$scenario=="biomass",], col = "#F8766D", main = "RL")
 
