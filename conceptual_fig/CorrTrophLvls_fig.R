@@ -60,14 +60,14 @@ CorrTroph_plot <- function(){
   image(z, col=cols, breaks = brk,
         lwd=lwd, yaxs="i", xaxs="i",
         yaxt='n', xaxt='n',
-        cex.lab=2, cex.axis=1.5,
+        cex.lab=2, cex.axis=1.8,
         ylab='', xlab='')
   abline(0, 1, lty=2)
   abline(h=0.5)
   abline(v=0.5)
-  title(ylab='High trophic level optimum (E)',
-        xlab='Low trophic level optimum (E)',
-        cex.lab = 1.5, line = 1)
+  title(ylab='Consumer level optimum (E)',
+        xlab='Resource level optimum (E)',
+        cex.lab = 1.8, line = 1)
   box(lwd=lwd) 
   
   ## Indicator plots
@@ -83,7 +83,7 @@ CorrTroph_plot <- function(){
   # Plot color scale
   png('./manuscript/img/concept_ColorScale.png', width = 25, height = 100, units='mm', res = 700)
   par(pty = "m", mar=c(5,1,5,3))
-  image.scale(brk, col=cols, horiz=F, cex=0.75)
+  image.scale(brk, col=cols, horiz=F, cex=1)
   mtext(side = 3, line = 1, text = "       Delta \n       occupancy", font = 1, cex=0.75)
   box()
   

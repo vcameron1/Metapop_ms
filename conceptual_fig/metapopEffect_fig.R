@@ -31,14 +31,14 @@ metapopEffect_plot <- function(){
    plot(x=Env, y=h-(e/c), ylim=c(0,1), xlim = c(1,0),type='l',
         lwd=lwd, yaxs="i", xaxs="i",
         yaxt='n', xaxt='n',
-        cex.lab=2, cex.axis=1.5,
+        cex.lab=2, cex.axis=1.8,
         ylab='', xlab='')
    lines(x=Env, y=h-(e/(A^2*c)), lwd=lwd, lty=2)
    
    # Axis titles
    title(ylab = "Prevalence",
          xlab='Time',
-         cex.lab = 1.5, line = 1)
+         cex.lab = 1.8, line = 1)
    
    # Box to frame the plot
    box(lwd=lwd) 

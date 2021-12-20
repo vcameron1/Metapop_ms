@@ -24,7 +24,7 @@ mismatch_plot <- function(){
    # Axis titles
    title(ylab = "Components of distribution dynamics",
          xlab='Environment (E)',
-         cex.lab = 1.5, line = 1)
+         cex.lab = 1.8, line = 1)
    
    # Distribution polygon
    mycol1 <- rgb(77, 77, 77, max = 255, alpha = 60)
