@@ -10,17 +10,11 @@ patchArea_metrics <- function(elevation){
   
   # # 700m+
   habitat700 <- elevation
-  habitat700[habitat700<700] <- NA
-  area700 <- raster::area(habitat700, na.rm=TRUE)
-  area700 <- area700[!is.na(area700)]
-  area700 <- sum(area700, na.rm = TRUE)
+  area700 <- table(values(habitat700>=700))[2] * dim(habitat700)[1] * dim(habitat700)[2] # Area in m2
   
   # # 800m+
   habitat800 <- elevation
-  habitat800[habitat800<800] <- NA
-  area800 <- raster::area(habitat800, na.rm=TRUE)
-  area800 <- area800[!is.na(area800)]
-  area800 <- sum(area800, na.rm = TRUE)
+  area800 <- table(values(habitat800>=800))[2] * dim(habitat800)[1] * dim(habitat800)[2] # Area in m2
   
   # Identify groups of cells that are connected
   clump700 <- raster::clump(elevation>=700)
@@ -34,12 +28,8 @@ patchArea_metrics <- function(elevation){
   values <- values[!is.na(values)]
   patchArea700 <- data.frame(patch = values, area = 0)
   for(patch in patchArea700$patch){
-    # # # Compute clump area 
-    clump <- clump700
-    clump[clump!=patch] <- NA
-    clumpArea <- raster::area(clump, na.rm=T)
-    clumpArea <- clumpArea[!is.na(clumpArea)]
-    clumpArea <- sum(clumpArea, na.rm=T)
+    # # # Compute clump area
+    clumpArea <- table(values(clump700==patch))["TRUE"] * dim(clump700)[1] * dim(clump700)[2] # Area in m2
         
     # # # Save in df
     patchArea700[which(patchArea700$patch==patch), 'area'] <- clumpArea
@@ -51,11 +41,8 @@ patchArea_metrics <- function(elevation){
   patchArea800 <- data.frame(patch = values, area = 0)
   for(patch in patchArea800$patch){
   # # # Compute clump area 
-    clump <- clump800
-    clump[clump!=patch] <- NA
-    clumpArea <- raster::area(clump, na.rm=T)
-    clumpArea <- clumpArea[!is.na(clumpArea)]
-    clumpArea <- sum(clumpArea, na.rm=T)
+  clumpArea <- table(values(clump800==patch))["TRUE"] * dim(clump800)[1] * dim(clump800)[2] # Area in m2
+
       
     # # # Save in df
     patchArea800[which(patchArea800$patch==patch), 'area'] <- clumpArea
@@ -106,7 +93,9 @@ patchArea_metrics <- function(elevation){
   eigen700= eigen(land700)$values[1]
   eigen800 = eigen(land800)$values[1]
   
-  print(paste0("Metapop capacity declines by ", round((1-(eigen(land800)$values[1]/eigen(land700)$values[1]))*100,1), "% between 700 and 800m"))
+  print(paste0(
+    "Metapop capacity declines by ", round((1-(eigen(land800)$values[1]/eigen(land700)$values[1]))*100,1), "% between 700 and 800m and ",
+    "Habitat amount declines by ", round((1-(area800/area700))*100,1), "%"))
   
   #### Return ####
   return(
