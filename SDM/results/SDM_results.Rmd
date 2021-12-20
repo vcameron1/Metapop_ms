@@ -24,8 +24,8 @@ source("/Users/victorcameron/Documents/Git/Metapop_ms/SDM/map_GRBI_functions.R")
 ```{r load data, echo=FALSE}
 # Metrics
 BITH_metrics_QC <- readRDS("/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/BITH_metrics_QC.RDS")
-BITH_metrics_ET <- readRDS("/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/BITH_metrics_ET.RDS")
-BITH_metrics_RL <- readRDS("/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/BITH_metrics_RL.RDS")
+#BITH_metrics_ET <- readRDS("/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/BITH_metrics_ET.RDS")
+#BITH_metrics_RL <- readRDS("/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/BITH_metrics_RL.RDS")
 ```
 
 ```{r fig params, echo=FALSE}
@@ -57,12 +57,98 @@ RL_cutoff <- 0.00625 # 1 indv / km2
 ### **Fig 1**. Bicknell's thrush predicted breeding range
 
 ```{r 4 range map, fig.align='center', out.width = "100%", out.height = "300%", echo=FALSE}
-plot.map3(RL_cutoff = RL_cutoff)
+plot.map(RL_cutoff = RL_cutoff)
 ```
 
 **Fig 1**. Bicknell's thrush predicted breeding range. Breeding range is presented for projections of climate warming and habitat change between 2020 and 2100.
 
 ## **Fig 2**. Number of patches
+
+```{r base fig.2, fig.align='center', out.width = "100%", fig.asp = .4, echo=FALSE, eval = TRUE}
+#### Figure format ####
+
+# Save plot in file
+png('./manuscript/img/spatial_configuration.png', width = 200, height = 90, units='mm', res = 300)
+
+# Par
+par(mfrow=c(1,3), mar=c(5,5,1,1))
+
+#### Patch number ####
+
+# Extract number of patches
+n_QC <- data.frame(n = BITH_metrics_QC$n, Time = c(2020, 2040, 2070, 2100), scenario = c(rep("Climate-only",4),rep("Forest composition",4)))
+
+# Plot number of patches
+plot(n_QC$Time[n_QC$scenario=="Climate-only"], n_QC$n[n_QC$scenario=="Climate-only"], type = "b", col = "darkblue", ylim = c(1000, 7000),
+    ylab = "Number of patches", xlab = "Time", cex.lab  = 1.5)
+lines(n_QC$Time[n_QC$scenario=="Forest composition"], n_QC$n[n_QC$scenario=="Forest composition"], type = "b", col = "darkorange")
+
+
+#### Patch area ####
+
+# Create Time variable
+area_QC <- data.frame(area = BITH_metrics_QC$patchArea$area, Time = BITH_metrics_QC$patchArea$scenario, scenario = BITH_metrics_QC$patchArea$scenario)
+area_QC$Time[area_QC$Time %in% c("BITH_RCP45_2020","BITH_biomass_2020")] <- 2020
+area_QC$Time[area_QC$Time %in% c("BITH_RCP45_2040","BITH_biomass_2040")] <- 2040
+area_QC$Time[area_QC$Time %in% c("BITH_RCP45_2070","BITH_biomass_2070")] <- 2070
+area_QC$Time[area_QC$Time %in% c("BITH_RCP45_2100","BITH_biomass_2100")] <- 2100
+
+# Aggregate data do get median
+area_QC <- aggregate(area_QC$area, by = list(area_QC$scenario, area_QC$Time), FUN = median) 
+area_QC$scenario[area_QC$Group.1 %in% c("BITH_RCP45_2020","BITH_RCP45_2040","BITH_RCP45_2070","BITH_RCP45_2100")] <- "Climate-only"
+area_QC$scenario[area_QC$Group.1 %in% c("BITH_biomass_2020","BITH_biomass_2040","BITH_biomass_2070","BITH_biomass_2100")] <- "Forest composition"
+
+# Rename some variables
+area_QC$Time <- area_QC$Group.2
+area_QC$area <- area_QC$x
+
+# Plot patch area median
+plot(area_QC$Time[area_QC$scenario=="Climate-only"], area_QC$area[area_QC$scenario=="Climate-only"], type = "b", col = "darkblue", ylab = "Median patch area (km2)", xlab = "Time", ylim = c(0.1,0.35), cex.lab  = 1.5)
+lines(area_QC$Time[area_QC$scenario=="Forest composition"], area_QC$area[area_QC$scenario=="Forest composition"], type = "b", col = "darkorange")
+
+#### Inter-patch distance ####
+
+# Function to extract distance
+extract.dist <- function(metrics){
+    dist <- setNames(data.frame(matrix(ncol = 2, nrow = 0)), c("dist", "scenario"))
+    for(i in seq_along(metrics$n)){
+        if(metrics$n[i] == 0) next
+        dij <- metrics$d_ij[[i]][lower.tri(metrics$d_ij[[i]], diag = FALSE)]
+        scenario <- names(metrics$d_ij[i])
+
+        dist <- rbind(dist, data.frame(dij, scenario))
+    }
+    colnames(dist) <- c("dist", "scenario")
+    #dist$scenario <- as.factor(dist$scenario)
+    
+    return(dist)
+}
+
+# Extract distance
+dist_QC <- cbind(extract.dist(BITH_metrics_QC), Time = 2020)
+
+# Create Time column
+dist_QC$Time[dist_QC$scenario %in% c("BITH_RCP45_2020","BITH_biomass_2020")] <- 2020
+dist_QC$Time[dist_QC$scenario %in% c("BITH_RCP45_2040","BITH_biomass_2040")] <- 2040
+dist_QC$Time[dist_QC$scenario %in% c("BITH_RCP45_2070","BITH_biomass_2070")] <- 2070
+dist_QC$Time[dist_QC$scenario %in% c("BITH_RCP45_2100","BITH_biomass_2100")] <- 2100
+
+# Aggregate data do get median
+dist_QC <- aggregate(dist_QC$dist, by = list(dist_QC$scenario, dist_QC$Time), FUN = median)
+dist_QC$scenario[dist_QC$Group.1 %in% c("BITH_RCP45_2020","BITH_RCP45_2040","BITH_RCP45_2070","BITH_RCP45_2100")] <- "Climate-only"
+dist_QC$scenario[dist_QC$Group.1 %in% c("BITH_biomass_2020","BITH_biomass_2040","BITH_biomass_2070","BITH_biomass_2100")] <- "Forest composition"
+
+# Rename some variables
+dist_QC$Time <- dist_QC$Group.2
+dist_QC$dist <- dist_QC$x
+
+# Plot patch dist median
+plot(dist_QC$Time[dist_QC$scenario=="Climate-only"], dist_QC$dist[dist_QC$scenario=="Climate-only"], type = "b", col = "darkblue", ylab = "Median inter-patch distance (km)", xlab = "Time", ylim = c(215,280), cex.lab = 1.5)
+lines(dist_QC$Time[dist_QC$scenario=="Forest composition"], dist_QC$dist[dist_QC$scenario=="Forest composition"], type = "b", col = "darkorange")
+
+# Close file
+dev.off()
+```
 
 ```{r fig.x, fig.align='center', out.width = "100%", fig.asp = .4, echo=FALSE, eval=FALSE}
 # Organize data frame
@@ -97,7 +183,7 @@ ggarrange(pn_QC, pn_RL + rremove("legend") + rremove("ylab"), pn_ET + rremove("l
 
 ## **Fig 2**. Change in spatial configuration of the distribution
 
-```{r fig.2, fig.align='center', out.width = "100%", fig.asp = .4, echo=FALSE, eval = TRUE}
+```{r fig.2, fig.align='center', out.width = "100%", fig.asp = .4, echo=FALSE, eval = FALSE}
 # number of patches
 n_QC <- data.frame(n = BITH_metrics_QC$n, Time = c(2020, 2040, 2070, 2100), scenario = c(rep("RCP4.5",4),rep("biomass",4)))
 
