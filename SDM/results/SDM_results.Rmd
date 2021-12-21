@@ -54,7 +54,7 @@ RL_cutoff <- 0.00625 # 1 indv / km2
 
 </center>
 
-### **Fig 1**. Bicknell's thrush predicted breeding range
+### **Fig 3**. Bicknell's thrush predicted breeding range
 
 ```{r 4 range map, fig.align='center', out.width = "100%", out.height = "300%", echo=FALSE}
 plot.map(RL_cutoff = RL_cutoff)
@@ -62,9 +62,9 @@ plot.map(RL_cutoff = RL_cutoff)
 
 **Fig 1**. Bicknell's thrush predicted breeding range. Breeding range is presented for projections of climate warming and habitat change between 2020 and 2100.
 
-## **Fig 2**. Number of patches
+## **Fig 4**. Change in spatial configuration of the distribution
 
-```{r base fig.2, fig.align='center', out.width = "100%", fig.asp = .4, echo=FALSE, eval = TRUE}
+```{r base fig.3, fig.align='center', out.width = "100%", fig.asp = .4, echo=FALSE, eval = TRUE}
 #### Figure format ####
 
 # Save plot in file
@@ -80,8 +80,12 @@ n_QC <- data.frame(n = BITH_metrics_QC$n, Time = c(2020, 2040, 2070, 2100), scen
 
 # Plot number of patches
 plot(n_QC$Time[n_QC$scenario=="Climate-only"], n_QC$n[n_QC$scenario=="Climate-only"], type = "b", col = "darkblue", ylim = c(1000, 7000),
-    ylab = "Number of patches", xlab = "Time", cex.lab  = 1.5)
-lines(n_QC$Time[n_QC$scenario=="Forest composition"], n_QC$n[n_QC$scenario=="Forest composition"], type = "b", col = "darkorange")
+    ylab = "Number of patches", xlab = "Time", cex.lab  = 1.5,lwd=2, axes=FALSE)
+box(bty="l")
+axis(1)
+axis(2)
+lines(n_QC$Time[n_QC$scenario=="Forest composition"], n_QC$n[n_QC$scenario=="Forest composition"], type = "b", lwd=2, col = "darkorange")
+legend(2060, 7000, legend=c("Climate-only", "Forest composition"), col=c("darkblue","darkorange"), lty=1, lwd=2, cex=0.7, box.lty=0)
 
 
 #### Patch area ####
@@ -103,8 +107,11 @@ area_QC$Time <- area_QC$Group.2
 area_QC$area <- area_QC$x
 
 # Plot patch area median
-plot(area_QC$Time[area_QC$scenario=="Climate-only"], area_QC$area[area_QC$scenario=="Climate-only"], type = "b", col = "darkblue", ylab = "Median patch area (km2)", xlab = "Time", ylim = c(0.1,0.35), cex.lab  = 1.5)
-lines(area_QC$Time[area_QC$scenario=="Forest composition"], area_QC$area[area_QC$scenario=="Forest composition"], type = "b", col = "darkorange")
+plot(area_QC$Time[area_QC$scenario=="Climate-only"], area_QC$area[area_QC$scenario=="Climate-only"], type = "b", col = "darkblue", ylab = "Median patch area (km2)", xlab = "Time", ylim = c(0.1,0.35), cex.lab  = 1.5,lwd=2, axes=FALSE)
+box(bty="l")
+axis(1)
+axis(2)
+lines(area_QC$Time[area_QC$scenario=="Forest composition"], area_QC$area[area_QC$scenario=="Forest composition"], type = "b", lwd=2, col = "darkorange")
 
 #### Inter-patch distance ####
 
@@ -143,13 +150,116 @@ dist_QC$Time <- dist_QC$Group.2
 dist_QC$dist <- dist_QC$x
 
 # Plot patch dist median
-plot(dist_QC$Time[dist_QC$scenario=="Climate-only"], dist_QC$dist[dist_QC$scenario=="Climate-only"], type = "b", col = "darkblue", ylab = "Median inter-patch distance (km)", xlab = "Time", ylim = c(215,280), cex.lab = 1.5)
-lines(dist_QC$Time[dist_QC$scenario=="Forest composition"], dist_QC$dist[dist_QC$scenario=="Forest composition"], type = "b", col = "darkorange")
+plot(dist_QC$Time[dist_QC$scenario=="Climate-only"], dist_QC$dist[dist_QC$scenario=="Climate-only"], type = "b", col = "darkblue", ylab = "Median inter-patch distance (km)", xlab = "Time", ylim = c(215,280), cex.lab = 1.5,lwd=2, axes=FALSE)
+box(bty="l")
+axis(1)
+axis(2)
+lines(dist_QC$Time[dist_QC$scenario=="Forest composition"], dist_QC$dist[dist_QC$scenario=="Forest composition"], type = "b", lwd=2, col = "darkorange")
 
 # Close file
 dev.off()
 ```
 
+
+
+## **Fig 5**. Metapopulation effect
+
+```{r base fig.4, fig.align='center', out.width = "100%", echo=FALSE}
+
+#### Area ####
+
+totalArea_QC <- data.frame(totalArea = BITH_metrics_QC$totalArea, scenario = names(BITH_metrics_QC$totalArea), Time = 2020)
+
+# Create Time column
+totalArea_QC$Time[totalArea_QC$scenario %in% c("BITH_RCP45_2020","BITH_biomass_2020")] <- 2020
+totalArea_QC$Time[totalArea_QC$scenario %in% c("BITH_RCP45_2040","BITH_biomass_2040")] <- 2040
+totalArea_QC$Time[totalArea_QC$scenario %in% c("BITH_RCP45_2070","BITH_biomass_2070")] <- 2070
+totalArea_QC$Time[totalArea_QC$scenario %in% c("BITH_RCP45_2100","BITH_biomass_2100")] <- 2100
+
+# Rename scenarios
+totalArea_QC$scenario[totalArea_QC$scenario %in% c("BITH_RCP45_2020","BITH_RCP45_2040","BITH_RCP45_2070","BITH_RCP45_2100")] <- "Climate-only"
+totalArea_QC$scenario[totalArea_QC$scenario %in% c("BITH_biomass_2020","BITH_biomass_2040","BITH_biomass_2070","BITH_biomass_2100")] <- "Forest composition"
+
+# Rescale taotalArea
+totalArea_QC$totalArea <- totalArea_QC$totalArea/totalArea_QC$totalArea[1]
+
+#### Capacity ####
+
+capacity_QC <-  cbind(BITH_metrics_QC$capacity, Time = 2020)
+
+# Create Time column
+capacity_QC$Time[capacity_QC$scenario %in% c("BITH_RCP45_2020","BITH_biomass_2020")] <- 2020
+capacity_QC$Time[capacity_QC$scenario %in% c("BITH_RCP45_2040","BITH_biomass_2040")] <- 2040
+capacity_QC$Time[capacity_QC$scenario %in% c("BITH_RCP45_2070","BITH_biomass_2070")] <- 2070
+capacity_QC$Time[capacity_QC$scenario %in% c("BITH_RCP45_2100","BITH_biomass_2100")] <- 2100
+
+# Rename scenarios
+capacity_QC$scenario[capacity_QC$scenario %in% c("BITH_RCP45_2020","BITH_RCP45_2040","BITH_RCP45_2070","BITH_RCP45_2100")] <- "Climate-only"
+capacity_QC$scenario[capacity_QC$scenario %in% c("BITH_biomass_2020","BITH_biomass_2040","BITH_biomass_2070","BITH_biomass_2100")] <- "Forest composition"
+
+# Subset data
+capacity_QC <- capacity_QC[capacity_QC$alpha %in% c(1,0.002),]
+
+# Rescale capacity
+capacity_QC$capacity[capacity_QC$scenario=="Climate-only" & capacity_QC$alpha==1] <- capacity_QC$capacity[capacity_QC$scenario=="Climate-only" & capacity_QC$alpha==1]/capacity_QC$capacity[capacity_QC$scenario=="Climate-only" & capacity_QC$alpha==1][1]
+
+capacity_QC$capacity[capacity_QC$scenario=="Climate-only" & capacity_QC$alpha==0.002] <- capacity_QC$capacity[capacity_QC$scenario=="Climate-only" & capacity_QC$alpha==0.002]/capacity_QC$capacity[capacity_QC$scenario=="Climate-only" & capacity_QC$alpha==0.002][1]
+
+capacity_QC$capacity[capacity_QC$scenario=="Forest composition" & capacity_QC$alpha==1] <- capacity_QC$capacity[capacity_QC$scenario=="Forest composition" & capacity_QC$alpha==1]/capacity_QC$capacity[capacity_QC$scenario=="Forest composition" & capacity_QC$alpha==1][1]
+
+capacity_QC$capacity[capacity_QC$scenario=="Forest composition" & capacity_QC$alpha==0.002] <- capacity_QC$capacity[capacity_QC$scenario=="Forest composition" & capacity_QC$alpha==0.002]/capacity_QC$capacity[capacity_QC$scenario=="Forest composition" & capacity_QC$alpha==0.002][1]
+
+#### Plot ####
+
+# Save plot in file
+png('./manuscript/img/capacity.png', width = 200, height = 130, units='mm', res = 300)
+
+# Par
+par(mfrow=c(1,2), mar=c(5,2.5,1,1))
+
+# Plot climate-only
+plot(totalArea_QC$Time[totalArea_QC$scenario=="Climate-only"], totalArea_QC$totalArea[totalArea_QC$scenario=="Climate-only"], type="b", col="darkblue", ylab="", xlab="Time", cex.lab=1.5, lwd=2, yaxt='n', axes=FALSE, ylim=c(0,2))
+box(bty="l")
+axis(1)
+title(ylab="Components of persistence", line=1, cex.lab = 1.5)
+legend(2065, 2, legend=c("Habitat amount", "Capacity", "1 km dispersal", "500 km dispersal"), col=c("darkblue","darkgrey","darkgrey","darkgrey"), lty=c(1,1,2:3), lwd=2, cex=0.7, box.lty=0)
+par(new=TRUE)
+plot(capacity_QC$Time[capacity_QC$scenario=="Climate-only" & capacity_QC$alpha==1], capacity_QC$capacity[capacity_QC$scenario=="Climate-only" & capacity_QC$alpha==1], type="b", col="darkgrey", lty=2, lwd=2, axes=FALSE, bty="n", xlab="", ylab="", ylim=c(-6,8))
+par(new=TRUE)
+plot(capacity_QC$Time[capacity_QC$scenario=="Climate-only" & capacity_QC$alpha==0.002], capacity_QC$capacity[capacity_QC$scenario=="Climate-only" & capacity_QC$alpha==0.002], type="b", col="darkgrey", lty=3, lwd=2, axes=FALSE, bty="n", xlab="", ylab="", ylim=c(-7,9))
+
+plot(totalArea_QC$Time[totalArea_QC$scenario=="Forest composition"], totalArea_QC$totalArea[totalArea_QC$scenario=="Forest composition"], type = "b", col = "darkorange", ylab="", xlab="Time", cex.lab=1.5, lwd=2, yaxt='n', axes=FALSE, ylim=c(0,2))
+box(bty="l")
+axis(1)
+par(new=TRUE)
+plot(capacity_QC$Time[capacity_QC$scenario=="Forest composition" & capacity_QC$alpha==1], capacity_QC$capacity[capacity_QC$scenario=="Climate-only" & capacity_QC$alpha==1], type="b", col="darkgrey", lty=2, lwd=2, axes=FALSE, bty="n", xlab="", ylab="", ylim=c(-5,7))
+par(new=TRUE)
+plot(capacity_QC$Time[capacity_QC$scenario=="Forest composition" & capacity_QC$alpha==0.002], capacity_QC$capacity[capacity_QC$scenario=="Forest composition" & capacity_QC$alpha==0.002], type="b", col="darkgrey", lty=3, lwd=2, axes=FALSE, bty="n", xlab="", ylab="", ylim=c(-2.5,4.5))
+
+# Close plot
+dev.off()
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## **Fig 2**. Number of patches (ggplot)
 ```{r fig.x, fig.align='center', out.width = "100%", fig.asp = .4, echo=FALSE, eval=FALSE}
 # Organize data frame
 n_QC <- data.frame(n = BITH_metrics_QC$n, Time = c(2020, 2040, 2070, 2100), scenario = c(rep("RCP4.5",4),rep("biomass",4)))
@@ -181,7 +291,7 @@ ggarrange(pn_QC, pn_RL + rremove("legend") + rremove("ylab"), pn_ET + rremove("l
 
 **Fig. 2**: Number of patch through time for climate forcing scenario and habitat presented by region.
 
-## **Fig 2**. Change in spatial configuration of the distribution
+## **Fig 2**. Change in spatial configuration of the distribution (ggplot)
 
 ```{r fig.2, fig.align='center', out.width = "100%", fig.asp = .4, echo=FALSE, eval = FALSE}
 # number of patches
@@ -405,73 +515,6 @@ ggarrange(parea_QC + rremove("xlab"), pdist_QC + rremove("legend") + rremove("xl
 **Fig. 3**: Density distribution of area and inter-patch distance through time for climate forcing and habitat scenarios.
 -->
 
-## **Fig 3**. Metapopulation effect
-
-```{r base fig.4, fig.align='center', out.width = "100%", echo=FALSE}
-
-#### Area ####
-
-totalArea_QC <- data.frame(totalArea = BITH_metrics_QC$totalArea, scenario = names(BITH_metrics_QC$totalArea), Time = 2020)
-
-# Create Time column
-totalArea_QC$Time[totalArea_QC$scenario %in% c("BITH_RCP45_2020","BITH_biomass_2020")] <- 2020
-totalArea_QC$Time[totalArea_QC$scenario %in% c("BITH_RCP45_2040","BITH_biomass_2040")] <- 2040
-totalArea_QC$Time[totalArea_QC$scenario %in% c("BITH_RCP45_2070","BITH_biomass_2070")] <- 2070
-totalArea_QC$Time[totalArea_QC$scenario %in% c("BITH_RCP45_2100","BITH_biomass_2100")] <- 2100
-
-# Rename scenarios
-totalArea_QC$scenario[totalArea_QC$scenario %in% c("BITH_RCP45_2020","BITH_RCP45_2040","BITH_RCP45_2070","BITH_RCP45_2100")] <- "Climate-only"
-totalArea_QC$scenario[totalArea_QC$scenario %in% c("BITH_biomass_2020","BITH_biomass_2040","BITH_biomass_2070","BITH_biomass_2100")] <- "Forest composition"
-
-# Rescale taotalArea
-totalArea_QC$totalArea <- totalArea_QC$totalArea/totalArea_QC$totalArea[1]
-
-#### Capacity ####
-
-capacity_QC <-  cbind(BITH_metrics_QC$capacity, Time = 2020)
-
-# Create Time column
-capacity_QC$Time[capacity_QC$scenario %in% c("BITH_RCP45_2020","BITH_biomass_2020")] <- 2020
-capacity_QC$Time[capacity_QC$scenario %in% c("BITH_RCP45_2040","BITH_biomass_2040")] <- 2040
-capacity_QC$Time[capacity_QC$scenario %in% c("BITH_RCP45_2070","BITH_biomass_2070")] <- 2070
-capacity_QC$Time[capacity_QC$scenario %in% c("BITH_RCP45_2100","BITH_biomass_2100")] <- 2100
-
-# Rename scenarios
-capacity_QC$scenario[capacity_QC$scenario %in% c("BITH_RCP45_2020","BITH_RCP45_2040","BITH_RCP45_2070","BITH_RCP45_2100")] <- "Climate-only"
-capacity_QC$scenario[capacity_QC$scenario %in% c("BITH_biomass_2020","BITH_biomass_2040","BITH_biomass_2070","BITH_biomass_2100")] <- "Forest composition"
-
-# Subset data
-capacity_QC <- capacity_QC[capacity_QC$alpha %in% c(1,0.002),]
-
-# Rescale capacity
-capacity_QC$capacity[capacity_QC$scenario=="Climate-only" & capacity_QC$alpha==1] <- log10(capacity_QC$capacity[capacity_QC$scenario=="Climate-only" & capacity_QC$alpha==1]/capacity_QC$capacity[capacity_QC$scenario=="Climate-only" & capacity_QC$alpha==1][1]) + 1
-
-capacity_QC$capacity[capacity_QC$scenario=="Climate-only" & capacity_QC$alpha==0.002] <- log10(capacity_QC$capacity[capacity_QC$scenario=="Climate-only" & capacity_QC$alpha==0.002]/capacity_QC$capacity[capacity_QC$scenario=="Climate-only" & capacity_QC$alpha==0.002][1]) + 1
-
-capacity_QC$capacity[capacity_QC$scenario=="Forest composition" & capacity_QC$alpha==1] <- log10(capacity_QC$capacity[capacity_QC$scenario=="Forest composition" & capacity_QC$alpha==1]/capacity_QC$capacity[capacity_QC$scenario=="Forest composition" & capacity_QC$alpha==1][1]) + 1
-
-capacity_QC$capacity[capacity_QC$scenario=="Forest composition" & capacity_QC$alpha==0.002] <- log10(capacity_QC$capacity[capacity_QC$scenario=="Forest composition" & capacity_QC$alpha==0.002]/capacity_QC$capacity[capacity_QC$scenario=="Forest composition" & capacity_QC$alpha==0.002][1]) + 1
-
-#### Plot ####
-
-# Save plot in file
-png('./manuscript/img/capacity.png', width = 200, height = 130, units='mm', res = 300)
-
-# Par
-par(mfrow=c(1,2), mar=c(5,5,1,1))
-
-# Plot climate-only
-plot(totalArea_QC$Time[totalArea_QC$scenario=="Climate-only"], totalArea_QC$totalArea[totalArea_QC$scenario=="Climate-only"], type = "b", col = "darkblue", ylab = "", xlab = "Time", cex.lab = 1.5, ylim = c(0,2))
-lines(capacity_QC$Time[capacity_QC$scenario=="Climate-only" & capacity_QC$alpha==1], capacity_QC$capacity[capacity_QC$scenario=="Climate-only" & capacity_QC$alpha==1], type = "b", col = "lightgrey", lty = 2)
-lines(capacity_QC$Time[capacity_QC$scenario=="Climate-only" & capacity_QC$alpha==0.002], capacity_QC$capacity[capacity_QC$scenario=="Climate-only" & capacity_QC$alpha==0.002], type = "b", col = "darkgrey", lty = 2)
-
-plot(totalArea_QC$Time[totalArea_QC$scenario=="Forest composition"], totalArea_QC$totalArea[totalArea_QC$scenario=="Forest composition"], type = "b", col = "darkorange", ylab = "", xlab = "Time", cex.lab = 1.5, ylim = c(0,2))
-lines(capacity_QC$Time[capacity_QC$scenario=="Forest composition" & capacity_QC$alpha==1], capacity_QC$capacity[capacity_QC$scenario=="Climate-only" & capacity_QC$alpha==1], type = "b", col = "lightgrey", lty = 2)
-lines(capacity_QC$Time[capacity_QC$scenario=="Forest composition" & capacity_QC$alpha==0.002], capacity_QC$capacity[capacity_QC$scenario=="Forest composition" & capacity_QC$alpha==0.002], type = "b", col = "darkgrey", lty = 2)
-
-# Close plot
-dev.off()
-```
 
 
 ```{r fig.4, fig.align='center', out.width = "100%", echo=FALSE, eval = FALSE}
