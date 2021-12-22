@@ -42,7 +42,8 @@ plot.map <- function(scenarios = c("RCP45_2020", "biomass_2020",
         r_sub <- raster::crop(r, e)
 
         # # Draw the map
-        raster::plot(r_sub>=log(RL_cutoff), legend = FALSE, bty = "o", yaxs="i", xaxs="i",  col = c("darkkhaki", "darkgreen"), colNA = rgb(193/256,236/256,250/256), main = main[i])
+        raster::plot(r_sub>=log(RL_cutoff), legend = FALSE, bty = "o", yaxs="i", xaxs="i",  col = c("darkkhaki", "darkgreen"), colNA = "grey95",#rgb(193/256,236/256,250/256), 
+        main = main[i])
 
         i = i + 1
     }
