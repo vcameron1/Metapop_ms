@@ -47,7 +47,7 @@ mismatch_plot <- function(){
    arrows(0.313,0.35,0.69,0.35, lwd=4)
    
    # Text
-   text(0.07, 0.6, 'R', col='darkgreen', cex=1.5)
+   text(0.07, 0.6, expression('R'^'*'), col='darkgreen', cex=1.5)
    text(0.07, 0.23, 'e/c', col='darkorange', cex=1.5)
    
    # Box to frame the plot
