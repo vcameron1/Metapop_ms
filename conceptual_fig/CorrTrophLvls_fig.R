@@ -65,8 +65,8 @@ CorrTroph_plot <- function(){
   abline(0, 1, lty=2)
   abline(h=0.5)
   abline(v=0.5)
-  title(ylab='Consumer level optimum (E)',
-        xlab='Resource level optimum (E)',
+  title(ylab='Consumer optimum (E)',
+        xlab='Resource optimum (E)',
         cex.lab = 1.8, line = 1)
   box(lwd=lwd) 
   
