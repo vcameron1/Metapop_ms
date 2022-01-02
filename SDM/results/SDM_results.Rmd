@@ -107,7 +107,7 @@ area_QC$Time <- area_QC$Group.2
 area_QC$area <- area_QC$x
 
 # Plot patch area median
-plot(area_QC$Time[area_QC$scenario=="Climate-only"], area_QC$area[area_QC$scenario=="Climate-only"], type = "b", col = "darkblue", ylab = "Median patch area (km2)", xlab = "Time", ylim = c(0.1,0.35), cex.lab  = 1.5,lwd=2, axes=FALSE)
+plot(area_QC$Time[area_QC$scenario=="Climate-only"], area_QC$area[area_QC$scenario=="Climate-only"], type = "b", col = "darkblue", ylab = expression("Median patch area (km"^2*")"), xlab = "Time", ylim = c(0.1,0.35), cex.lab  = 1.5,lwd=2, axes=FALSE)
 box(bty="l")
 axis(1)
 axis(2)
