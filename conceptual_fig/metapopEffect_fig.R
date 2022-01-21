@@ -13,7 +13,7 @@ metapopEffect_plot <- function(){
    
    # Set graphic parameters
    par(pty = "s",par(pty = "s", mar=c(3,3,1,0)))
-   lwd <- 4
+   lwd <- 6
    
    # Constants
    e <- 0.1

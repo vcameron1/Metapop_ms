@@ -68,10 +68,10 @@ plot.map(RL_cutoff = RL_cutoff)
 #### Figure format ####
 
 # Save plot in file
-png('./manuscript/img/spatial_configuration.png', width = 200, height = 90, units='mm', res = 300)
+png('./manuscript/img/spatial_configuration.png', width = 200, height = 60, units='mm', res = 300)
 
 # Par
-par(mfrow=c(1,3), mar=c(5,5,1,1))
+par(mfrow=c(1,3), mar=c(5,6,1,1))
 
 #### Patch number ####
 
@@ -85,7 +85,7 @@ box(bty="l")
 axis(1)
 axis(2)
 lines(n_QC$Time[n_QC$scenario=="Forest composition"], n_QC$n[n_QC$scenario=="Forest composition"], type = "b", lwd=2, col = "darkorange")
-legend(2060, 7000, legend=c("Climate-only", "Forest composition"), col=c("darkblue","darkorange"), lty=1, lwd=2, cex=0.7, box.lty=0)
+legend(2060, 7000, legend=c("Climate-only", "Forest change"), col=c("darkblue","darkorange"), lty=1, lwd=2, cex=0.7, box.lty=0)
 
 
 #### Patch area ####
@@ -150,7 +150,7 @@ dist_QC$Time <- dist_QC$Group.2
 dist_QC$dist <- dist_QC$x
 
 # Plot patch dist median
-plot(dist_QC$Time[dist_QC$scenario=="Climate-only"], dist_QC$dist[dist_QC$scenario=="Climate-only"], type = "b", col = "darkblue", ylab = "Median inter-patch distance (km)", xlab = "Time", ylim = c(215,280), cex.lab = 1.5,lwd=2, axes=FALSE)
+plot(dist_QC$Time[dist_QC$scenario=="Climate-only"], dist_QC$dist[dist_QC$scenario=="Climate-only"], type = "b", col = "darkblue", ylab = "Median inter-patch \ndistance (km)", xlab = "Time", ylim = c(215,280), cex.lab = 1.5,lwd=2, axes=FALSE)
 box(bty="l")
 axis(1)
 axis(2)
@@ -212,7 +212,7 @@ capacity_QC$capacity[capacity_QC$scenario=="Forest composition" & capacity_QC$al
 #### Plot ####
 
 # Save plot in file
-png('./manuscript/img/capacity.png', width = 200, height = 130, units='mm', res = 300)
+png('./manuscript/img/capacity.png', width = 200, height = 100, units='mm', res = 300)
 
 # Par
 par(mfrow=c(1,2), mar=c(5,2.5,1,1))
@@ -222,7 +222,8 @@ plot(totalArea_QC$Time[totalArea_QC$scenario=="Climate-only"], totalArea_QC$tota
 box(bty="l")
 axis(1)
 title(ylab="Components of persistence", line=1, cex.lab = 1.5)
-legend(2065, 2, legend=c("Habitat amount", "Capacity", "1 km dispersal", "500 km dispersal"), col=c("darkblue","darkgrey","darkgrey","darkgrey"), lty=c(1,1,2:3), lwd=2, cex=0.7, box.lty=0)
+#legend(2065, 2, legend=c("Habitat amount", "Capacity", "1 km dispersal", "500 km dispersal"), col=c("darkblue","darkgrey","darkgrey","darkgrey"), lty=c(1,1,2:3), lwd=2, cex=0.7, box.lty=0)
+legend(2065, 2, legend=c("Habitat amount", "Capacity (1 km)", "Capacity (500 km)"), col=c("darkblue","darkgrey","darkgrey"), lty=c(1:3), lwd=2, cex=0.7, box.lty=0)
 par(new=TRUE)
 plot(capacity_QC$Time[capacity_QC$scenario=="Climate-only" & capacity_QC$alpha==1], capacity_QC$capacity[capacity_QC$scenario=="Climate-only" & capacity_QC$alpha==1], type="b", col="darkgrey", lty=2, lwd=2, axes=FALSE, bty="n", xlab="", ylab="", ylim=c(-6,8))
 par(new=TRUE)

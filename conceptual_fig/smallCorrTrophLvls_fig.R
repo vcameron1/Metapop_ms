@@ -8,7 +8,7 @@ smallCorrTrophLvls_fig <- function(){
         
         #### Params ####
         
-        lwd=1
+        lwd=4
         ftr=0.19
         pos <- list(c1=c(0.4,0.6),
                     c2=c(0.6,0.65),
@@ -32,9 +32,9 @@ smallCorrTrophLvls_fig <- function(){
              yaxs="i", xaxs="i",
              axes=F,
              ylab='', xlab='')
-        lines(ftr*dnorm(E, mean = pos[['c1']][2], sd = 0.08), x=E)
+        lines(ftr*dnorm(E, mean = pos[['c1']][2], sd = 0.08), x=E, lwd=lwd)
         axis(side=1, pos=0, lwd.ticks=0, labels=FALSE, lwd=lwd+1)
-        abline(v=0.5, lty=2)
+        abline(v=0.5, lty=2, lwd=lwd)
         
         # Close file
         dev.off()
@@ -55,9 +55,9 @@ smallCorrTrophLvls_fig <- function(){
              yaxs="i", xaxs="i",
              axes=F,
              ylab='', xlab='')
-        lines(ftr*dnorm(E, mean = pos[['c2']][2], sd = 0.08), x=E)
+        lines(ftr*dnorm(E, mean = pos[['c2']][2], sd = 0.08), x=E, lwd=lwd)
         axis(side=1, pos=0, lwd.ticks=0, labels=FALSE, lwd=lwd+1)
-        abline(v=0.5, lty=2)
+        abline(v=0.5, lty=2, lwd=lwd)
         
         # Close file
         dev.off()
@@ -78,9 +78,9 @@ smallCorrTrophLvls_fig <- function(){
              yaxs="i", xaxs="i",
              axes=F,
              ylab='', xlab='')
-        lines(ftr*dnorm(E, mean = pos[['c3']][2], sd = 0.08), x=E)
+        lines(ftr*dnorm(E, mean = pos[['c3']][2], sd = 0.08), x=E, lwd=lwd)
         axis(side=1, pos=0, lwd.ticks=0, labels=FALSE, lwd=lwd+1)
-        abline(v=0.5, lty=2)
+        abline(v=0.5, lty=2, lwd=lwd)
         
         # Close file
         dev.off()
@@ -101,9 +101,9 @@ smallCorrTrophLvls_fig <- function(){
              yaxs="i", xaxs="i",
              axes=F,
              ylab='', xlab='')
-        lines(ftr*dnorm(E, mean = pos[['c4']][2], sd = 0.08), x=E)
+        lines(ftr*dnorm(E, mean = pos[['c4']][2], sd = 0.08), x=E, lwd=lwd)
         axis(side=1, pos=0, lwd.ticks=0, labels=FALSE, lwd=lwd+1)
-        abline(v=0.5, lty=2)
+        abline(v=0.5, lty=2, lwd=lwd)
         
         # Close file
         dev.off()

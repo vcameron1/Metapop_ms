@@ -15,7 +15,7 @@ CorrTroph_plot <- function(){
   smallCorrTrophLvls_fig()
   
   # Parameters
-  lwd = 4
+  lwd = 6
   ftr=0.19
   pos <- list(c1=c(0.4,0.6),
               c2=c(0.6,0.65),
@@ -62,9 +62,9 @@ CorrTroph_plot <- function(){
         yaxt='n', xaxt='n',
         cex.lab=2, cex.axis=1.8,
         ylab='', xlab='')
-  abline(0, 1, lty=2)
-  abline(h=0.5)
-  abline(v=0.5)
+  abline(0, 1, lty=2, lwd=lwd-2)
+  abline(h=0.5, lwd=lwd-2)
+  abline(v=0.5, lwd=lwd-2)
   title(ylab='Consumer optimum (E)',
         xlab='Resource optimum (E)',
         cex.lab = 1.8, line = 1)

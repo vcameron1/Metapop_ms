@@ -10,7 +10,7 @@ mismatch_plot <- function(){
    
    # Set graphic parameters
    par(pty = "s",par(pty = "s",  mar=c(3,3,1,0)))
-   lwd <- 4
+   lwd <- 6
    
    # e/c curve
    curve((0.8 * x + 0.1), 0, 0.9, 100, ylim = c(0, 0.9), xlim = c(0, 0.9),
@@ -44,11 +44,11 @@ mismatch_plot <- function(){
    curve(0.9-(0.8*x), 0, 0.9, 100,add=T, lwd=lwd, col='darkgreen', lty=2)
    
    # Climatic conditions shift
-   arrows(0.313,0.35,0.69,0.35, lwd=4)
+   arrows(0.313,0.35,0.69,0.35, lwd=lwd)
    
    # Text
-   text(0.07, 0.6, expression('R'^'*'), col='darkgreen', cex=1.5)
-   text(0.07, 0.23, 'e/c', col='darkorange', cex=1.5)
+   text(0.08, 0.62, expression('H(E'^'*'*')'), col='darkgreen', cex=1.8)
+   text(0.07, 0.23, 'e/c', col='darkorange', cex=1.8)
    
    # Box to frame the plot
    box(lwd=lwd) 
