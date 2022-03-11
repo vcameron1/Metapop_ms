@@ -22,8 +22,7 @@ BITH <- data.table::fread("./data_clean/GRBI_rasterized.csv")
 #GRBI_points <- readRDS("./data_clean/GRBI_rasterPoints.RDS")
 
 # Explanatory variables
-#explana_dat <- read.csv("./SDM/explana_dat_df.csv")
-explana_dat <- data.table::fread("./SDM/explana_dat_df.csv")
+explana_dat <- readRDS("./SDM/explana_dat_df.rds")
 
 # Template
 template <- raster::raster("./data_clean/templateRaster.tif")
@@ -97,7 +96,7 @@ if(false){
       res <- SDM.glm(template=template,
                     BITH=BITH,
                     covariables = c("temp + temp2 + prec + elevation + abie.balPropBiomass + abie.balBiomass"), 
-                    pred = explana_dat[,-"V1"],
+                    pred = explana_dat,
                     nquad = n.quad[j], 
                     quadOverlay = TRUE)
       model <- res[["model"]]
@@ -143,6 +142,7 @@ if(false){
 #cov <- c("temp * temp2 * prec * elevation + type_couv + cl_dens + cl_haut")
 #cov <- c("temp * temp2 * prec * elevation + abie.balPropBiomass * abie.balBiomass")
 cova <- c("temp + temp2 + prec + elevation + abie.balPropBiomass * abie.balBiomass")
+#cova <- c("temp * elevation + temp2 + prec + abie.balPropBiomass * abie.balBiomass")
 
 
 # Check VIF (colinearity)
@@ -175,7 +175,7 @@ RL_cutoff <- 0.00625 # 1 indv / km2
 SDM.plot(template, model, newdata = explana_dat, logPred = TRUE, BITH, points = TRUE, main = "GLM prediction (log)")
 # Predictions for Eastern Townships
 SDM.plot(model, newdata = explana_dat, logPred = TRUE, GRBI_points, points = FALSE, main = "GLM prediction EasternTownships (log)", xlim=c(-73,-70), ylim=c(45,46))
-SDM.AUC(model, newdata=explana_dat, BITH=BITH, RL_cutoff = RL_cutoff, template = template, plot_prediction = TRUE)
+SDM.AUC(model, newdata=explana_dat, BITH=BITH, RL_cutoff = RL_cutoff, points = TRUE, template = template, plot_prediction = TRUE)
 
 
 # 6 - Test model ----------------------------------------------------------

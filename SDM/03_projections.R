@@ -7,16 +7,16 @@
 
 if(false){
   # Load RCP45 projections
-  RCP45_2020_df <- read.csv("./SDM/RCP45_2020_df.csv")
-  RCP45_2040_df <- read.csv("./SDM/RCP45_2040_df.csv")
-  RCP45_2070_df <- read.csv("./SDM/RCP45_2070_df.csv")
-  RCP45_2100_df <- read.csv("./SDM/RCP45_2100_df.csv")
+  RCP45_2020_df <- readRDS("./SDM/RCP45_2020_df.rds")
+  RCP45_2040_df <- readRDS("./SDM/RCP45_2040_df.rds")
+  RCP45_2070_df <- readRDS("./SDM/RCP45_2070_df.rds")
+  RCP45_2100_df <- readRDS("./SDM/RCP45_2100_df.rds")
 
   # Load biomass projections
-  biomass_2020_df <- read.csv("./SDM/biomass_2020_df.csv")
-  biomass_2040_df <- read.csv("./SDM/biomass_2040_df.csv")
-  biomass_2070_df <- read.csv("./SDM/biomass_2070_df.csv")
-  biomass_2100_df <- read.csv("./SDM/biomass_2100_df.csv") 
+  biomass_2020_df <- readRDS("./SDM/biomass_2020_df.rds")
+  biomass_2040_df <- readRDS("./SDM/biomass_2040_df.rds")
+  biomass_2070_df <- readRDS("./SDM/biomass_2070_df.rds")
+  biomass_2100_df <- readRDS("./SDM/biomass_2100_df.rds")
 }
 
 # Load model
@@ -37,7 +37,7 @@ for (i in seq_along(scenarios)) {
 
   # # Load data
   ## Reduces greatly the pressure on the memory
-  dat <- data.table::fread(paste0("./SDM/",scenarios[i], "_df.csv"))
+  dat <- readRDS(paste0("./SDM/",scenarios[i], "_df.rds"))
 
 
   # # Predict according to scenario

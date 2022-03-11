@@ -37,13 +37,13 @@ template <- MergedRasters >= 0
 raster::writeRaster(template, filename="./data_clean/templateRaster.tif", overwrite=TRUE)
 
 
-# Build SpatialPolygons
-rasterForPoly <- template
-raster::values(rasterForPoly) <- ifelse(is.na(raster::values(rasterForPoly)), NA, 1)
-spacePoly <- raster::rasterToPolygons(rasterForPoly, na.rm = TRUE, dissolve = TRUE)
-
-# Save spatialPolygons
-saveRDS(spacePoly, "./SDM/spacePoly.RDS")
+# # Build SpatialPolygons
+# rasterForPoly <- template
+# raster::values(rasterForPoly) <- ifelse(is.na(raster::values(rasterForPoly)), NA, 1)
+# spacePoly <- raster::rasterToPolygons(rasterForPoly, na.rm = TRUE, dissolve = TRUE)
+# 
+# # Save spatialPolygons
+# saveRDS(spacePoly, "./SDM/spacePoly.RDS")
 
 
 # 3 - Import biomass projections ------------------------------------------
@@ -154,12 +154,9 @@ names(explana_dat) <- c("abie.balPropBiomass", "abie.balBiomass", "elevation", "
 explana_dat[["temp2"]] <- explana_dat[["temp"]]
 raster::values(explana_dat[["temp2"]]) <- raster::values(explana_dat[["temp"]])^2
 
-# Save explana_dat
-saveRDS(explana_dat, "./SDM/explana_dat.RDS")
-
 # Save as DF
 explana_dat_df <- as.data.frame(raster::values(explana_dat))
-write.csv(explana_dat_df, "./SDM/explana_dat_df.csv")
+saveRDS(explana_dat_df[,-"V1"], "./SDM/explana_dat_df.rds")
 
 
 # 7 - Combine data for model projections ----------------------------------
@@ -189,14 +186,11 @@ RCP45_2100[["temp2"]] <- RCP45_2100[["temp"]]
 raster::values(RCP45_2100[["temp2"]]) <- raster::values(RCP45_2100[["temp"]])^2
 RCP45_2100_df <- as.data.frame(raster::values(RCP45_2100))
 
-# # Save projections as rasters
-#save(RCP45_2020, RCP45_2040, RCP45_2070, RCP45_2100, "./SDM/RCP45.RData")
-
 # # Save projections as DF
-write.csv(RCP45_2020_df, "./SDM/RCP45_2020_df.csv")
-write.csv(RCP45_2040_df, "./SDM/RCP45_2040_df.csv")
-write.csv(RCP45_2070_df, "./SDM/RCP45_2070_df.csv")
-write.csv(RCP45_2100_df, "./SDM/RCP45_2100_df.csv")
+saveRDS(RCP45_2020_df[,-"V1"], "./SDM/RCP45_2020_df.rds")
+saveRDS(RCP45_2040_df[,-"V1"], "./SDM/RCP45_2040_df.rds")
+saveRDS(RCP45_2070_df[,-"V1"], "./SDM/RCP45_2070_df.rds")
+saveRDS(RCP45_2100_df[,-"V1"], "./SDM/RCP45_2100_df.rds")
 
 
 #### Biomass ####
@@ -223,11 +217,8 @@ biomass_2100[["temp2"]] <- biomass_2100[["temp"]]
 raster::values(biomass_2100[["temp2"]]) <- raster::values(biomass_2100[["temp"]])^2
 biomass_2100_df <- as.data.frame(raster::values(biomass_2100))
 
-# # Save projections as rasters
-#save(biomass_2020, biomass_2040, biomass_2070, biomass_2100, "./SDM/biomass.RData")
-
 # # Save projections as DF
-write.csv(biomass_2020_df, "./SDM/biomass_2020_df.csv")
-write.csv(biomass_2040_df, "./SDM/biomass_2040_df.csv")
-write.csv(biomass_2070_df, "./SDM/biomass_2070_df.csv")
-write.csv(biomass_2100_df, "./SDM/biomass_2100_df.csv")
+saveRDS(biomass_2020_df[,-"V1"], "./SDM/biomass_2020_df.rds")
+saveRDS(biomass_2040_df[,-"V1"], "./SDM/biomass_2040_df.rds")
+saveRDS(biomass_2070_df[,-"V1"], "./SDM/biomass_2070_df.rds")
+saveRDS(biomass_2100_df[,-"V1"], "./SDM/biomass_2100_df.rds")
