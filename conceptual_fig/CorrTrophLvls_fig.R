@@ -45,7 +45,7 @@ CorrTroph_plot <- function(){
   
   # Plot heatmap
   png('./manuscript/img/concept_CorrTrophLvls.png', width = 150, height = 150, units='mm', res = 700)
-  par(pty = "s",par(pty = "s", mar=c(3,3,1,0)))
+  par(pty = "s",par(pty = "s", mar=c(3,3,1,0)), bg = NA)
   
   ## Center color range on 0
   cols <- hcl.colors(length(z), "Red-Green")

@@ -9,7 +9,7 @@ mismatch_plot <- function(){
    png('./manuscript/img/concept_mismatch.png', width = 150, height = 150, units='mm', res = 700)
    
    # Set graphic parameters
-   par(pty = "s",par(pty = "s",  mar=c(3,3,1,0)))
+   par(pty = "s",par(pty = "s",  mar=c(3,3,1,0)), bg = NA)
    lwd <- 6
    
    # e/c curve
