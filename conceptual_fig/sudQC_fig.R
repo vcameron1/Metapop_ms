@@ -1,4 +1,8 @@
-
+####
+# title: Hypothetical contraction of high elevation habitat figure
+# author: Victor Cameron
+# date: 2021
+####
 
 
 # Dependencies
@@ -11,9 +15,13 @@ source(here::here("conceptual_fig", "patchArea_metrics.R"))
 # Québec shapefile map
 topo <- raster(here::here("data_clean", "templateRaster.tif"))
 
+# Québec contour map
+mask <- sf::read_sf(here::here("data_clean", "quebec_nad83.shp"))
+mask_proj <- sf::st_transform(mask, crs(topo))
+
 # Get elevation
 elevation <- get_elev_raster(topo, z = 5)
-
+elevation_c <- raster::mask(elevation, mask_proj)
 
 #### Redefine map extent ####
 
@@ -21,7 +29,8 @@ elevation <- get_elev_raster(topo, z = 5)
 extent = c(xmin = -514009, xmax = 356398, ymin = 110389, ymax = 633143)
 e <- raster::extent(extent) # LatLong limits
 elevation_reduced <- raster::crop(elevation, e)
-elevation_reduced[elevation_reduced<0] <- 0
+elevation_reduced <- raster::mask(elevation_reduced, mask_proj)
+# elevation_reduced[elevation_reduced<0] <- 0
 
 # Get more precise elevation
 #elevation2 <- get_elev_raster(elevation_reduced, z = 10)
@@ -40,12 +49,20 @@ patchArea800 <- land$patchArea800
 png('./manuscript/img/mapHab_GRBI.png', width = 250, height = 167, units='mm', res = 700)
 
 # South of Quebec base plot
-raster::plot(elevation_reduced, legend=F,
+raster::plot(elevation_reduced, legend=T,
              bty = "o", yaxs="i", xaxs="i")
-raster::plot(elevation_reduced<=0, bty="n", box=FALSE, legend = F, axes = F,  col = c('transparent', 'white'), add=T)
+# plot(elevation_reduced, legend.only=TRUE,
+#         legend.args = list(text='Elevation (m)', line = 0))
+
+
+# raster::plot(elevation_reduced<=0, bty="n", box=FALSE, legend = F, axes = F,  col = c('transparent', 'white'), add=T)
 
 # Scale bar
-#scalebar(200, xy=c(-67.5, 45.2), type='bar', divs=4, lonlat=TRUE, adj=c(1,-2))
+# scalebar(d=200000, xy=c(0, 2e+5), type='bar', divs=4, lonlat=FALSE, below = 'm')
+
+arrows(x0=2e+5, x1=2e+5, y0=2e+5, y1=2.5e+5,
+        length=0.15, lwd=4)
+text(x=2e+5, y=1.8e+5, label = "N", cex=1, font=2)
 
 # 700m altitude contour
 contour(elevation_reduced>=700, lwd=3, add=T, drawlabels=F)

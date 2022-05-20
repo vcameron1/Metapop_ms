@@ -68,7 +68,7 @@ patchArea_metrics <- function(elevation){
   
   # # 700m
   land700 <- matrix(rep(0, length(d700)), nrow=nrow(d700))
-  a <- 1/20
+  a <- 1/200000 # 100km mean dispersal distance
   for(i in patchArea700$patch){
     for(j in patchArea700$patch){
       if(i == j) next
