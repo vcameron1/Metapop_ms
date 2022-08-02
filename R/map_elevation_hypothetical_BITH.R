@@ -1,22 +1,43 @@
-####
-# title: Hypothetical contraction of high elevation habitat figure
-# author: Victor Cameron
-# date: 2021
-####
+########################
+# Map showing the hypothetical contraction of a high elevation habitat in southern Québec (Canada)
+# Victor Cameron
+# Mai 2022
+#########################
 
+#========================
+# map parameters
+#========================
+
+# Plot bg
+bg = "transparent"
+
+# Colors
+cols = c("darkkhaki", "darkgreen") #c("grey80", "darkgreen")
+cols_inverse = c("grey50", "orange")
+
+# colNA
+colNA = NA
+
+# Title cex
+title_cex = 2
+
+
+#========================
+# Map
+#========================
 
 # Dependencies
 library(elevatr)
 library(raster)
-source(here::here("conceptual_fig", "patchArea_metrics.R"))
+source("/Users/victorcameron/Documents/Git/Metapop_ms/conceptual_fig/patchArea_metrics.R")
 
 #### Load data ####
 
 # Québec shapefile map
-topo <- raster(here::here("data_clean", "templateRaster.tif"))
+topo <- raster("/Users/victorcameron/Documents/Git/Metapop_ms/data_clean/templateRaster.tif")
 
 # Québec contour map
-mask <- sf::read_sf(here::here("data_clean", "quebec_nad83.shp"))
+mask <- sf::read_sf("/Users/victorcameron/Documents/Git/Metapop_ms/data_clean/quebec_nad83.shp")
 mask_proj <- sf::st_transform(mask, crs(topo))
 
 # Get elevation
@@ -43,14 +64,19 @@ land <- patchArea_metrics(elevation_reduced)
 patchArea700 <- land$patchArea700
 patchArea800 <- land$patchArea800
 
+
+# #### Convert map to degrees ####
+# dev.new(); elevation_reduced |> plot()
+# projectRaster(elevation_reduced, crs = 4326) |> plot()
+
 #### Draw the map ####
 
 # Save plot in file
-png('./manuscript/img/mapHab_GRBI.png', width = 250, height = 167, units='mm', res = 700, bg="transparent")
+png('./manuscript/img/map_elevation.png', width = 250, height = 167, units='mm', res = 700, bg="transparent")
 
 # South of Quebec base plot
-raster::plot(elevation_reduced, legend=T,
-             bty = "o", yaxs="i", xaxs="i")
+raster::plot(elevation_reduced > 0, legend=F,
+             bty = "o", yaxs="i", xaxs="i", xaxt = "n", yaxt = "n", col = cols[1], colNA = colNA)
 # plot(elevation_reduced, legend.only=TRUE,
 #         legend.args = list(text='Elevation (m)', line = 0))
 
@@ -58,17 +84,17 @@ raster::plot(elevation_reduced, legend=T,
 # raster::plot(elevation_reduced<=0, bty="n", box=FALSE, legend = F, axes = F,  col = c('transparent', 'white'), add=T)
 
 # Scale bar
-# scalebar(d=200000, xy=c(0, 2e+5), type='bar', divs=4, lonlat=FALSE, below = 'm')
+scalebar(d=200000, xy=c(0, 1.4e+5), type='bar', divs=2, label = c(0, 100, 200), lonlat=FALSE, below = 'km')
 
-arrows(x0=2e+5, x1=2e+5, y0=2e+5, y1=2.5e+5,
+arrows(x0=1e+5, x1=1e+5, y0=2.5e+5, y1=3e+5,
         length=0.15, lwd=4)
-text(x=2e+5, y=1.8e+5, label = "N", cex=1, font=2)
+text(x=1e+5, y=2.3e+5, label = "N", cex=1, font=2)
 
 # 700m altitude contour
-contour(elevation_reduced>=700, lwd=3, add=T, drawlabels=F)
+contour(elevation_reduced>=700, lwd=4, add=T, drawlabels=F)
 
 # 800m altitude contour
-contour(elevation_reduced>=800, col='red', lwd=1, add=T, drawlabels=F)
+contour(elevation_reduced>=800, col='red', lwd=2, add=T, drawlabels=F)
 
 # Distribution of patch area
 #par(fig=c(0.55,0.8,.2,0.65), lwd=3, new=TRUE)
@@ -80,3 +106,5 @@ contour(elevation_reduced>=800, col='red', lwd=1, add=T, drawlabels=F)
 
 # Close file
 dev.off()
+
+

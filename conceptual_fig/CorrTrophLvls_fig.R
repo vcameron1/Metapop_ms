@@ -15,7 +15,8 @@ CorrTroph_plot <- function(){
   smallCorrTrophLvls_fig()
   
   # Parameters
-  lwd = 6
+  cex_lab = 2
+  lwd = 8
   ftr=0.19
   pos <- list(c1=c(0.4,0.6),
               c2=c(0.6,0.65),
@@ -65,16 +66,16 @@ CorrTroph_plot <- function(){
   abline(0, 1, lty=2, lwd=lwd-2)
   abline(h=0.5, lwd=lwd-2)
   abline(v=0.5, lwd=lwd-2)
-  title(ylab='Consumer optimum (E)',
-        xlab='Resource optimum (E)',
-        cex.lab = 1.8, line = 1)
+  title(ylab='Specialits optimum (E)',
+        xlab='Habitat optimum (E)',
+        cex.lab = cex_lab, line = 1)
   box(lwd=lwd) 
   
   ## Indicator plots
-  plotimage(file = "./manuscript/img/concept_c1.png", size = 0.2, x=0.1, y=0.9, add = T)
-  plotimage(file = "./manuscript/img/concept_c2.png", size = 0.2, x=0.6, y=0.9, add = T)
-  plotimage(file = "./manuscript/img/concept_c3.png", size = 0.2, x=0.1, y=0.4, add = T)
-  plotimage(file = "./manuscript/img/concept_c4.png", size = 0.2, x=0.6, y=0.4, add = T)
+  plotimage(file = "./manuscript/img/concept_c1.png", size = 0.3, x=0.15, y=0.9, add = T)
+  plotimage(file = "./manuscript/img/concept_c2.png", size = 0.3, x=0.65, y=0.9, add = T)
+  plotimage(file = "./manuscript/img/concept_c3.png", size = 0.3, x=0.15, y=0.4, add = T)
+  plotimage(file = "./manuscript/img/concept_c4.png", size = 0.3, x=0.65, y=0.4, add = T)
   
   ## Close file
   dev.off()

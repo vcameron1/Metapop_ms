@@ -9,8 +9,9 @@ mismatch_plot <- function(){
    png('./manuscript/img/concept_mismatch.png', width = 150, height = 150, units='mm', res = 700)
    
    # Set graphic parameters
-   par(pty = "s",par(pty = "s",  mar=c(3,3,1,0)), bg = NA)
-   lwd <- 6
+   par(pty = "s",par(pty = "s",  mar=c(3,4.6,1,0)), bg = NA)
+   lwd <- 8
+   cex_lab <- 2
    
    # e/c curve
    curve((0.8 * x + 0.1), 0, 0.9, 100, ylim = c(0, 0.9), xlim = c(0, 0.9),
@@ -22,9 +23,9 @@ mismatch_plot <- function(){
          col = 'darkorange')
    
    # Axis titles
-   title(ylab = "Components of distribution dynamics",
+   title(ylab = "Components of\ndistribution dynamics",
          xlab='Environment (E)',
-         cex.lab = 1.8, line = 1)
+         cex.lab = cex_lab, line = 1)
    
    # Distribution polygon
    mycol1 <- rgb(77, 77, 77, max = 255, alpha = 60)
@@ -47,8 +48,8 @@ mismatch_plot <- function(){
    arrows(0.313,0.35,0.69,0.35, lwd=lwd)
    
    # Text
-   text(0.08, 0.62, expression('H(E'^'*'*')'), col='darkgreen', cex=1.8)
-   text(0.07, 0.23, 'e/c', col='darkorange', cex=1.8)
+   text(0.08, 0.62, expression('H(E'^'*'*')'), col='darkgreen', cex=cex_lab)
+   text(0.07, 0.23, 'e/c', col='darkorange', cex=cex_lab)
    
    # Box to frame the plot
    box(lwd=lwd) 

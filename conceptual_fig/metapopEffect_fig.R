@@ -13,7 +13,8 @@ metapopEffect_plot <- function(){
    
    # Set graphic parameters
    par(pty = "s", par(pty = "s", mar = c(3, 3, 1, 0)), bg = NA)
-   lwd <- 6
+   lwd <- 8
+   cex_lab <- 2
    
    # Constants
    e <- 0.1
@@ -38,7 +39,7 @@ metapopEffect_plot <- function(){
    # Axis titles
    title(ylab = "Prevalence",
          xlab='Time',
-         cex.lab = 1.8, line = 1)
+         cex.lab = cex_lab, line = 1)
    
    # Box to frame the plot
    box(lwd=lwd) 
