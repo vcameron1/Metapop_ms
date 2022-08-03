@@ -49,7 +49,7 @@ mismatch_plot <- function(){
    
    # Text
    text(0.08, 0.62, expression('H(E'^'*'*')'), col='darkgreen', cex=cex_lab)
-   text(0.07, 0.23, 'e/c', col='darkorange', cex=cex_lab)
+   text(0.07, 0.23, 'e/c', col='darkorange', cex=cex_lab+0.5)
    
    # Box to frame the plot
    box(lwd=lwd) 

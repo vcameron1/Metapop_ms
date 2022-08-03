@@ -66,7 +66,7 @@ CorrTroph_plot <- function(){
   abline(0, 1, lty=2, lwd=lwd-2)
   abline(h=0.5, lwd=lwd-2)
   abline(v=0.5, lwd=lwd-2)
-  title(ylab='Specialits optimum (E)',
+  title(ylab='Specialist optimum (E)',
         xlab='Habitat optimum (E)',
         cex.lab = cex_lab, line = 1)
   box(lwd=lwd) 

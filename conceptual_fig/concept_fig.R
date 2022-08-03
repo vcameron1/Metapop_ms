@@ -1,3 +1,8 @@
+#### 
+# Script that makes the conceptual figure.
+# author: Victor Cameron
+# date: 26/05/2021
+####
 
 # Dependencies
 source('./conceptual_fig/CorrTrophLvls_fig.R')
