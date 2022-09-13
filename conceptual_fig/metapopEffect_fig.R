@@ -37,7 +37,7 @@ metapopEffect_plot <- function(){
    lines(x=Env, y=h-(e/(A^2*c)), lwd=lwd, lty=2)
    
    # Axis titles
-   title(ylab = "Prevalence",
+   title(ylab = "Occupancy",
          xlab='Time',
          cex.lab = cex_lab, line = 1)
    
