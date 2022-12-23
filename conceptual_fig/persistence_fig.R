@@ -4,20 +4,20 @@
 # date: 12/09/2022
 ####
 
-# Pannel 1
-ec_curve <- function(x) 0.5 * x + 0.08
-H_curve <- function(x) 0.75 - (0.5 * x)
-persistence_plot(ec_curve, H_curve, plot_name = "decrease_occ_plot")
+# # Pannel 1
+# ec_curve <- function(x) 0.5 * x + 0.08
+# H_curve <- function(x) 0.75 - (0.5 * x)
+# persistence_plot(ec_curve, H_curve, plot_name = "decrease_occ_plot")
 
-# Pannel 2
-ec_curve <- function(x) 0.8 * x + 0.1
-H_curve <- function(x) 0.8 * x + 0.3
-persistence_plot(ec_curve, H_curve, plot_name = "stable_occ_plot")
+# # Pannel 2
+# ec_curve <- function(x) 0.8 * x + 0.1
+# H_curve <- function(x) 0.8 * x + 0.3
+# persistence_plot(ec_curve, H_curve, plot_name = "stable_occ_plot")
 
-# Pannel 3
-ec_curve <- function(x) 0.5 * x + 0.08
-H_curve <- function(x) 0.95 * x + 0.25
-persistence_plot(ec_curve, H_curve, plot_name = "increase_occ_plot")
+# # Pannel 3
+# ec_curve <- function(x) 0.5 * x + 0.08
+# H_curve <- function(x) 0.95 * x + 0.25
+# persistence_plot(ec_curve, H_curve, plot_name = "increase_occ_plot")
 
 
 

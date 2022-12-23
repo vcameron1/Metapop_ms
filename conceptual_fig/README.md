@@ -36,7 +36,8 @@ Script :
 
 Command:
 ```r
-metapopEffect_plot()
+source("./conceptual_fig/mismatch_fig.R")
+mismatch_plot()
 ```
 
 Description :
@@ -44,7 +45,11 @@ Description :
 ### Figure 4
 Title :
 
-Script :
+Command :
+```r
+source("./conceptual_fig/metapopEffect_fig.R")
+metapopEffect_plot()
+```
 
 Description :
 
@@ -56,7 +61,14 @@ Script : concept_landscape_fig.R
 Command :
 ```r
 source("./conceptual_fig/concept_landscape_fig.R")
-concept_land_fig()
+landscape <- get_land()
+concept_land_fig(patches = landscape[c(1,2)], r = landscape$r)
+```
+
+```r
+# Compute metapopulation metrics
+source("./conceptual_fig/patchArea_metrics.R")
+metrics <- patch_area_metrics(patches = landscape[c(1,2)], r = landscape$r)
 ```
 
 Description : Cartoon of a landscape using a graph representation of linked patches representing habitat patches and dispersal. The complex effects of landscape-scale changes to distribution by climate changes are visually demonstrated in this figure.
