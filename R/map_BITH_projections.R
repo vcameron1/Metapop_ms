@@ -132,4 +132,4 @@ plot.map <- function(scenarios = c("RCP45_2020", "biomass_2020",
     dev.off()
 }
 
-plot.map()
+plot.map(file_name = "./manuscript/img/map_BITH.png")

@@ -6,7 +6,7 @@
 
 metapop_land_fig <- function(patches, r, initial_patches = TRUE, plot_name = './manuscript/img/metapop_spatial_structure.png') {
     # Save plot in file
-    png(plot_name, width = 150, height = 150, units='mm', res = 700)
+    png(plot_name, width = 150, height = 150, units='mm', res = 700, bg = "transparent")
 
     # Set graphic parameters
     par(pty = "s", par(pty = "s", mar = c(1, 1, 1, 1)), bg = NA)

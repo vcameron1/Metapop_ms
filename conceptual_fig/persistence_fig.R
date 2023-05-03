@@ -30,7 +30,7 @@ persistence_plot <- function(ec_curve, H_curve, plot_name){
 
     # Save plot in file
     path <- paste0("./manuscript/img/", plot_name, ".png")
-    png(path, width = 150, height = 150, units = "mm", res = 700)
+    png(path, width = 150, height = 150, units = "mm", res = 700, bg = "transparent")
 
     # Set graphic parameters
     par(pty = "s", par(pty = "s", mar = c(3, 4.6, 1, 0)), bg = NA)

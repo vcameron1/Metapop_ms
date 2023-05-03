@@ -27,16 +27,16 @@ persistence_plot(ec_curve, H_curve, plot_name = "increase_occ_plot")
 
 
 # Save plot in file
-png('./manuscript/img/concept_occ.png', width = 500, height = 150, units='mm', res = 700)
+png('./manuscript/img/concept_occ.png', width = 500, height = 150, units='mm', res = 700, bg = "transparent")
 
 par(fig=c(0,0.33,0,1))
-plotimage(file = "./manuscript/img/decrease_occ_plot.png", size = 1, add = F, bg = "white")
+plotimage(file = "./manuscript/img/decrease_occ_plot.png", size = 1, add = F, bg = "transparent")
 mtext("A)", adj=0, line=-1.5, cex=cex_lab)
 par(fig=c(0.33,0.66,0,1), new=TRUE)
-plotimage(file = "./manuscript/img/stable_occ_plot.png", size = 1, add = T, bg = "white")
+plotimage(file = "./manuscript/img/stable_occ_plot.png", size = 1, add = T, bg = "transparent")
 mtext("B)", adj=0, line=-1.5, cex=cex_lab)
 par(fig=c(0.66,1,0,1), new=TRUE)
-plotimage(file = "./manuscript/img/increase_occ_plot.png", size = 1, add = T, bg = "white")
+plotimage(file = "./manuscript/img/increase_occ_plot.png", size = 1, add = T, bg = "transparent")
 mtext("C)", adj=0, line=-1.5, cex=cex_lab)
 
 # Close file

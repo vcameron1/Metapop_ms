@@ -95,13 +95,13 @@ concept_land_fig <- function(patches, r) {
     cex_lab <- 2
 
     # Save plot in file
-    png('./manuscript/img/concept_metapop_structure.png', width = 310, height = 150, units='mm', res = 700)
+    png('./manuscript/img/concept_metapop_structure.png', width = 310, height = 150, units='mm', res = 700, bg = "transparent")
 
     par(fig=c(0,0.5,0,1))
-    plotimage(file = './manuscript/img/metapop_spatial_structure_1.png', size = 1, add = F, bg = "white")
+    plotimage(file = './manuscript/img/metapop_spatial_structure_1.png', size = 1, add = F, bg = "transparent")
     mtext("", adj=0, line=-1.5, cex=cex_lab)
     par(fig=c(0.5,1,0,1), new=TRUE)
-    plotimage(file = './manuscript/img/metapop_spatial_structure_2.png', size = 1, add = T, bg = "white")
+    plotimage(file = './manuscript/img/metapop_spatial_structure_2.png', size = 1, add = T, bg = "transparent")
     mtext("", adj=0, line=-1.5, cex=cex_lab)
 
     # Close file
@@ -111,3 +111,6 @@ concept_land_fig <- function(patches, r) {
     file.remove('./manuscript/img/metapop_spatial_structure_1.png')
     file.remove('./manuscript/img/metapop_spatial_structure_2.png')
 }
+
+land <- get_land()
+concept_land_fig(land[1:2], land$r)
