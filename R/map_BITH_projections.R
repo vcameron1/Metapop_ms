@@ -15,7 +15,7 @@ plot.map <- function(scenarios = c("RCP45_2020", "biomass_2020",
                              "Climate-only 2070", "Forest change 2070",
                              "Climate-only 2100", "Forest change 2100"),
                     RL_cutoff = 0.00625, extent = c(xmin = -514009, xmax = 356398, ymin = 110389, ymax = 633143), 
-                    file_name = "./manuscript/img/map_GRBI.png") {
+                    file_name = "./manuscript/img/map_BITH.png") {
 
 
     # 0 - Map parametres --------------------------------------------------
