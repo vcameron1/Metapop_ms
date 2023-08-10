@@ -1,438 +1,190 @@
-**DG** il faudra un peu de fine tuning pour pimper l'intro
-**DG** en discussion il faudra revenir sur les quelques études [courte revue de littérature] qui utilisent approche métapop. Revenir aussi sur le papier de Urban. 
+# Introduction
 
-## Introduction
+Climate change has already prompted species to shift their range toward higher latitudes and elevations [@parmesan_ecological_2006; @chen_rapid_2011; @virkkala_patterns_2014]. Species persistence in response to climate change may critically depend on their ability to expand their range and track suitable environments. While most current predictive approaches ignore important biological mechanisms such as demography, dispersal, and biotic interactions, these play key roles in species response to environmental change [@urban_improving_2016]. In response, several calls have been made for models to incorporate the processes mediating species response [@fordham_adapted_2013; @stralberg_conservation_2015, @stralberg_conservation_2019] and mechanistic approaches have been developed to improve the realism of projections. Some recently developed models (e.g., dynamic range models and forest landscape models) already improve projections, but more work is required to increase accuracy and usability as they remain rarely employed in conservation planning when compared to correlative species distribution models (SDMs) [@guisan_predicting_2005; @franklin_mapping_2009; @guisan_predicting_2013]. The challenge now lies in the development of approaches that are accessible, customizable and integrate multiple processes and their interplay [@thuiller_road_2013; @urban_improving_2016; @mcintire_perfict_2022]. A strong theoretical background is necessary to take on this challenge and guide the development of approaches to balance complexity and tractability in species distribution modeling [@thuiller_road_2013].
 
-*Expected environmental changes have motivated important advancements in distribution modelling.*\
-Climate change has already prompted species to shift their range toward higher latitudes and elevations [@parmesan_ecological_2006;@chen_rapid_2011].
-The ability of species to shift their distribution in response to climate change may determine if they will persist.
-Prediction of distribution change as climate warms will inform us how to effectively conserve species at risk of extinction.
-Commonly used models are most often statistical and based on the relationship between abiotic conditions and current species distribution [@urban_improving_2016].
-They present several limitations in their ability to model distribution dynamics while they mostly assume single species with restrictive assumptions for dispersal processes and present difficulties when extrapolated to novel environmental conditions.
-Our current lack of knowledge and tools for the prediction of species distribution responses to environmental changes poses serious limitations to our predictive abilites.
-While most current predictive approaches ignore important biological mechanisms such as demography, dispersal, and biotic interactions, these play key roles in species response to environmental change [].
-In response, several calls have been made for models that incorporate the processes mediating species response [@fordham_adapted_2013;@urban_improving_2016] and mechanistic approaches have been developped to improve the realism of projections.
-Species' biology response to environmental variables make them more robust when extrapolated to novel conditions and outperform correlative approaches by minimizing the predictions' uncertainty that accumulates over time. 
-Recently developped mechanistic models already improve projections, but more work is required to increase accuracy and usability as they remain rarely employed in conservation planning when compared to correlative SDMs [guisan__2013].
-The challenge now lies in the development of models that are i) customizable to the context of specific species and communities and ii) that integrate multiple processes and their interplay [@thuiller_road_2013;@urban_improving_2016].
-We believe that a strong theoretical background is necessary to guide the development of approaches in order to balance the complexity and tractability [@thuiller_road_2013].
+Explicit modelling of the processes that underlie distribution dynamics is challenging [@hefley_when_2017; @briscoe_can_2021]. Dynamic range models provide a successful example of incorporating demographic processes and dispersal to improve the accuracy of species distribution projections [@briscoe_can_2021]. They are based on niche theory, assuming that species occur at locations where the environment allows positive growth rates [@hutchinson_concludig_1957; @godsoe_integrating_2017]. However, such models are often difficult to parameterize because measuring growth rate is challenging [@mcgill_trees_2012] and requires very specific data on species response to abiotic conditions. Indeed, on top of being computationally intensive [@snell_using_2014], the data required to parameterize these models are rarely available [@urban_improving_2016]. Furthermore, local demography on its own may be insufficient to explain broad-scale species distribution, suggesting that processes at broader scales must also be considered [@le_squin_climateinduced_2021], including dispersal limitations, disturbances, and biotic interactions [@urban_improving_2016; @stephan_positive_2021]. 
 
-**DG** : peut-être réduire un peu l'importance de la critique sur la simplicité des modèles pour détailler davantage la proposition de Urban. Conclure sur le défi que représente le développeemnt de tels modèles, et de comment gérer la complexité. La théorie peut être une façon pour guider ce développement [Thuiller2013]
+Another approach recently proposed is derived from metapopulation theory. Metapopulations are expected to persist in heterogenous landscapes if colonization is sufficient to balance local extinctions [@hanski_metapopulation_2000]. The environment may constrain these two processes and limit metapopulation persistence. Distribution limits eventually emerge over environmental gradients at this location where persistence becomes critical. Furthermore, distributions may be constrained by the amount of suitable conditions in a region. As a result, a species may be absent from a region, or a portion of a gradient, despite the occurrence of suitable conditions if these are not abundant enough or if extinction is too high relative to colonization. Metapopulation theory also makes an ideal framework to incorporate several elements of complexity such as landscape heterogeneity, dispersal, and biotic interactions. Realistic landscape structures can be represented with spatially explicit patch occupancy models [@hanski_metapopulation_1999; @ramiadantsoa_responses_2018]. An incidence function is used to scale colonization to patch isolation and extinction risk to patch area [@macarthur_theory_1967, @hanski_metapopulation_1999; @schnell_estimating_2013; @huang_using_2019]. Colonization and extinction rates can also be modulated to represent competitive, mutualistic or antagonistic interactions [@hanski_metapopulation_1999; @gravel_trophic_2011; @fordham_adapted_2013; @vissault_slow_2020]. The metapopulation framework may thus be understood as a flexible approach to integrate fundamental processes driving distribution dynamics. 
 
-*Review of some of the methods such as dynamic range models and forest gap models.*\
-In regards to recent efforts, explicit modelling of the processes that underlie distribution dynamics are challenging to implement [@hefley_when_2017;@briscoe_can_2021].
-Among approaches rooted in ecological theory, dynamic range models are successful at incorporating processes of demography and dispersal to improve the accuracy of species distribution projections [@briscoe_can_2021].
-They are based on the niche theory, predicting species to occur in the landscape for environmental conditions where positive growth rates are observed [@hutchinson_concludig_1957;@godsoe_integrating_2017].
-However, such models are often difficult to parameterize because measuring growth rate is challenging [McGill 2012], and require very specific data on species's biological response to abiotic conditions.
-Indeed, on top of being computationally intensive [@snell_using_2014], the data required for these models are rarely available [@urban_improving_2016].
-Furthermore, we find in other situations that local demography on its own is insufficient to explain large-scale species distribution, suggesting that processes at larger scales must be considered [@le_squin_climateinduced_2021].
-Such processes may include dispersal limitations, disturbances, and biotic interactions [@urban_improving_2016;@stephan_positive_2021].
+Landscapes are highly heterogeneous and dynamic. They are continuously affected by changes that can be slow or fast. Disturbances, environmental changes, and biotic interactions are processes that may cause species distribution to be constantly out of equilibrium with their niche [@ovaskainen_transient_2002; @svenning_influence_2014; @boulangeat_transient_2018]. Non-equilibrium dynamics are especially marked in plants that are limited by slow demography and restricted dispersal [@svenning_disequilibrium_2013; @savage_elevational_2015; @talluto_extinction_2017; @vissault_slow_2020]. Representing this reality requires an adapted approach and metapopulation theory offers the opportunity to model non-equilibrium dynamics [@hanski_metapopulation_1997; @ovaskainen_transient_2002]. Recent studies have indeed documented species distributions that do not match the distribution of their favourable climate and that present extinction debts and colonization credits [@savage_elevational_2015; @talluto_extinction_2017]. Metapopulation models have shown the trailing edge of current tree distribution to be persisting despite unfavourable climatic conditions as slow demography delays the extinction of populations. At the leading edge, dispersal limitations and competition prevent trees from colonizing favourable habitats [@talluto_extinction_2017]. The ability of metapopulation models to study and describe dynamic landscapes therefore makes them particularly suitable to study persistence under changing climate. 
 
-**DG** : la transition vers le spatial est akward
-
-*Another approach recently proposed is derived from metapopulation theory.*\
-Another approach recently proposed is derived from metapopulation theory.
-Like dynamic range models, metapopulation models relate demography to the geographical distribution of the niche [@holt_trophic_2009] and equilibrium distributions are only limited by the availability of locally suitable environmental conditions.
-By contrast, metapopulation models rest on the assumption that distributions result from the interaction of habitat availability, local extinction, and colonization dynamics [@hanski_metapopulation_2000].
-Indeed, distribution limits emerge and are shaped by a gradient in any of these three fundamental metapopulation processes [@hanski_metapopulation_2000;@talluto_extinction_2017].
-Furthermore, these processes are not only fundamental to the definition of species distribution in a metapopulation context, but also to its dynamics. 
-Species persistence to climate change may be affected by biotic and abiotic habitat suitability and its ability to occupy suitable habitat, such that distributions do not extend to all favorable abiotic environemntal conditions [@fordham_adapted_2013].
-Within metapopulation models, changes in environmental conditions act on specie's demography and dispersal ultimately modulating species response [@svenning_influence_2014], allowing the study of non-equilibrium dynamics of species distributions.
-Recent studies have documented species distributions that do not match the distribution of their favorable climate and that present extinction debts and colonization credits [@savage_elevational_2015;@talluto_extinction_2017].
-For instance, metapopulation models have shown trees at the trailing edge of their distribution to persist a long time despite unfavorable climatic conditions as slow demography delays the extinction of populations.
-At the leading edge, dispersal limitation prevent trees to colonize favorable habitats [@talluto_extinction_2017].
-Metapopulation models capture processes of crutial importance from which emerge complex distribution dynamics.
+In this paper, we show how metapopulation theory can be used to model and thus complement the interpretation of species distribution in a changing environment. In addition, we illustrate how metapopulation theory can be used to leverage species distribution models by accounting for the complexity arising from biotic interactions, demography, and landscape structure. To achieve this goal, we first review the theory to account for these key ecological processes in distribution modelling and present associated sources of complexity. We then illustrate the effect and importance of these processes on persistence and distribution dynamics using the Bicknell’s Thrush (Catharus bicknelli) as a case study. The Bicknell’s Thrush is a threatened species in Canada with restricted distribution . We conclude that metapopulation theory can improve the interpretation and the use of habitat projections, notably under increasing climate warming by accounting for the spatial arrangement of habitats. 
 
 
-*Metapopulation can easily be expanded to include more complexity, such as landscape heterogeneity and biotic interactions.*\
-We believe that metapopulation theory and its models may be an ideal framework for incoporating several elements of complexity to range dynamics such as landscape heterogeneity, dispersal and biotic interactions.
+# Key concepts arising from metapopulation theory 
 
-When studying distribution maps, one sees that most distributions are fragmented [COSEWIC;Box]. 
-Spatially realistic metapopulation models have already been developped to deal with fragmentation by incorporating the spatial structure of a patch network [@hanski_metapopulation_1999;@ramiadantsoa_responses_2018].
-Such models include the incidence function model, a stochastic patch model known for scaling extinction risk to patch area and colonization probability to immigration rates [@hanski_metapopulation_1999].
-Increased extinction risk of populations in isolated distribution fragments is well supported by theory and empirical observations [MacArthur1957,@schnell_estimating_2013,@huang_using_2019]. 
-Nontheless, metapopulation theory predicts that species can persist in fragmented landscapes given sufficient dispersal between patches [@hanski_metapopulation_2000].
+We first review the theoretical framework to incorporate key ecological processes into a mechanistic approach of range dynamics. We frame these processes in the context of a bottom-up system where the distribution of a focal species (e.g., a predator, a habitat specialist or a mutualist) is contingent on the distribution of a trophically lower-level species (e.g., a prey, a vegetation type or a host). Our approach thus integrates dispersal, demography, and biotic interactions. We study distribution dynamics under climate warming and the associated sources of complexity brought by landscape structure. We then contextualize the various effects of climate change on persistence using a conceptual habitat specialist species as an example. The resulting changes to the species’ range support the emergence of distribution changes of greater complexity than predicted by correlative approaches and show that accounting for spatial arrangement of habitats is necessary to capture distribution changes. 
 
-Furthermore, biotic interactions are key processes in dristribution dynamics [@wisz_role_2013;@urban_improving_2016], but have remained chalenging to model [Guilman_2010;@godsoe_integrating_2017].
-In concordance to theory that predicts biotic interactions to affect the rate and extent of distribution changes through demography and dispersal [@svenning_disequilibrium_2013], their effect can be implemented on colonization and extinction rates in metapopulation models [box1;@hanski_metapopulation_1999;@fordham_adapted_2013;@vissault_slow_2020].
-For example, theoretical intuitions on the distribution dynamics of a simple two species metapopulation model are presented in Box 1. 
+## Model description
 
-Metapopulation dynamics have mostly been studied under the conditions of equilibrium [@talluto_extinction_2017]. 
-Distribution at equilibrium informs on ... and powerfull analytical tools are available to solve the equilibrium state.
-On the other hand, environmental changes happen progressively over time and species distributions frequently not match their niche. 
+The classic metapopulation model describes species distribution over a set of suitable patches of habitat connected by dispersal [@levins_demographic_1969; @levins_mathematical_1970]. Regional dynamics are driven by colonization and extinction events, which corresponding rates depend on local environmental conditions. Together they define the species distribution limits. The dynamics may be complexified with the representation of several trophic levels, where high-trophic level species occur exclusively at locations occupied by lower-level species [@fordham_adapted_2013]. We adopt the specialist-habitat terminology throughout this study to lighten the text and fit the example, even if the results are more general and can apply to any bottom-up system (e.g., predator-prey or host-mutualist). 
 
-As changes can be slow or fast and gradual or sudden, modelisation of non-equilibrium dynamics by metapopulation models is essential in our understanding of the effect of environmental change on species distribution and of great importance for efficient conservation planning [@hanski_metapopulation_1997,@ovaskainen_transient_2002].
-It is especially marked in plants that are limited by slow demography and restricted dispersal [@svenning_disequilibrium_2013;@savage_elevational_2015;@talluto_extinction_2017;@vissault_slow_2020].
+Consider a simple system composed of a specialist species tracking the spatial distribution of a dynamic favourable habitat, such as a particular type of vegetation patch providing shelter and food. The model represents the dynamics of the occupancy of three possible states: empty, occupied by the favourable habitat alone ($H$) or in co-occurrence with the specialist ($S$). The landscape is heterogeneous and each local patch is characterized by the abiotic environmental condition ($E$). Dynamics of occupancy are given by the following system of differential equations: 
 
-The study of distribution dynamics under rapid environmental change can be facilitated by the flexibility of the metapopulation approach to incorporate multiple processes.
+$$ 
+\frac{dH(E)}{dt} = c_{H}(E)H(1-H) - e_{H}(E)H 
+$$ 
 
+$$ 
+\frac{dS(E)}{dt} = c_{S}(E)S(H(E)-S) - e_{S}(E)S 
+$$ 
 
+Where $c(E)$ is the function for colonization rate and $e(E)$ for the extinction rate. Both are species-specific functions of the abiotic environment such that $H$ and $S$ also depend on $E$, the abiotic environmental conditions. A specialist persists over the landscape in a dynamic equilibrium between habitat availability, colonization, and extinction if its occupancy $S$ is larger than zero: 
 
-**DG** ce qui suit commence à répéter le contenu plus haut. Je prendrais plutôt le temps d'énumérer une série d'arguments qui rendent l'approche métapop si intéressante. Intuition théorique [Box1]. Outils analytiques. Peuvent être étudiés à l'équilibre et pour la transition. Focus d'abord sur la distribution [présecne-absence], on peut intégrer ensuite abondance dans approche hiérarchique. 
+$$ 
+S(E^{*}) = H(E^{*}) - \frac{e_{S}(E^{*})}{c_{S}(E^{*})} 
+$$ 
 
-
- 
-*Objective of the paper. The purpose of this paper is to demonstrate the value of metapopulation model projections of distribution changes to support decision-making and policy in rapidly changing environments.*\
-**DG** merger ce paragraphe avec le précédent ?
-**DG** annoncer un peu plus le contenu / organisation du texte qui va suivre. 
-
-The metapopulation approach is a powerful and flexible tool to simulate distribution changes.
-Resulting models can include demographic and dispersal constraints, and biotic interactions which previous approaches have not managed to do explicitly while remaining accessible.
-Metapopulation models have the advantage of being parameterizable while being less data demanding than previous models and remaining simple and rooted in ecological theory [@holt_bringing_2009;@vissault_slow_2020].
-Furthermore, the data needed to parameterize them is accessible now that time series of species occurrence are available for a broad range of species [Hanski????;@fordham_adapted_2013;@talluto_extinction_2017;@vissault_slow_2020].
-The purpose of this paper is to demonstrate the value of the metapopulation approach to project distribution changes in rapidly changing environments.
-We argue for the potential benefits of the metapopulation approach to improve accuracy of projections. 
-Given the availability of data and the simplicity of the approach we see the advantage for decision-making and policy.
-
-In this paper, we aimed to provide a compeling example for how biodiversity actors interested in projections of distribution change may beneficiate from metapopulation theory.
-A case study provides an example of sources of complexity in the resulting distribution dynamics.
-We used projections from a SDM to investigate changes in the distribution of a typical species of interest to conservation actors.
-Our analyses were made using cimate warming and forest composition change scenarios for a habitat specialist bird, simulating a bottom-up system, where a mismatch between the resource and climate distribution is expected.
-We simulated climate warming over a fragmented landscape and assessed distribution changes using measures of patch area and landscape spatial arrangement.
-Our results show that a metapopulation approach can project distribution changes with increased accuracy and realism for species of interest to policy and decision makers.
+and the distribution limit is defined by $S(E^{*}) = 0$, such that it is located where $H(E^{*}) = \frac{e_{H}(E^{*})}{c_{H}(E^{*})}$. Distribution limits of a habitat specialist are therefore determined by its intrinsic response to the abiotic environment (the ratio $\frac{e_{S}(E)}{c_{S}(E)}$), in conjunction with the habitat response to the abiotic environment ($\frac{e_{H}(E)}{c_{H}(E)}$). 
 
 
-*The model was inspired to simulate the Bicknell's thrush, a bird characteristic of species of interest to decision makers and policy [COSEWIC].*\
-**DG** Mettre emphase surtout sur les éléments qui rendent la grive intéressants : associé aux sommets de montagne, structure naturellement en patch. Dépendance au climat et à l'habitat. Espèce à statut précaire. 
+## Graphical representation of range limits
 
-The model was inspired by the Bicknell's thrush, a threatened bird characteristic of species of interest to decision makers and policy [COSEWIC].
-The Bicknell's thrush is know to be associated with perturbed, dense fir forests, mostly at high elevations, resulting in a fragmented and highly restricted distribution in Canada [@cadieux_spatially_2019].
-Unfavorable climatic conditions are predicted to increase at the edges of mountaintops fir forest patches with the warming of climate and the limited response capacity of boreal tree species [BOX, COSEWIC, @vissault_slow_2020].
-Climate change could therefore pose a major threat to the persistence of the Bicknell's thrush in Canada.
-In the following sections, we demonstrate the added value of the metapopulation approach to project the Bicknell's thrush distribution in Canada.
+We provide three examples below illustrating how metapopulation theory can reveal some of the complexities of distribution dynamics under a changing climate. 
+
+![Graphical interpretation of the system’s distribution dynamics. The distribution of the habitat specialist is defined by its intrinsic response to the environment $\frac{e}{c}$ (orange line) and by habitat occupancy ($H(E)$, green line). The habitat specialist’ occupancy $S^{*}$ declines with less favourable environmental conditions $E_{0}^{*}$ and $E_{1}^{*}$.](../manuscript/img/intro_persistence.png){#fig:intro_persistence width=35%} 
+
+A specialist’s persistence and therefore occupancy is jointly affected by abiotic conditions and habitat availability (occupancy) such that it can be represented graphically with $\frac{e}{c}$ and $H(E)$ curves. For simplicity, let's assume linear relationships. Distribution limit occurs at the position along the environmental gradient where the habitat occupancy curve (green line) crosses the extinction to colonization ratio. An example is illustrated in Figure @fig:intro_persistence. For a landscape composed of suitable habitat patches, the habitat occupancy is 1 and does not vary with environmental conditions. The specialist’s intrinsic response is less favourable with increasing environmental conditions. Its occupancy for given environmental conditions is defined by the difference between habitat availability and the extinction to colonization ratio curves ($S^{*} = H-\frac{e}{c}$). The effect of environmental conditions on its occupancy can be graphically represented at $E_{0}^{*}$ and $E_{1}^{*}$. The difference between habitat availability and the extinction to colonization ratio curves (S^{*}; shown by the arrows in Figure @fig:intro_persistence) is reduced with increasing environmental conditions, illustrating a decrease in the specialist’s occupancy and persistence ($S(E_{0}^{*}) > S(E_{1}^{*})$). 
+
+### Interaction of the specialist’s and of its habitat’s response can cause indirect distribution dynamics 
+
+![Change in occupancy (and persistence as shown by the grey arrows) of the habitat specialist depends on its intrinsic response to the environment $\frac{e}{c}$ (orange line) and of the habitat’s response $H(E^{*})$ (green line).](../manuscript/img/concept_occ.png){#fig:occ_plot width=100%} 
+
+n a bottom-up system such as predator-prey or a habitat specialist, the response to environmental change does not only depend on the focal species but also on the response of the associated one. The covariation in the response to the environment between the two levels is therefore of critical importance. For instance, the net effect of less favourable environmental conditions to a specialist could be detrimental, without effect, or favourable depending on the effect of the environment to its habitat (Figure @fig:occ_plot). Figure @fig:occ_plot A illustrates that specialist occupancy decrease (S) is amplified as environmental conditions harms simultaneously the specialist and its habitat. Conversely, stable specialist occupancy is caused by an equivalent increase of habitat availability or as one level benefits as much as the other suffers (Figure @fig:occ_plot B). An increase in specialist occupancy despite less favourable environmental conditions may occur if one level benefits more than the other suffers (Figure @fig:occ_plot C). Thus, the interaction between levels may have indirect (and counterintuitive) effects on specialist response. 
+
+### Habitat mismatch affects species distribution shifts 
+
+![The distribution of the habitat specialist (grey area) is impacted by the functions relating the intrinsic response to the environment (orange line) to habitat occupancy ($H(E)$, green full and dashed lines).](../manuscript/img/concept_mismatch.png){#fig:concept_mismatch width=35%} 
+
+Range limit of a habitat specialist is jointly affected by abiotic conditions and the availability (occupancy) of its habitat. Range shift in response to environmental changes is therefore not only determined by its intrinsic response to the environment, but also by the response of the habitat. As a result, a mismatch between the species response to the environment and its realized distribution may arise, in particular when different trophic levels are not responding at the same rate to environmental change. An example is illustrated in Figure @fig:concept_mismatch. The distribution may shift in the geographic space, for instance towards the north, but it should stay the same in the environmental space if both levels respond similarly (Figure 3, dark shaded area). That said, if a delay or any other factor prevents the habitat from tracking the new environmental conditions, then the habitat curve will shift (Figure @fig:concept_mismatch, green dashed line), and so will the distribution limit (light shaded area). Such mismatch could either benefit or harm the specialist distribution; in this example, the specialist expands to less favorable environmental conditions. The response of the habitat to changing abiotic conditions does influence the specialist distribution, both in extent and in the position of its distribution limits in both the environmental and geographical space. 
+
+### Metapopulation dynamics may precipitate species decline 
+
+![The response of a habitat specialist to a linear environmental change in time as it would be expected with a correlative SDM (linear response; full line). Metapopulation dynamics may precipitate - or alternatively delay - the extinction of the species in a metapopulation even if there are suitable conditions (dashed line).](../manuscript/img/concept_metapopEffect.png){#fig:concept_metapop width=35%} 
+
+The projection of range shifts with correlative SDMs assumes an instantaneous response to environmental change. An implicit assumption is also that a reduction in habitat occupancy translates into an equivalent reduction in the specialist’s range, leading to extinction [@thomas_extinction_2004]. Metapopulation dynamics may, however, precipitate the decline of a species before the complete disappearance of suitable conditions. Consider a landscape where abiotic conditions are spatially heterogeneous, such as temperature in a mountainous area. The progressive change in this environment, like climate warming, will have two effects on the distribution of suitable patches: the first direct consequence is a reduction in habitat occupancy $H(E)$, and indirectly follows the increase of the extinction rate with the shrinking of suitable patches. Some favourable patches may also disappear, thereby reducing the landscape connectivity. A non-linear decline of occupancy therefore arises from a linear change in environmental conditions as the ratio $\frac{e(E)}{c(E)}$ within the specialist’s persistence function increases (Figure @fig:concept_metapop). This metapopulation effect may not be important at first while suitable habitat is abundant and patches are large, but increases as habitat occupancy decreases, supporting an acceleration of metapopulation prevalence loss to a constant abiotic environmental shift [@hanski_metapopulation_2000; @ovaskainen_transient_2002]. 
 
 
+## Spatially explicit landscapes
+
+Analytical tools from metapopulation theory can be used to interpret range limits in spatially explicit heterogeneous landscapes. Metapopulation capacity can be evaluated for realistic landscapes where patch coordinates and size are considered (we will not detail the specifics of the model here and refer to @hanski_metapopulation_2000 for the full description). Metapopulation capacity is measured as the first eigenvalue of the landscape matrix $M$, where elements $m_{ij} = exp(-\alpha d_{ij})A_{i}A_{j}$ for $j \neq i$ and $m_{ii} = 0$ [@hanski_metapopulation_2000]. $1\alpha$ describes the average dispersal distance, $d_{ij}$ is the distance between patch $i$ and $j$, and $A_{i}$ is the area of patch $i$. Metapopulation capacity is a measure of a species’ ability to maintain itself regionally as a function of connectivity and local extinctions. It provides the means to evaluate conditions for persistence given the spatial arrangement of patches and their size.  
+
+Climate change can profoundly alter landscapes as experienced by species; not only does it influence the amount of suitable habitats, but also the capacity of species to persist when colonization and extinction prevail. Consider a mountainous landscape inhabited by a high elevation habitat specialist. The landscape is marked by a steep elevational gradient in temperature where warm temperatures at low elevations exceed the species’ tolerance. The landscape would therefore be divided between suitable cold habitats on mountain tops and unsuitable warmer habitats at the bottom. The topography will not only determine the total surface of suitable conditions, but also the frequency distribution of patch sizes and of distances among mountain tops. As a result, it will influence the connectivity of the landscape and the distribution of patch specific extinction rates. 
+
+A schematic example is provided in Figure @fig:concept_metapop_structure, inspired by the case study that will follow in the next section. Fixing a lower climatic range limit in a hypothetical mountainous landscape, we find nine suitable habitat patches of various sizes, distributed at various distances one from another (Figure @fig:concept_metapop_structure, left panel). Habitat patches here represent high elevation mountain tops. The warming of climatic conditions causes an elevational shift of lower range limits resulting in the contraction of habitat patches. An equal contraction between patches produces important changes to the landscape’s structure (Figure @fig:concept_metapop_structure, right panel). The number of patches declines to six for a 63% reduction of total habitat area. Patches become generally smaller from contraction and fragmentation, and the smallest patches go extinct. Further, not only smaller patches are assumed to support smaller population sizes, have superior extinction risks, and produce fewer colonizers [@hanski_metapopulation_2000], but the loss and the fragmentation of patches alter species dispersal ability through the loss of connectivity [@huang_using_2019]. As a result, the metapopulation capacity declines by 82%. 
+
+The decrease in metapopulation capacity surpasses that of habitat amount, adding a spatial structure perspective to the assumptions made by correlative approaches. The overall effect of climate warming is not only to modify patch areas, but to change species’ ability to colonize and occupy these patches. 
+
+![Species persistence is affected by changes to landscape connectivity as well as habitat amount. Black circles filled in grey delimit suitable habitat patches. Left panel presents a hypothetical mountainous landscape where suitable patches represent high elevation mountain tops and right panel the same landscape where patches contracted by an equal amount, simulating an elevation shift of climatic conditions on landscape suitability. Following patch contraction, metapopulation capacity declined by 82% whereas habitat amount only declined by 63%.](../manuscript/img/concept_metapop_structure.png){#fig:concept_metapop_structure width=70%}
+
+
+# Case study: Bicknell’s Thrush in North-Eastern America
+
+We illustrate the concepts presented in the previous section with a case study of the Bicknell's Thrush (*Catharus bicknelli*), a threatened bird species in Canada [@cosewic_cosewic_2009]. Bicknell's Thrush is the smallest Nordic thrush within the *Catharus* genus and is visually similar to the Grey-cheeked Thrush (*Catharus minimus*). It migrates in Northeastern America from its wintering grounds in the Greater Antilles and feeds on invertebrates and small fruits [@townsend_2020]. Populations are small and were reported to be declining in Canada [@cosewic_cosewic_2009]. The dispersal of Bicknell's Thrush is not known with certainty, although it has been suggested that adults nest near the site of previous successful nidification while few yearlings are observed to come back to their site of birth [@rimmer_bicknells_2001; @collins_spatial_2007; @studds_stable_2012]. The Bicknell's Thrush is known to be associated with very dense balsam fir (*Abies Balsamea*) forests, mostly at high elevations, resulting in a fragmented and highly restricted range [@cosewic_cosewic_2009, @cadieux_spatially_2019]. This habitat may be ephemeral, as natural disturbances, forestry and stand succession could lead to local extinctions. Furthermore, its distribution in mountainous areas is highly contingent on climate elevation gradients. Climate change could therefore pose a major threat to the persistence of this species as favourable climatic conditions within isolated habitat patches could shrink rapidly [@rodenhouse_predicted_2008]. Unfavourable abiotic conditions are predicted to increase at the edges of mountaintop fir forest patches with the warming of climate and the limited response capacity of boreal tree species [@talluto_extinction_2017; @vissault_slow_2020].  
+
+In the following section, we project the changes to the Bicknell’s Thrush breeding range in response to climate forcing using a standard correlative approach. We then leverage the projections using the concepts developed above to analyze the total amount of favourable habitat, the distribution of patch areas, their connectivity, and the metapopulation capacity. Finally, we compare Bicknell's Thrush favourable landscapes under climate-only change and climate-induced forest change scenarios to illustrate arising climate-habitat mismatch. Thereby, we wish to reveal the joint effects of these two components of Bicknell's Thrush’s distribution and demonstrate their importance on distribution dynamics. 
 
 ## Methods
-​
-## À ajouter dans mauscrit
-- Importantes pertes d'habitat d'hivernage
-- L'espèce pourrait constituer un indicateur de la santé des milieux forestiers subalpin et de leurs populations d'oiseaux
-- 95% de l'habitat de reproduction se trouve au Canada, 95% de cet habitat au QC (46 506km2)
+
+### Studied region 
+
+The Bicknell's Thrush breeding range was projected for the region where the majority of the canadian occurrences are identified [@cosewic_cosewic_2009; @billerman_bicknells_2020]. Populations are primarily found in the province of Québec, specifically in the Appalachian Mountains in the southeast and the Laurentians Mountains north of the St. Lawrence River. The landscape is composed of boreal, mixed and temperate forests, with their distributions mainly driven by climatic latitudinal and elevational gradients. Mean annual temperature ranges from -4.0 to 7.5°C in this region, but the Bicknell's Thrush occupies locations with a more restricted range because of its preference for high elevation areas. Annual precipitation ranges from 730 to 950 mm. 
+
+### Data
+
+Distribution data consisted of 6,079 observations of nesting behaviour sampled from 1994 to 2020 and was provided by the *Le programme de Suivi des populations d’oiseaux en péril du Québec* [@sos-pop_banque_2021]. It contains observations from various sources, including scientific surveys and citizen science. The region of interest was rasterized on a grid of 250 x 250 m cells, where an observation within a cell was defined as a presence and the other cells were left empty. By gridding the region of interest, we considered the locations where one or more observations were made as a single presence, accounting for any potential effects of temporal and spatial pseudo-replication resulting, for example, from multiple sightings of the one individual in the same location. 
+
+Temperature, precipitation, elevation, and balsam fir biomass were used to model occurrences. This selection of variables was motivated by expert knowledge as best reflecting Bicknell’s Thrush preference for high elevation and fir dominated habitats [@cosewic_cosewic_2020; @billerman_bicknells_2020]. Mean annual temperature and total annual precipitation were interpolated from climate station records for the 1981-2010 period to produce a time series of annual means [@mckenney_spatial_2013]. Data from a georeferenced 10 km climate grid [@mckenney_spatial_2013] were projected to each 250 m grid cell centroid and adjusted for differences in latitude, longitude and elevation with spatial regression using BioSIM v11 [@regniere_stochastic_2007; @regniere_biosim_2017]. BioSIM is capable of interpolating climate parameters at specific locations given that digital elevation mapping, which is used as an independent variable in the model, is provided. Forest composition in individual grid cells was obtained from LANDIS-II biomass outputs at simulation time = 0 (see below) which was initialized using provincial ecoforestry provincial maps and temporary forest inventory plots [see @boulanger_boreal_2021]. Absolute fir biomass was considered along with relative biomass to describe Bicknell’s Thrush preference for dense fir stands [@cadieux_spatially_2019]. Elevation data was obtained using the elevatr R package, then was rasterized at a 250 m resolution [@hollister_elevatr_2021]. 
+
+### Breeding range model 
+
+We estimated the number of observations per cell of the Bicknell's Thrush using downweighted Poisson regression [@renner_point_2015]; a point process model for presence only data where locations of presences and of quadrature points (spatially random data points necessary to estimate the species distribution) are modelled as a function of environmental variables. In a downweighted Poisson regression, large weights are assigned to quadrature points and small weights to observations such that presence location points comprise a very small portion of the data used to estimate the model. The effect is similar to applying a spatial scaling so that the response is modelled as the number of observations per cell. 
+
+We modelled observation records as a function of climate, elevation, and forest composition with 250m resolution as  
+
+$$
+\text{Presence Points} = \alpha + \beta_1(\text{temperature}) + \beta_2(\text{temperature}^{2})
+$$
+$$
++ \beta_3(\text{precipitation}) + \beta_4(\text{elevation}) + \beta_5(\text{firBiomass}) + \beta_6(\text{firRelativeBiomass})
+$$
+$$
++ \beta_7(\text{firBiomass} \times \text{firRelativeBiomass}) + \varepsilon
+$$
 
 
-### Studied region
-​
-*The Bicknell's thrush breeding range was projected for the region where the majority of its habitat is identified*\
-The Bicknell's thrush breeding range was projected for the region where the majority of the Canadian occurrences are identified [cosewic].
-Populations are primarily found in the province of Québec, in the regions of the Eastern Townships, Gaspésie, and the Réserve faunique des Laurentides [fig. 1].
-The landscape is characterized by the presence of mountaineous formations with the Appalachian Mountains to the southeast and the Laurentians Mountains to the north of the St. Lawrence River.
-Forested habitats contain a mix of boreal, mixed and temperate tree species with distributions mainly driven by significant latitudinal and elevational gradients in climate.
-Mean annual temperatures range from -4.0 to 7.5°C, total annual precipitations range from 730 to 1950 mm, and the maximum elevation is of 1137 m.
-​
+where $\varepsilon \sim Poisson(\lambda)$). Temperature was considered quadratically to describe both warm and cold limits. Other variables are taught to describe broad preferences and were therefore considered as linear relationships [@cosewic_cosewic_2020; @billerman_bicknells_2020]. Absolute fir biomass was also considered in interaction with relative biomass to describe both stand development and composition. We randomly positioned quadrature points to cover most environmental variability and to maximize the accuracy of the likelihood estimation [@renner_point_2015]. We used the fitted model to predict the number of observations per cell that we then converted into the Bicknell’s Thrush breeding range. The breeding range consists of all cells with a predicted density of observation superior to 1 individual per $km^2$ (i.e., 0.00625 observations per cell).
 
-### Bicknell's thrush breeding range
-​
-The Bicknell's thrush dataset consisted of 6079 observations of nesting behaviour between 1994 and 2020 from unpublished data from the Centre de données sur le patrimoine naturel du Québec [@sos-pop_banque_2021].
-Observations were rasterized on a grid of 250m x 250m cells and coded as observed and not observed at cells to remove any potential effects of temporal and spatial pseudo replication.
-​
+We assessed model predictive performance using area under the receiver operating characteristic curve [AUC, @guisan_predicting_2005]. AUC is essentially a diagnostic tool to measure the quality of prediction of a model. A perfect prediction yields an AUC of 1 while a random prediction yields an AUC of 0.5 [the calculation of the AUC was performed with the *auc* function of the R package *pROC*, @robin_proc_2011]. 
 
-We estimated the number of observation per cell (intensity) of the Bicknell's thrush using downweighted Poisson regression [see @renner_point_2015]. 
-We modeled observation records and pseudo absences as a function of climate, elevation, and forest habitat composition (weighted_presence_and_pseudoAbsences_at_cells ~ mean_annual_temperature * mean_annual_temperature^2 * mean_annual_precipitations + elevation + fir_biomass * fir_proportional_biomass), following expert knowledge of variables associated to the distribution of Bicknell's thrush [COSEWIC].
-We randomly positioned pseudo absences to cover most environmental variability, to maximize the accuracy of the likelihood estimation [@renner_point_2015].
-The breeding range extent was set using an intensity threshold of 1 individual per km2.
-We assessed model performance using visual inspection of the model fit **[see appendix XXX]** and AUC [Area Under the Curve, @Vene_can_2021,@valavi_modeling_2021].
-AUC measures the ability of the model to predict cells where the species was observed from those where it was not.
-While a perfect prediction would yield an AUC of 1, and a random prediction an AUC of 0.5, our model showed high performance and accurate breeding range prediction with a AUC of 0.96 (*auc* command from *pROC* package in R, @robin_pROC_2011).
-​
+### Scenarios
 
-Mean annual temperature (slope ± standard error, -16.04 ± 0.40 observations per cell) and proportional fir biomass (3.51 ± 0.46 observations per cell) are strongly associated with the breeding range of Bicknell's thrush.
-The quadratic temperature term is significantly negative (-0.67 ± 0.18 observations per cell), consistent with expert expectations [COSEWIC].
-Total annual precipitation (-0.0014 ± 0.00029 observations per cell) and elevation (-0.017 ± 0.00031 observations per cell) have significant effects on intensity.
-We found fir biomass not to be a significant predictor (0.0039 ± 0.0082 observations per cell), but its interaction with proportional fir biomass to be (-0.059 ± 0.013 observations per cell).
-All interactions between climatic variables are significantly associated with the distribution of the breeding range **[see appendix XXX]**.
-The model shows a decrease in Bicknell's thrush intensity at low elevations at the southern end and at the northern end of its distribution area.
+We projected the Bicknell's thrush breeding range at a 250 m resolution for two scenarios to contrast the impacts of climate with forest composition dynamics over the 2020-2100 time period. We used the Bicknell's Thrush model along with calibration conditions for the breeding range projection of 2020. We then used climate and forest composition scenarios for the 2040, 2070, and 2100 projections.
 
+The Bicknell's Thrush breeding range distribution was first projected over time under intermediate climate change conditions using the RCP 4.5 climate forcing scenario [@van_vuuren_representative_2011], while keeping forest composition and elevation constant. Future temperature and precipitation projections for 2021-2040, 2041-2070 and 2071-2100 periods were obtained for the RCP 4.5 scenario from the Canadian Earth System Model version 2 (CanESM2). Such anthropogenic climate forcing is increasingly considered as one of the most likely scenarios given current and pledged global climate policies [@hausfather_emissions_2020]. Projections were first downscaled to a 10 km resolution using the ANUSPLIN method, and then the BioSIM v11 model was used to interpolate them to a 250 m resolution [@regniere_stochastic_2007; @mckenney_customized_2011]. BioSIM was used to project daily maximum and minimum temperatures (°C), precipitation (mm) by matching georeferenced sources of weather data [in this case the CanESM2 projections over the 10 km Australian National University Spline grid; @hutchinson_development_2009] to 15,000 random spatially georeferenced points over Quebec, adjusting the weather data for differences in latitude, longitude, and elevation between the source of weather data and each random point using spatial regressions. Universal kriging using elevation as a drifting variable was then used to interpolate climate variables to the 250m grid. As BioSIM stochastically generate future daily weather time series using 30-yrs future climate normals, we averaged results from 30 BioSIM simulations to compute future climate variables that were assigned to the last year of the projection period (e.g., 2021-2040 period became 2040).
 
-### Scenario and analyses
+Second, we projected Bicknell's Thrush breeding range over time by only considering climate-induced changes in forest composition (hereafter forest change) under RCP 4.5, i.e., keeping climate variables and elevation constant in the model. Projections of forest composition for the commercial forests of Québec in 2040, 2070, and 2100 were obtained from @boulanger_boreal_2021 which were produced using the LANDIS-II forest landscape model [FLM, @scheller_design_2007]. LANDIS-II is a spatially-explicit, raster-based FLM that accounts for stand (e.g., interspecies competition, mortality, establishment) and landscape-level processes (e.g., disturbances, seed dispersal, and forest succession). In @boulanger_boreal_2021, simulations were run at a 10-year time step from the 2020 biomass initial conditions up to 2150 under the RCP 4.5 climate scenario. In these simulations, climate-induced changes in stand dynamics as well as in wildfires were considered. Business-as-usual harvesting as well as spruce budworm outbreaks were also simulated. More details about model parameterization, calibration and results can be found in @boulanger_boreal_2021.
 
-*Initial conditions*\
-We projected the Bicknell's thrush breeding range distribution at a 250 m resolution for two scenarios to contrast the impacts of climate warming and habitat dynamics over the 2020-2100 time period. 
-For the breeding range projection of the 2020 period, we used temperature (°C) and precipitation (mm) data interpolated from climate station records for the 1981-2010 period to produce a time series of annual means [@mckenney_spatial_2013]. 
-Data from georeferenced climate stations were projected to each 250 m grid cell centroid and adjusted for differences in latitude, longitude and elevation with spatial regression using BioSIM v11 [@régnière_biosim_2017].
-Fir biomass and proportional biomass in individual grid cell were obtained from provincial ecoforestry provincial maps and temporary forest inventory plots [see @boulanger_boreal_2021].
-Grid cells with less than 50% forest coverage were classified as inactive.
-Elevation data was obtained using the elevatr R package, then was rasterized at a 250m2 resolution [SOURCE].
-​
+### Analyses
 
-*Climate scenario*\
-The Bicknell's thrush breeding range distribution was then projected over time for RCP 4.5 climate forcing scenario [Representative Concentration Pathways, @van_vuuren_representative_2011], keeping habitat variables and elevation constant.
-Future temperature and precipitation projections for 2021-2040, 2041-2070 and 2071-2100 periods were obtained for the RCP 4.5 scenario from the Canadian Earth System Model version 2 (CanESM2).
-Projections were first downscaled to a 10 km resolution using the ANUSPLIN method, and then the BioSIM model was used to interpolate them to a 250 m resolution.
-Digital elevation mapping (DEM) was used along with BioSIM to reduce biaises in the interpolation by providing elevation a drifting varibale to the model. 
-The results of 30 BioSIM simulations were then used to compute future climate variables that were assigned to the last year of the projection period (e.g., 2021-2040 period became 2040).
-​
+We assessed the impacts of climate-only change and climate-induced forest change on Bicknell's Thrush persistence by contrasting different aspects of landscape structure from the original and forecasted landscapes. Analyses were run for the southern part of the Québec province ($410,080 km^2$). Breeding range may change with respect to habitat occupancy (here, fir-stand occupancy), the spatial structure of suitable patches, or the species' ability to occupy available suitable patches. Isolating the effect of the different elements helps to identify the drivers and their respective importance on distribution dynamics. We decomposed the landscape spatial structure into three complementary elements: the number of patches, the patch areas, and the inter-patch distances.
 
-*Biomass scenario*\
-We then projected Bicknell's thrush breeding range over time for habitat change [biomass] scenario, keeping climate and elevation constant.
-Biomass projections for 2040, 2070, and 2100 were obtained from forest landscape projections of the commercial forests of Québec under RCP 4.5 with baseline level of fire and spruce budworm disturbances [see @boulanger_boreal_2021].
-Simulations were done from the 2020 biomass initial conditions using LANDIS-II model which accounts for disturbances, seed dispersal and forest succession.
-​
-
-*Analyses*\
-We assessed the impacts of climate change and habitat change on the Bicknell's thrush breeding range by contrasting distribution changes of the Bicknell's thrush breeding range between scenarios.
-Analyses were run for the region of Québec (410,080km2), and two subregions: the Eastern Townships (13,347km2), and the Réserve faunique des Laurentides (22,300km2).
-A distribution may change with respect to the amount of available habitat [FARIGH2016], the spatial configuration of its patches, or in a species' ability to occupy available habitat [REFERENCE]. 
-Isolating the effect of the different elements helps to identify the drivers and their importance in distribution change.
-We therefore tested for temporal trends in habitat amount by measuring the total area of suitable habitat.
-We decomposed the landscape spatial configuration into three complementary elements: the number of patches, patch area, and the inter-patch distances.
-We then assessed and contrasted temporal trends in each of these elements.
-Species' ability to occupy the landscape was characterized using metapopulation capacity [@hanski_metapopulation_2000;@hanski_capacity_2001].
-Metapopulation capacity informs about the landscape ability to support species persistence as a function of its connectivity and species dispersal.
-We measured metapopulation capacity of the projected breeding range for different dispersal distances.
-We used a negative exponential shaped dispersal kernel to represent decreasing dispersal probability with increasing distance [@hanski_metapopulation_2000].
-​
+We further compared temporal trends in habitat amount [sensu @fahrig_rethinking_2013] and persistence using metapopulation capacity [@hanski_spatially_2001]. We contrasted habitat amount, metapopulation capacity without dispersal constraint, and metapopulation capacity with strong dispersal constraint to reveal different aspects of metapopulation response. Habitat amount alone determines occupancy in the absence of metapopulation dynamics (i.e., the expectation from correlative SDMs); contrasting it with metapopulation capacity under long-distance dispersal reveals the effect of a reduction in patch area on extinction; metapopulation capacity under short dispersal distance reveals the combined effects of reduction in patch area and change in landscape connectivity. Without sufficient knowledge of the Bicknell's Thrush dispersal kernel, we therefore compared metapopulation capacity for extreme scenarios of dispersal within the range of plausible kernels. We thus evaluated metapopulation capacity for high dispersal limitations (average dispersal distance of 1 km) and for long average dispersal distance (average dispersal distance of 500 km).
 
 ### R code availability
-​
-We performed all analyses in the R programming language [@r_core_team_r_2021] and openly provided all scripts to process the data and to run the analyses in the github repository <https://github.com/vcameron1/Metapop_ms>.
 
-<!----
-### Model structure 
-*We illustrate the applicability of the approach by expanding a metapopulation model to two species.*
-We illustrate the applicability of the approach by expanding a metapopulation model to two species.
-We formulate a spatially explicit metapopulation model in which we have the focal species be dependent on climatic conditions and forest dynamics [@ovaskainen_transient_2001].
-We represented the landscape as a grid of square cells that we hereafter refer to as patches or habitat patches.
-Each patch is caracterized by a type of forest habitat of either temperate, mixed, boreal, or regeneration state and climate conditions [@vissault_slow_2020;will].
-The model describes transitions between forest states and the Bicknell's thrush occupancy state in local habitat patches on 5 years time steps.
-Transitions from one state to another are determined by colonization and extinction probabilities.
-Empty boreal forest patch may become occupied by the Bicknell's thrush if colonists from neighbouring populations reach the patch and establish. 
-These are stochastic functions of the number of neighbouring populations and their size [climate suitability], the interpatch distance, and the propagule pressure.
-Until environmental conditions become unfavorable or a stochastic extinction event occurs, the Bicknell's thrush may remain present in a patch.
-It may go extinct if the forest state changes due to establishment of temperate species, if the climate conditions become unsuitable, or if a stochastic disturbance occurs.
+We performed all analyses in the R programming language [@r_core_team_r_2019] and all scripts to process the data and to run the analyses are available in the GitHub repository <https://github.com/vcameron1/Metapop_ms>.
 
-We define $X_{t}$, a stochastic variable that represents the occurrence of the Bicknell's thrush at time $t$ and summarize the entire model as a probability function:
+## Results: Connectivity in addition to habitat amount define realized range
 
-$$
-P[X_{t+1} | X_{t}, A, N, B]
-$$
+The model had high performance and accurate breeding range prediction with an AUC of 0.95. Proportional fir biomass (slope ± standard error, $\beta_6 = 3.39 \pm 0.46$) and mean annual temperature ($\beta_1 = 1.56 \pm 0.27$) are best predictors of the breeding range. Furthermore, the quadratic temperature term is significantly negative ($\beta_2 = -0.28 \pm 0.025$) such that the model estimates maximum occupancy at 2.7 Celsius (mean annual temperature). Total annual precipitation ($\beta_3 = -0.0064 \pm 0.00024$) and elevation ($\beta_4 = 0.018 \pm 0.00029$) also have significant effects on occupancy. Fir biomass was not a significant predictor ($\beta_5 = 0.0082 \pm 0.0081$) but its interactions with fir relative abundance ($\beta_7 = -0.048 \pm 0.012$) and proportional fir biomass were such that stands of dense fir forest are associated to greater occupancy. The model shows a decrease in Bicknell's thrush predicted occupancy at low elevations of the southern edge and of the northern edge of its distribution area (Figure @fig:map_BITH).
 
-Where the probability of occurrence is influenced by the patch occupancy state at the previous time step [$X_{t}$], climatic conditions [$A$], the species prevalence in the landscape [$N$], and the forest state [$B$].
-For a patch to be occupied, it either must have been occupied previously and not gone extinct or have been empty and got colonized: 
+![Projected Bicknell’s thrush breeding range between 2020 and 2100 for climate-only and climate-induced forest change scenarios. Projected breeding ranges are presented as colonized, persistent, and extinct patches with initial 2020 distribution as reference. Top two panels show Bicknell's Thrush’s distribution at initial conditions (2020) and therefore are identical. Lower panels show projections for 2040, 2070, and 2100.](../manuscript/img/map_BITH.png){#fig:map_BITH width=70%}
 
-$$
-P[X_{i,t+1} = 1] = 1 - P[X_{i,t+1} = 0|X_{i,t} = 1]P[X_{i,t} = 1] + P[X_{i,t+1} = 1|X_{i,t} = 0]P[X_{i,t} = 0]
-$$
+### Climate and habitat mismatch
 
-The probability of an occupied patch to go extinct is given by:
+Our model projected varying effects of climate change on Bicknell's Thrush breeding range within the study region (Figure @fig:map_BITH). The magnitude of change differed between climate-only and climate-induced forest change scenarios. Shifts at the range edges were more pronounced than within the range under the climate-only scenario, with contraction at the southern edge and expansion at the northern edge. Under the climate-only scenario, extensive expansion was projected as soon as 2040 at high elevation (>600 m) and rapidly warming (up to 3°C between 2020 and 2040) regions. Multiple northward patches became momentarily suitable with climate warming at moderate elevation areas (500 to 600 m) because of the narrow range of suitable climatic conditions at these lower elevations. Important contraction was projected at the southern range edge with high elevation mountain tops insufficient to cope with temperature increase. As opposed, changes in forest composition are limited due to the slow demography and the limited dispersal of trees [@vissault_slow_2020]. As a result, the projected changes to the breeding range under the forest change scenario were much more limited (Figure @fig:map_BITH).
 
-$$
-P[X_{i,t+1} = 0|X_{i,t} = 1] = \frac{e}{A_{i} B_{i}}
-$$
+### Changes in the spatial structure
 
-Where $A_{i}$ is the climate suitability of patch $i$, $B_{i}$ the habitat state in patch $i$, and e is a constant. We make the assumption that more favorable climatic conditions increases suitability of patches - environmental performance - which tend to hold larger populations and that larger populations have decreased extinction risk [brown_1984,@talluto_extinction_2017,@osorioolvera_population_2019].
+![Change in the spatial structure of the Bicknell’s Thrush breeding range between 2020 and 2100 under the climate-only (blue line) and the climate-induced changes in forest composition (orange line). The left panel presents the number of patches within the projected breeding range, the center panel the median area of these patches, and the right panel the median distance between these patches.](../manuscript/img/spatial_configuration.png){#fig:conf width=100%}
 
-Colonization probability follows a decreasing exponential function and is the sum of the distances between patches $i$ and $j$, and the average migration distance $1/\alpha$, multiplied by climate environmental performance, habitat type and presence at previous time step:
+Projections show that climate and forest changes have major consequences on the spatial structure of suitable patches (Figure @fig:conf). The number of patches within the breeding range in the climate-only scenario supports the initial observation of range expansion followed by a rapid contraction with a peak in number of patches in 2040, while the climate-induced forest change scenario shows a decline in number of patches (Figure @fig:conf, left panel). Median patch area for both scenarios varied between 0.125 and 0.312 $km^2$ (minimum and maximum patch area = 0.0625 and 7805 $km^2$ respectively) and indicates a skewed distribution with a dominance of small patches and few very large ones (Figure @fig:conf, centre panel). On the other hand, the median inter-patch distance varied between 218 and 280 km (minimum and maximum inter-patch distance = 0.25 and 809 km respectively) and shows a more balanced distribution with the landscape composed of distanced groups of regionally close patches (Figure @fig:conf, right panel). Although the distribution of patch areas in the climate-only scenario appears to remain constant through time, important decreases in the interpatch distances indicate the loss of small, isolated patches, the addition of geographically close patches, and the fragmentation of large patches (Figure @fig:conf, centre and right panels). Despite the apparent stability of the breeding range under the climate-induced forest change scenario, important changes in its spatial structure were simulated. We simulated a rapid decline in the number of patches and, in contrast to changes under the climate-only scenario, the median patch area constantly increased between 2020 and 2100, and the inter-patch distance marginally increased (Figure @fig:conf, centre and right panels). Results indicate that close patches became connected to form fewer, but larger patches in addition to the loss of small, isolated patches.
 
-$$
-P[X_{i,t+1} = 1|X_{i,t} = 0] = \sum{[- \alpha d_{ij}] X_{j} A_{j} A_{i} B_{i}}
-$$
+### Persistence
 
-The propagule pressure of patch $i$ increases with the number of neighbouring populations, the size of population [climate suitability], and decreasing distance.
+![Changes in metrics of metapopulation persistence presented as metapopulation capacity (dashed lines) and habitat amount (full lines) from 2020 to 2100. General trends are presented for comparison. Curves are scaled and centred to the same value in 2020, their absolute value may differ. Metapopulation capacity is presented under restricted dispersal distance (1 km) and an approximation of mean field assumption (500 km). The left panel presents climate-only scenario results and the right panel climate-induced forest change scenario.](../manuscript/img/capacity.png){#fig:persistence width=75%}
 
+We observed an initial increase of 64% (11,743 to 19,344 $km^2$) in habitat amount under the climate-only scenario (total change of +9% between 2020 and 2100; Figure @fig:persistence, full blue line) while habitat amount remained almost stable with only a slight initial decrease of 11% (11,742 to 10,416 $km^2$) under the climate-induced forest change scenario (total change of -15% between 2020 and 2100; Figure @fig:persistence, full orange line). Changes in Bicknell’s Thrush metapopulation capacity approximated those in habitat amount under long average dispersal distance (approximating mean field assumption, Figure @fig:persistence). However, we observed important divergences in the Bicknell’s Thrush metapopulation capacity from habitat amount when dispersal was restricted (Figure @fig:persistence). That is, metapopulation persistence accounting for patch size alone (long-distance dispersal) was closely approximated by habitat amount but differed when accounting for both patch size and connectivity (limited dispersal) when changes in the spatial structure of the breeding range were not explained by habitat amount alone. 
 
+# Perspectives
 
+Using theory and a case study, we show that the climate-induced changes in distribution are likely to be impacted by bottom-up interactions, demography, and landscape structure. We first derived three observations from metapopulation theory. i) A specialist’s range is impacted by changes in habitat occupancy and a habitat-abiotic mismatch affects the range limits of the specialist. ii) The interplay between habitat shrinking and connectivity loss is likely to yield precipitated range contraction and could potentially lead to extinction. iii) The direction and amplitude of the specialist’s response to environmental change vary with the degree of environmental response correlation between trophic levels. We projected the suitable environmental conditions for a well-known bird species whose distribution is jointly affected by climate and vegetation and we analyzed its spatial structure. We showed that climate-induced changes to the distribution of suitable climatic conditions differed from that of its biotic habitat. Furthermore, both the amount of habitat and the spatial structure distribution of the favourable abiotic and biotic conditions are predicted to be impacted by climate change. Thus, we expect the persistence of this species under climate change to be fundamentally affected by metapopulation dynamics. We show that the metapopulation approach complements the understanding of distribution changes by correlative SDMs. The metapopulation dynamics are fundamental to account for changes in distributions’ spatial structure and contribute to accurately capturing climate-induced change in species distribution.
 
-Description verbable de la dynamique
-Schémas ? [Box 2]
-Description / inteprétation des probabilités de transition
-	
-### Parameterization 
-*To simulate landscape-wide forest dynamics, we used a state and transition model [Vissault 2020].*
-Artificial Landscape [elevational gradient], cell size
-Dispersal kernels [vegetation, bird]
-Vegetation transitions: We track the state of the forest in patches.
-Landscape structure: landscape devided in a lattice of identical cells/patches
+## Applications of the metapopulation approach
 
-*Sources of data*
+Many studies have investigated distribution change using metapopulation theory [@fordham_adapted_2013; @schnell_estimating_2013; @talluto_extinction_2017; @huang_using_2019; @vissault_slow_2020], but few have considered the complexity arising from biotic interactions and dispersal in context of rapid environmental change. Some aspects have, however, been explored, starting with the development of the theoretical basis for metapopulation dynamics on heterogeneous landscapes. Spatially realistic metapopulation theory has allowed modelling of distribution dynamics in species living in fragmented landscapes [@hanski_metapopulation_1998; @hanski_habitat_1999; @hanski_spatially_2001]. The coupling of spatially explicit metapopulation models with dynamic climate change represents a significant conceptual advancement toward realistic projections [@anderson_dynamics_2009]. Our analysis reveals distribution dynamics that previous methods fail to capture, demonstrating the importance of integrating dynamic processes. A simulation study of the Iberian lynx distribution was the first study to consider the interplay of climate change and trophic interactions using a metapopulation approach [@fordham_adapted_2013]. It showed that these factors could be explicitly considered together, exhibiting distribution dynamics of greater complexity and realism. Moreover, the use of the metapopulation approach has made possible the study of non-equilibrium distributions by the scaling of local processes at the entire distribution [@talluto_extinction_2017]. Recently, the approach was extended to non-equilibrium dynamics of range shift in response to climate change, opening the way for the study of nonlinear dynamics of migration [@vissault_slow_2020]. The metapopulation framework that we propose here builds on these previous developments to advance toward simultaneously projecting changes in demography and dispersal in response to climate change and the multi-species effects of biotic interactions on the distribution of species.
 
-### Scenarios & analysis
-*To project Bicknell's thrush distribution changes, we simulated forest successional dynamics and metapopulation dynamics under climate warming scenarios.*
-Climate dependence of colonization and extinction
+The use of the metapopulation theory to inform conservation goes as far back as 1985 [@shaffer_metapopulation_1985] for species with patchy population structures and has since been adapted to account for specific spatial and population dynamics [@hanski_metapopulation_1997; @fordham_adapted_2013; @huang_using_2019]. In response to exploitation pressure from the logging companies and an extinction risk increasing rapidly, a spatially explicit metapopulation model was used to define the amount of pristine forest needed to assure the survival of the northern spotted owl (*Strix occidentalis caurina*) in the Northwestern United States [@shaffer_metapopulation_1985; @lamberson_effects_1993]. More recently, the incidence function model has been used to study large-scale population dynamics in the Glanville fritillary (*Melitaea cinxia*) whose distribution has shrunk in Europe to become highly fragmented [@hanski_metapopulation_1994; @hanski_practical_1994]. The application of these models to case studies demonstrates the value of the metapopulation approach in describing the distribution dynamics of species while being strongly rooted in theory and simple enough to be parameterized using available ecological data [@hanski_metapopulation_1999].
 
-Following initial equilibrium state, we simulated increasing temperatures in habitat patches as constant increments over 100 years. 
-The total warming followed an intermediate scenario with increases of 0.09°C at each time step for 20 time steps [RCP4.5;IPCC2013].
+Metapopulation theory and models affect today how conservation priorities are defined at a variety of scales. The conservation of ecological corridors is the current focus of important initiatives worldwide including, but not limited to, Corridor Appalachien, Nature Conservancy Canada, Yellowstone to Yukon Conservation Initiative and Western Wildway Network Priority Corridor Project, while habitat fragmentation is a criterion of threat for the IUCN Red List [@iucn_iucn_2021]. Metapopulation theory predicts the scaling of extinction risk with increasing habitat isolation, something other non-spatially explicit approaches do not consider. We further show that a species’ ability to access suitable habitat is a determining factor of its persistence. Equally, assisted colonization and habitat restoration are brought forward as means to support species persistence by increasing respectively colonization rates and habitat occupancy [@ricciardi_assisted_2009; @willis_assisted_2009; @fordham_adapted_2013]. Ultimately, metapopulation theory's main contribution to current conservation initiatives has been to raise attention on the effect of spatial structure of the landscape and dispersal on species persistence.
 
+## Metapopulation dynamics
 
-*We assessed distribution changes with measures of cumulative changes and their temporal trends.*
-Although it is possible to get a basic understanding of distribution changes through equilibrium distributions alone, temporal trends or transient phases caracterize the actual dynamics of the Bicknell's thrush response and are crutial for biodiversity conservation [@boulangeat_transient_2018].
-Distribution shifts and abundance declines from climate warming are often gradual and cause species' distributions to be out of equilibrium with their niche distribution.
-We assessed distribution changes with measures of cumulative changes and their temporal trends.
-In addition to distribution maps, we present 3 metrics relevant to decision making and policy: prevalence, distribution extent, and **metapopulation capacity** [@hanski_metapopulation_2000;@huang_using_2019].
-Prevalence is the proportion of patches occupied by the Bicknell's thrush in the landscape and captures the effective metapopulation size. 
-Distribution extent is a measure of the realized niche breadth and is the range of **temperatures** at which it is present.
-Metapopulation capacity measures directly the extinction risk through its relation with the extinction threshold fixed by the ratio of extinction to colonization rates [@hanski_metapopulation_2000].
-It captures the effect of the landscape spatial structure as it is percieved by the species on the landscape's ability to support a persisting metapopulation.
---->
+We have shown using a metapopulation approach that a change in the occupancy of a habitat along an abiotic environmental gradient may impact the distribution of higher levels, such as predators or, here, habitat specialists. Therefore, a mismatch between the distribution of the habitat and of the favourable abiotic conditions may affect the position of the specialist’s range edge along an environmental gradient. This is the result of local increases or decreases in colonization and extinction rates from changes in habitat occupancy. Indeed, we observed the Bicknell’s Thrush breeding range projection from climate-induced forest change to remain stable despite important climate change. Less contraction than expected from climate-only projections were observed at the warm edge of southern local habitat patches, indicating the establishment of a mismatch. The high elevation coniferous patches persisted into warmer abiotic conditions, increasing fir occupancy under abiotic conditions where it was previously rare or absent. Furthermore, we observed no range expansion of the specialist where the climate-only scenario predicts northern expansion, revealing a decrease in habitat occupancy for climatic conditions where it was previously available. This observation is likely the result of prolonged persistence (i.e., extinction debt) of the Bicknell’s Thrush where it is already observed despite less favourable abiotic conditions, and the reduction of occupancy in favourable abiotic conditions where it is initially observed (i.e., colonization credit). As a result, non-equilibrium dynamics in Bicknell’s Thrush distribution change are predicted to be an important source of complexity. Forested habitat-abiotic, or resource-abiotic mismatch in response to environmental change is to be expected in natural systems from limitations in dispersal ability and demography [@svenning_influence_2014]. Conversely, habitats that shift faster than abiotic conditions may instead decrease specialist persistence in its current range and favour environmental, but not geographical range stability. It is clear that non-equilibrium dynamics in species distributions are key elements of complexity. Hence, predictions are likely to be biased without proper models to account for it.
 
-## Results
+Correlative SDMs predict direct response of species’ range to habitat amount variations such that a decrease in habitat amount causes an equivalent contraction of the species’ range. However, we have shown that a metapopulation framework offers complementary information to extract from habitat projections. The contraction of a species’ range may be accelerated (or slowed) by metapopulation dynamics. Here, the effect of landscape connectivity interacts with habitat occupancy to generate dynamics of greater complexity. We observed changes in the Bicknell’s Thrush distribution projections in both habitat amount and in spatial structure of habitat patches. Landscape connectivity was affected by newly suitable habitat patches, the extinction of the smallest habitat patches, the fragmentation of the larger ones, and the dispersal distance. In concordance with our intuition, changes in Bicknell’s Thrush persistence were affected by metapopulation dynamics. Persistence could not be explained by changes in habitat amount alone contrasting with the assumption made by correlative SDMs (Figure 8). Furthermore, our results support @hanski_habitat_2015 in that connectivity is fundamental to species regional distribution, abundance, and biodiversity in opposition to the habitat amount hypothesis [@fahrig_rethinking_2013]. That is because the species’ ability to use all available habitat is affected by dispersal, which habitat amount alone does not represent.
 
+More favourable abiotic conditions can have unexpected negative impacts on specialists if their habitats are negatively affected. We described this phenomenon as the effect of environmental response correlation between trophic levels (see *Key concepts* section). It is a concept unique to process-based approaches that cannot be observed directly using a correlative SDM approach as it originates from the joint effects of species-specific environmental performance and of biotic interactions. Although we have not been able to measure it directly with the Bicknell’s Thrush case, we observed an important contrast between its response to climate-only change and to climate-induced forest change: the habitat amount increased in the first scenario and declined in the second. We showed that regionally more favourable climatic conditions to the Bicknell’s Thrush may have, even if only temporarily due to colonization or extinction lags, the opposite effect on its habitat. Therefore, the resulting distribution dynamics from the interplay between trophic levels are complex to predict. Counterintuitive dynamics can arise from species’ environmental correlation. Indeed, the Bicknell’s thrush example illustrates the necessity of documenting the response between trophic levels to a rapidly changing environment as they can produce non-equilibrium dynamics when considered together. It is when the lower trophic level affects the specialist’s colonization and extinction rates asymmetrically that non-equilibrium distribution dynamics are observed. Because metapopulation models can incorporate such dynamics on specialists’ population dynamics, the resulting projections may be of greater realism.
 
-### Fig 1. Breeding range maps
+## Limitations of the current approach
 
+Metapopulation models require few parameters making them relatively easy to parameterize. Such models have been calibrated for mammals and trees [@fordham_adapted_2013; @talluto_extinction_2017; @vissault_slow_2020] and can also be for birds although the dispersal component may be challenging to evaluate [@van_houtan_dispersal_2007; @studds_stable_2012]. Even in the absence of a calibrated model, the metapopulation approach offers tools to interpret projections outputs from correlative SDMs. We showed that different aspects of the landscape’s structure could easily be described and studied. An integrated interpretation of distribution changes can be gained from scenarios of dispersal and extinction. Such scenarios can then be used to evaluate species persistence.
 
-Climate change had a strong effect on Bicknell's thrush breeding range distribution within the study region.
-The magnitude of change varied between climate warming and tree biomass scenarios.
-Major changes were associated to 
+Several other factors could also impact the system's response to climate warming. The model described here is best suited for habitat specialists whose presence depends on the prior establishment of another species that they do not impact, but it could also be generalized to other types of interactions [see @gravel_trophic_2011 for an example of a very general model]. The concepts developed in this study are more general than the specialist-habitat context in which they are presented and can apply to any bottom-up system. Positive and negative effects of the specialist on its habitat could influence differently the system's response to climate change. For example, habitat (i.e., resource) removal by the specialist may reduce competition of habitat types and decrease response lag, accelerating the specialist's decline at the scale of the landscape [@vissault_slow_2020]. Prolonged occupancy of the habitat by the specialist may, on the other hand, increase habitat mismatch and support source-sink dynamics. In addition to biotic interactions, metapopulation dynamics at the landscape level could be affected by the interaction of climate change and natural disturbances. For instance, wildfires and insect outbreak regimes are expected to be strongly altered under climate change [@boulanger_boreal_2021], and associated biodiversity (see @tremblay_harvesting_2018 for a case study). Both are important drivers of forest dynamics, and our results show that modification in habitat distribution is associated with the specialist response.
 
+We hope that biodiversity actors benefit from more accurate, yet accessible methods to estimate distribution changes. Correlative SDMs are most often used to project distribution changes, but metapopulation models allow a more accurate estimation of colonization and extinction rates with a multispecies perspective. Our estimation of the Bicknell’s Thrush range projected that the biotic interactions will favour the species’ persistence where it already occurs, but will limit its progression further north where firs are not as abundant despite increases in climate suitability. The resulting effect is likely to be the regional contraction of the Bicknell’s Thrush range despite more favourable climatic conditions. Our study highlights the importance of demography, dispersal and biotic interactions on distribution change to rapid environmental change and the importance of spatial structure on the interpretation of projections. 
 
-Climate warming and habitat projections show contrasting effects on the distribution of the Bicknell's thrush breeding range.
-
-RCP 4.5 climate forcing scenario show contraction of the breeding range to its southern edge by increasing temperatures
-
-and expansion to its northern edge. 
-
-Latitudinal displacement/shift
-
-
-
-
-
-
-### Fig 2
-
-
-### Fig 3
-
-
-### Fig 4
-
-<!--
-### Impacts of climate warming on Bicknell's thrush breeding range
-
-Climate warming had a strong effect on Bicknell's thrush breeding range within all studied regions [Fig. 1]. 
-Although intense warming had severe negative effects, this pattern was not apparent in all regions for moderate warming [Fig. 2].
-The directionality and extent of change varied with latitude and extent of warming.
-
-*Our results show a general decline in the number of patches following climate warming [Fig. 2].*\
-Climate warming induced a general decline in the number of patches within the Bicknell's thrush breeding range [Fig. 2].
-The rate of decline was most important at first where fifty or more percent of the patches of all regions were lost within the first 1.5°C increase in temperature, but declined with further warming.
-All of the breeding range within the Estern Townships diseappeared after 2.6°C increase in temperature.
-
-*Increase in abitat amount was observed for low to intermediate levels of climate warming [0 to +1°C], but severe decreases were observed for greater important climate warming*\
-A large proportion of patches and habitat amount in Québec are within the Réserve faunique des Laurentides.
-The dynamics of the later has important effects on the first.
-We observed a significant increase of habitat amount in both Québec and in the Réserve faunique des Laurentides for the first degree of warming and then a gradual acceleration of habitat amount loss.
-Dynamics in the Eastern townships were different, where warming immediately lead to rapid loss of habitat amount. 
-
-*Density distribution of patch area show little change for a temperature increase of +2°C*\
-The Bicknell's thrush breeding range within all regions was mainly comprized of small sized patches [<1 km2] with very few large patches [>50km2, Fig. 2].
-Despite important changes in the number of patches and the habitat amount for all reagions, a 2°C increase in temperature showed little effect over the density distribution of patch area where the proportion of small, to meadium, to large patches remained mostly constant.
-Changes to the area distributions were greater after 4 degrees of warming with a decrease in the proportion of very small patches [<1km2>] and the increase of slightly larger patches [~1km2].
-
-*Climate warming reduces the proportion occupied by large inter-patch distance*\
-Warming-induced changes to the distribution of inter-patch distance show a decrease in the longest distances which can be attributable to the general loss of patches.
-Smaller interpatch distances increased in proportion in all regions and effects increased with the severity of the warming.
-
-
-### Effect of temperature warming on habitat and climate distribution [Mismatch]
-
-*habitat [suitable] moving toward boreal forest, leaving behind M and T*\
-
-
-### Cumulative impacts of habitat amount and connectivity
-
-*Loss in capacity is precipitated by loss of landscape connectivity*\
-Habitat amount varied importantly under climate warming scenario [Fig. 3]. 
-We observed for a range of short and long dispersal distances both important change and constance to the metapopulation capacity [metapopulation persistence] in response to variation in habitat amount.
-The effect of habitat amount on metapopulation capacity differed depending on the region and the severity of the climate warming. 
-Changes in habitat amount in the region of Québec and in the Eastern Townships lead to an amplified response of amplitude of the capacity where dispersal distances increased sensitivity of the capacity response.
-In opposition, metapopulation capacity did not vary significantly with habitat amount in the Réserve faunique des Laurentides under 2.6°C increase in temperature and the change in capacity was of lesser amplitude for greater dispersal distances.
-Changes to the connectivity within regions showed different dynamics between Québec and the Réserve faunique des Laurentides while habitat amount variation were similar [Fig. 3]. 
-
-- Changes in habitat availability are amplified in capacity
-- Weird: M area increases, but not connectivity
-- ET area amount and capacity decreases sharply
-- Increase in habitat amount in QC causes spikes in capacity
-- Increases in habitat amount has most effect on capacity for greater dispersal distance [connectivity]
--->
-
-## Discussion
-
-*Paragraphe 1. Our objective was to develop a tool relevant to decision-making and policy that can manage the complexity arising from biotic interactions and dispersal.*\
-Our study reveals that the extent of the response to climate warming is likely to be impacted by bottom-up interactions and landscape structure.
-We derived three observations from metapopulation theory
-	1. We found that a *mismatch* of the consumer and its favourable climate emerges as a property of the metapopulation approach. Using a metapopulation approach, we showed that climate warming could lead to a decrease in the environmental *correlation between trophic levels*.
-	2. precipitation of the decline with habitat shrinking and connectivity
-	3. importance of the correlation in the environmental response between trophic levels
-inspired by a real case scenario, we have shown how theory could be relevant to decision-making and policy.
-In this study, we did not consider a parametrized model for the Bicknell's thrush.
-
-*Cette approche est intéressante, mais a déjà commencée à être explorée: revue de littérature*\
-Many studies have investigated distribution change using metapopulation theory [@fordham_adapted_2013;@schnell_estimating_2013;@talluto_extinction_2017;@huang_using_2019;@vissault_slow_2020], but much fewer to manage the complexity arising from biotic interactions and dispersal in context of rapid environmental change.
-Some aspects have however been explored, starting with the development of the theoretical basis for metapopulation dynamics on heterogenous landscapes. 
-Spatially realistic metapopulation theory has allowed modelling of distribution dynamics in species living in fragmented landscapes[@hanski_metapopulation_1998;@hanski_habitat_1999;@hanski_metapopulation_2000;@hanski_spatially_2001].
-The coupling of spatially explicit metapopulation model with dynamic climate change represent a significant conceptual advancement toward increasingly realistic projections [@anderson_dynamics_2009].
-The approach reveals distribution dynamics that other methods fail to capture, demonstrating the importance of approaches intergrating dynamic processes.
-The simulation study of the Iberian lynx distribution is the first study to consider the interplay of climate change and trophic interactions using a metapopulation approach [@fordham_adapted_2013].
-It showed that these factors could be explicitely considered together, exhibiting distribution dynamics of greater complexity and realism.
-Moreover, the use of the metapopulation approach has made possible the study of non-equilibrium distributions - the result of a mismatch between optimal and realized climates -, by the scaling of local processes at the entire distribution [@talluto_extinction_2017].
-Recently, the approach was extended to non-equilibrium dynamics of distribution shift in response to climate warming, opening the way for the study of non-linear dynamics of migration [@vissault_slow_2020].
-The metapopulation framework that we propose here builds on these previous developments to andvance toward simultaneously projecting changes in demography and dispersal in response to climate change and the multi-species effects of biotic interactions on the distribution of species.
-
-The use of the metapopulation theory to inform conservation goes as far back as 1985 [Shaffer 1985] for species with patchy population structure and has since been used to account for specific spatial and population dynamics [@hanski_metapopulation_1997;@fordham_adapted_2013;@huang_using_2019]. 
-In response to exploitation pressure from the logging compagnies and an extinction risk increasing rapidly, a spatially explicit metapopulation model was used to define the amount of prestine forest needed to assure the survival of the northern spotted owl [*Strix occidentalis caurina*] in North-ouestern United-States [Shaffer 1985, Lamberson 1994].
-More recently, the incidence function model [IFM] has been used to study the large scale population dynamics of the Glanville fritillary [*Meliteae cinxia*] who's distribution has shrunk in Europe to become highly fragmented.
-The application of these models to case studies demonstrates the value of the metapopulation approach in describing the distribution dynamics of species while being strongly rooted in theory and simple enough to be parameterized using available ecological data [@hanski_metapopulation_1999].
-
-Metapopulation theory and models affect how conservation priorities are defined at a variety of scales.
-The conservation of ecological corridors is the current focus of important initiatives worldwide [CorridorAppalachien,NCC,WesternWildwayNetworkPriorityCorridorProject] while habitat fragmentation is a criterion of threat for the IUCN Red List [IUCN].
-Metapopulation theory predicts the scaling of extinction risk with increasing habitat isolation, something other non spatially explicit approaches do not do.
-Equally, assisted colonization and habitat restoration are put forward as means to support species persistence by increasing respectively colonization rates and habitat availability [@ricciardi_assisted_2009,@willis_assisted_2009,@fordham_adapted_2013].
-Metapopulation theory main contribution to conservation ecology has been to direct attention on the effect of spatial configuration of the landscape on species persistence. 
-
-
-
-Hanski --> théorie
-Araujo [Nature climate change, proceeding B., Talluto, Steve, State occupancy models [voir ref steve]]
-Utilisation pour la conservation: nothern spotted howl [https://scholar.google.com/scholar?hl=fr&as_sdt=0%2C5&q=The+metapopulation+and+species+conservation%3A+the+special+case+of+the+northern+spotted+owl&btnG=]
-Papillons [Hanski]
-A des incidences sur comment on conserve [milieu de la conservation inspiré par l'approche: connectivité]
-
-*Paragraph 2. habitat-abiotic mismatch*\
-
-*Paragraph 3. Metapopulation approach. Importance of connectivity. Mountain tops.*\
-
-- Habitat amount decrease --> capacity decline precipitated
-	- connectivity [fragmentation + isolation + habitat amount] loss
-
-
-*Paragraph 4. Importance of environmental correlation between trophic levels. We don’t really know that.*\
-
-*Paragraph 5. Although metapopulation models are easy to parameterize, they require species-specific colonization, extinction, and dispersal information.*\
-
-*Paragraph 6. Several other factors could also impact the system's reponse to climate warming.* \
-Several other factors could also impact the system's reponse to climate warming.
-The model described here is best suited for habitat specialists that depend for their presence on the prior establishment of another species that they do not impact, but it could also be generalized to other types of interactions [see @gravel_trophic_2011 for an examle of a very general model].
-Positive and negative effects of the consumer on its resource could influence differently the system's response to climate warming.
-For example, resource remouval by the consumer may reduce competition of resource types and decrease response lag, accelerating the consumer's decline at the scale of the landscape [@vissault_slow_2020,will].
-Prolongued occupancy of the resource by the consumer may on the other hand increase resource mismatch and support source-sink dynamics.
-In addition to biotic interactions, lanscape structure could affect metapopulation persistence through situations where enhanced connectivity and source-sink dynamics could delay prevalence decline or where the access to suitable habitat could be limited by dispersal and precipitate motapopulation extinction [@hanski_metapopulation_2000].
-Finally, metapopulation dynamics at the landscape level could be affected by the interaction of climate warming and natural disturbances.
-Regime of forest fires and spruce budworm outbreaks are expected to respectively increase and decrease in severity [].
-Both are important drivers of forest dynamics and our results show that modifications in resource spatial distribution could be important for the consumer response.
-
-*Paragraph 7. Retour sur la grive.* \
-We have shown that metapopulation models are tools of value for conservation practitionners.
-
-## Figures
-
-*??? Box 1. Cartoon representation of the various effects of climate change on landscape suitability*\
-Patch contraction\
-Patch extinction\
-dispersal limitation\
-Connectivity reduction\
-
-*Box 2. Integrating biotic interactions into metapopulation models.*\
-[Intuitions from metapopulation theory using differential equations of a simple bottom-up model, with corresponding figures]
-	1. Conceptual representation of resource mismatch effect on consumer distribution shift.
-	2. Non-linear response of occupancy with climate change in metapopulations versus the linear response of a standard SDM
-	3. The effect of environmental change on lower trophic levels can propagate up and affect higher trophic levels. The effect of more favourable abiotic conditions to a top level species could be detrimental if the environment becomes less favourable for the lower trophic level. Figure : change in prevalence of a top species [color] as a function of the optimal temperature of the lower trophic level [x axis] and the higher trophic level [y axis]. 
-
-
-*Fig 2. Regional maps of initial and projected Bicknell's thrush distribution after 100 years of climate warming.*\
-
-*Fig 3. Projection of regional distribution change over 100 years of constant climate warming.*\
 
 \newpage
 
