@@ -42,7 +42,8 @@ pandoc $1 -o docs/manuscript.pdf \
     --template=manuscript/conf/template.tex \
     --filter pandoc-xnos \
     --number-sections \
-    --bibliography=$2
+    --bibliography=$2 \
+    --csl=manuscript/conf/ecology.csl
 
 # if double-blind, print title page separated
 if ${double_blind}
@@ -61,7 +62,8 @@ pandoc $1 -o docs/manuscript.tex \
     --template=manuscript/conf/template.tex \
     --filter pandoc-xnos \
     --number-sections \
-    --bibliography=$2
+    --bibliography=$2 \
+    --csl=manuscript/conf/ecology.csl
 
 # Build html
 echo [1] Rendering html document
