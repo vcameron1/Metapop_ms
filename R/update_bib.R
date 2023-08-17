@@ -50,7 +50,7 @@ stripCitekeys <- function(infile){
   for(line in readLines(indoc, warn = F)){
     count = count + 1
     if(stringr::str_detect(line, '@')) {
-      candidate <- unlist(stringr::str_extract_all(line, "(?<=@)\\w+"))
+      candidate <- unlist(stringr::str_extract_all(line, "(?<=@)[\\w-]+"))
       if(length(candidate) != 0){
         citations <- c(citations, candidate)
       }
