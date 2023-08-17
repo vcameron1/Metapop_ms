@@ -95,7 +95,7 @@
          height: auto; /* Should be removed. Only for demonstration */
          }
          article h1 {
-         margin-top: 2em;
+         margin-top: 2.2em;
          border-bottom: 1px solid rgba(0, 0, 0, 0.1);
          font-weight: 400;
          }
@@ -104,9 +104,17 @@
          margin-bottom: 0px;
          padding-bottom: 0px;
          font-weight: 400;
+         font-size: 1.8em;
          }
          article h3 {
          font-weight: 400;
+         font-size: 1.5em;
+         margin-bottom: 0em;
+         }
+         article h4 {
+         font-weight: 400;
+         font-size: 1.25em;
+         margin-bottom: 0em;
          }
          .citation {
          border-bottom: 1px #00667F;
@@ -160,6 +168,7 @@
          float: right;
          }
          summary {
+         display: block;
          padding-top: 2em;
          padding-left: 1em;
          padding-right: 3em;
@@ -191,7 +200,7 @@
          position: fixed;
          left: 20px;
          bottom: 8px;
-         width: 100%;
+         width: 20%;
          text-align: left;
          font-size: 84%;
          font-weight: 100;
@@ -265,7 +274,7 @@
       </header>
 
       <nav class="artifacts">
-         <p style="font-size: 15px; color:rgb(155, 154, 154);line-height: 0%; padding-bottom: 4px;">Generated with ☕using the <a style="color:rgb(100, 100, 100);"  href='#' target="_blank";">research-compendium-template</a></p>
+         <p style="font-size: 15px; color:rgb(155, 154, 154);line-height: 0%; padding-bottom: 4px;">Generated using the <a style="color:rgb(100, 100, 100);"  href='#' target="_blank";">research-compendium-template</a></p>
          <a href="https://github.com/$github-repo$" title="Github repo" target="_blank"><img src="https://img.shields.io/badge/write-github-blue.svg" /></a>
          <a href="manuscript.pdf" title="Github repo" target="_blank"><img src="https://img.shields.io/badge/read-pdf-green.svg" /></a>
          <a href="manuscript.docx" title="Github repo" target="_blank"><img src="https://img.shields.io/badge/read-docx-yellow.svg" /></a>
@@ -352,12 +361,12 @@
          </sections>
       </d-appendix>
 
-      <svg class="arrowTop" id="arrowTop" xmlns="http://www.w3.org/2000/svg" width="98" height="80"><g fill="none" stroke="#00667F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10"><path d="M2.012 47.458c2.254-15.748 7.447-21.81 23.566-21.434 22.829.533 36.483-4.221 53.935-19.566"/><path d="M80.435 14.297c-.592-4.348 2.294-7.566 2.554-11.755-2.997 1.132-9.175 3.154-12.46 2.399"/></g><text x="0" y="65" fill="#00667F" font-family="Chalkduster" font-size="16">Click here!</text></svg>
+      <svg class="arrowTop" id="arrowTop" xmlns="http://www.w3.org/2000/svg" width="98" height="80"><g fill="none" stroke="#00667F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10"><path d="M2.012 47.458c2.254-15.748 7.447-21.81 23.566-21.434 22.829.533 36.483-4.221 53.935-19.566"/><path d="M80.435 14.297c-.592-4.348 2.294-7.566 2.554-11.755-2.997 1.132-9.175 3.154-12.46 2.399"/></g></svg>
       
       </div>
       <div class="footer">
-         <p><a onMouseOver="this.style.color='#00667F'"onMouseOut="this.style.color='grey'" style='color:grey' href="https://twitter.com/intent/tweet?text=$title$%20https://github.com/$github-repo$"" target="_blank"><i class="fab fa-twitter"></i> Tweet this page</a></p>
          <p><a onMouseOver="this.style.color='#00667F'"onMouseOut="this.style.color='grey'" style='color:grey' href="https://github.com/$github-repo$/issues" target="_blank"><i class="fas fa-exclamation-circle"></i> Report issues</a></p>
+         <p><a onMouseOver="this.style.color='#00667F'"onMouseOut="this.style.color='grey'" style='color:grey' href="https://twitter.com/intent/tweet?text=$title$%20https://github.com/$github-repo$"" target="_blank"><i class="fab fa-twitter"></i> Tweet this page</a></p>
          <p><a onMouseOver="this.style.color='#00667F'"onMouseOut="this.style.color='grey'" style='color:grey' href="javascript:void(0)" onclick="openAnnotate()"><i class="fas fa-comments"></i> Leave a comment</a></p>
       </div>
 
@@ -483,7 +492,7 @@
          }
       });
    </script>
-      <script>
+   <script>
          function openAnnotate() {
             // Sleeping function
             var delay = ( function() {
