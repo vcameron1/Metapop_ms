@@ -1,5 +1,5 @@
 # Manuscript
-	msOutput=docs/manuscript.pdf
+	msOutput=docs/manuscript.pdf docs/manuscript.html docs/manuscript.docx
 	msInput=manuscript/manuscript.md
 	CONF=manuscript/conf/*
 	BIB=manuscript/references.bib
@@ -10,7 +10,7 @@
 
 # render manuscript pdf
 $(msOutput): $(META) $(BIB) $(CONF)
-	@sh manuscript/conf/build.sh $(msInput) $(BIB) $(META)
+	@bash manuscript/conf/build.sh $(msInput) $(BIB) $(META)
 
 # generate bib file
 $(BIB): $(msInput) $(bibR)
