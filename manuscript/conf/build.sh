@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 ###################################################################
 # Bash file to build the manuscript outputs (pdf)
 # Victor Cameron
@@ -18,6 +18,9 @@
 # - Load metada.yml
 # - Build pdf
 # - Build title Page (if double-blind is TRUE)
+# - build tex
+# - build html
+# - build docx
 ###################################################################
 
 
@@ -36,11 +39,11 @@ mkdir docs
 # Build pdf
 echo [1] Rendering manuscript pdf
 pandoc $1 -o docs/manuscript.pdf \
-    --pdf-engine=xelatex \
     --quiet \
     --metadata-file=$3 \
     --template=manuscript/conf/template.tex \
     --filter pandoc-xnos \
+    --pdf-engine=xelatex \
     --number-sections \
     --bibliography=$2 \
     --csl=manuscript/conf/ecology.csl
@@ -76,3 +79,23 @@ pandoc -s --mathjax \
     --filter pandoc-xnos \
     --toc \
     --bibliography=$2
+
+# Build docx
+## This md -> tex _. word is a q&d until I create a lua filter to transform authors, afill and keywords in full text for word docx
+echo [1] Rendering docx document
+pandoc $1 -o manuscript.tex \
+    --metadata-file=$3 \
+    --template=manuscript/conf/templateWord.tex \
+    --filter pandoc-xnos \
+    --number-sections \
+    --bibliography=$2 \
+    --csl=manuscript/conf/ecology.csl
+pandoc -s manuscript.tex -o docs/manuscript.docx \
+    --reference-doc=manuscript/conf/template.docx
+	rm manuscript.tex
+
+
+# Move manuscript folder to docs so html can load figures
+cp -R manuscript docs
+rm docs/manuscript/*.md
+rm -R docs/manuscript/conf
