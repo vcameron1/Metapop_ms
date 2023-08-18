@@ -4,6 +4,36 @@
 # date: 23/12/2022
 ####
 
+metapop_land_fig <- function(patches, r, initial_patches = TRUE, plot_name = './manuscript/img/metapop_spatial_structure.png') {
+    # Save plot in file
+    png(plot_name, width = 150, height = 150, units='mm', res = 700, bg = "transparent")
+
+    # Set graphic parameters
+    par(pty = "s", par(pty = "s", mar = c(1, 1, 1, 1)), bg = NA)
+    lwd <- 5
+
+    # initialize a plot
+    plot(x = c(-1, 1),
+        y = c(-1, 1),
+        type = "n",
+        ylab = "",
+        xlab = "",
+        yaxt = "n",
+        xaxt = "n",
+        bty = "o",
+        yaxs = "i",
+        xaxs = "i")
+
+    # Draw patches
+    raster::plot(patches, col = rgb(77, 77, 77, max = 255, alpha = 60), lwd = lwd)
+
+    # Frame the figure
+    box(lwd = lwd)
+
+    # Close file
+    dev.off()
+}
+
 # Landscape params
 get_land <- function() {
     ## Contraction
@@ -82,7 +112,6 @@ get_land <- function() {
 # Plot conceptual figure
 concept_land_fig <- function(patches, r) {
     # Dependencies
-    source("./conceptual_fig/metapop_land_fig.R")
     source("./conceptual_fig/plot_image.R")
 
     # Generate plots
@@ -111,6 +140,3 @@ concept_land_fig <- function(patches, r) {
     file.remove('./manuscript/img/metapop_spatial_structure_1.png')
     file.remove('./manuscript/img/metapop_spatial_structure_2.png')
 }
-
-land <- get_land()
-concept_land_fig(land[1:2], land$r)
