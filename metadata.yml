@@ -1,16 +1,16 @@
 title: "SPATIAL STRUCTURE IS MORE THAN HABITAT AMOUNT: A METAPOPULATION APPROACH IS NECESSARY TO PROJECT DISTRIBUTIONS UNDER CLIMATE CHANGE"
-running_title: "Projecting distribution using metapopulation approach"
+running_title: ""
 abstract: "Projecting distributions under climate change requires going beyond climate suitability models. Assessing species persistence should account for the spatial arrangement and the size of suitable habitats, which are often characterized by vegetation or other biotic constraints. We propose that metapopulation theory can be used to leverage species distribution models and account for the complexity arising from biotic interactions, demography, and landscape structure. We review the theory for distribution shifts in response to climate change and derive three concepts that contrast with classical approaches: i) habitat-climate mismatch can generate non-equilibrium dynamics, ii) linear change in habitat occupancy generates nonlinear distribution change, and iii) the effect of environmental change on habitats can propagate up and have counterintuitive effects on higher trophic levels. We illustrate the theory through a study of habitat suitability within the Bicknell's Thrush (*Catharus bicknelli*) distribution, a threatened bird whose patchy distribution is restricted to dense balsam fir forests generally found at high elevation. Under climate warming, we observe from the effect of climate alone a northward expansion associated with an important southern range contraction. In contrast, the distribution of associated vegetation remains geographically stable despite warming. An arising mismatch between climate and vegetation drives important changes to the spatial structure of suitable habitat patches. Patch area, connectivity, and habitat amount can be differently affected by climate change, which influence species persistence, suggesting that habitat amount alone is not enough to characterize regional distribution changes. Our results support the importance of integrating both habitat amount (biotic and abiotic) and landscape spatial structure in the assessment of persistence for which the metapopulation theory may be an ideal framework."
 keywords:
     - "Climate change"
-    - "Distribution"
-    - "Range dynamics"
+    - "Metapopulation theory"
+    - "Species distribution"
+    - "Range shift"
     - "Transient dynamics"
-    - "Metapopulation"
 highlights: ""
 supporting-files: ""
 language: "en"
-license: "CC-BY"
+license: "mit"
 github-repo: "vcameron1/Metapop_ms"
 bibliography: "https://doc.ielab.usherbrooke.ca/index.php/s/SZGp0vuS1GVLVK8/download"
 zenodoDOI: ""
@@ -27,17 +27,17 @@ authors:
       email: guillaume.blanchet@USherbrooke.ca
       familyname: Blanchet
       givennames: F. Guillaume
-      orcid: []
+      orcid: [0000-0001-5149-2488]
     - affiliations: [3]
       email: yan.boulanger@nrcan-rncan.gc.ca
       familyname: Boulanger
       givennames: Yan
-      orcid: []
+      orcid: [0000-0001-6181-8509]
     - affiliations: [4]
       email: junior.tremblay@ec.gc.ca
       familyname: Tremblay
-      givennames: Junior
-      orcid: []
+      givennames: Junior A.
+      orcid: [0000-0003-4930-0939]
     - affiliations: [1, 2]
       email: Dominique.Gravel@USherbrooke.ca
       familyname: Gravel
@@ -54,12 +54,13 @@ affiliations:
     - index: 4
       name: Environment and Climate Change Canada, Canadian Wildlife Service, Québec, Québec, Canada
 
+significance: ""
 acknowledgments: ""
-data_availability: "The code, figures, and manuscript are stored as a research compendium at [https://github.com/vcameron1/Metapop_ms](https://github.com/vcameron1/Metapop_ms)."
-funding: "This research was supported by the BIOS² NSERC CREATE program."
-authorship: ""
+data_availability: "We performed all analyses in the R programming language [@r_core_team_r_2019] and the code necessary to reproduce the analyses, figures, and manuscript are stored as a research compendium at <https://github.com/vcameron1/Metapop_ms>. The data that support the study are available from the Regroupement QuébecOiseaux (RQO), @mckenney_spatial_2013 and @boulanger_boreal_2021. Restrictions apply to the availability of RQO data, which were used under license for the current study, and so are not publicly available. Data are however available from the authors upon reasonable request and with written permission of RQO. Data from @boulanger_boreal_2021 are available from its authors upon request."
+funding: "This research was supported by the BIOS² NSERC CREATE program. D.G. was supported by research grants from the Canada Research Chair program and the Natural Sciences and Engineering Research Council of Canada (NSERC)."
+authorship: "VC and DG designed the study. VC, DG, and GB conceived the case-study model and YB and JT contributed expert knowledge in its development. VC developped the scripts to run the model and analyze the simulations, and wrote the first draft of the manuscript. All authors contributed to revisions."
 conflicts-of-interest: "The authors declare no conflict of interest."
 
 link-citations: true
 figures-at-end: false
-double-blind: false
+double-blind: true

@@ -260,22 +260,29 @@ $if(csl-refs)$
   {\par}
 $endif$
 
-$if(title)$
-\title{$title$$if(thanks)$\thanks{$thanks$}$endif$}
-$endif$
 
+% MAKETITLE: print all title page only if not double-blind
+$if(double-blind)$
+$if(title)$
+\title{$title$}
+$endif$
 $if(subtitle)$
 \subtitle{$subtitle$}
 $endif$
-
+$else$
+$if(title)$
+\title{$title$$if(thanks)$\thanks{$thanks$}$endif$}
+$endif$
+$if(subtitle)$
+\subtitle{$subtitle$}
+$endif$
 $for(authors)$
 \author[$for(authors.affiliations)$$authors.affiliations$$sep$,$endfor$]{$authors.givennames$~$authors.familyname$$if(authors.corresponding)$\thanks{Corresponding author: $authors.email$}$endif$}
 $endfor$
-
 $for(affiliations)$
 \affil[$affiliations.index$]{$affiliations.name$}
 $endfor$
-
+$endif$
 
 \date{$date$}
 
@@ -288,6 +295,15 @@ $endif$
 
 % print all title page only if not double-blind
 $if(double-blind)$
+$if(title)$
+\maketitle
+$endif$
+$if(abstract)$
+\begin{abstract}
+$abstract$
+\end{abstract}
+$endif$
+\newpage
 $else$
 $if(title)$
 \maketitle
@@ -295,7 +311,7 @@ $if(running_title)$
 \small{{\bf Running title}: $running_title$}\\\\
 $endif$
 $if(supporting-files)$
-\small{{\bf Supporting information}: Additional supporting information can be found $for(supporting-files)$\href{https://willvieira.github.io/ms_STM-managed/$supporting-files$.pdf}{here}$sep$, $endfor$.}\\\\
+\small{{\bf Supporting information}: }\\\\
 $endif$
 $if(acknowledgments)$
 \small{{\bf Acknowledgments}: $acknowledgments$}\\\\
