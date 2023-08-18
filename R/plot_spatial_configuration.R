@@ -5,7 +5,7 @@
 #########################
 
 # Metrics
-BITH_metrics_QC <- readRDS("/Users/victorcameron/Documents/Git/Metapop_ms/SDM/results/BITH_metrics_QC.RDS")
+BITH_metrics_QC <- readRDS("./SDM/results/BITH_metrics_QC.RDS")
 
 #### Figure format ####
 
