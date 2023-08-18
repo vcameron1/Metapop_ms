@@ -53,8 +53,13 @@ capacity_QC$capacity[capacity_QC$scenario=="Forest composition" & capacity_QC$al
 
 #### Plot ####
 
+# Set graphic parameters
+lwd <- 3
+cex_lab <- 1.5
+
+
 # Save plot in file
-png('./manuscript/img/capacity.png', width = 200*1.2, height = 75*1.2, units='mm', res = 500)
+png('./manuscript/img/capacity.png', width = 200*1.2, height = 75*1.2, units='mm', res = 200)
 
 # Par
 par(mfrow = c(1, 2), mar = c(5, 4, 1, 1))
@@ -63,18 +68,18 @@ par(mfrow = c(1, 2), mar = c(5, 4, 1, 1))
 ## Climate only - habitat amount -
 plot(totalArea_QC$Time[totalArea_QC$scenario == "Climate-only"],
     totalArea_QC$totalArea[totalArea_QC$scenario == "Climate-only"],
-    type = "b", col = "darkblue", ylab = "", xlab = "Time", cex.lab = 1.5,
-    lwd = 2, yaxt = "n", axes = FALSE, ylim = c(0.8, 1.8)
+    type = "b", col = "darkblue", ylab = "", xlab = "Time", cex.lab = cex_lab,
+    lwd = lwd, yaxt = "n", axes = FALSE, ylim = c(0.8, 1.8)
 )
 ## Climate only - plot layout -
 box(bty = "l")
 axis(1)
-title(ylab = "Metrics of\npersistence", line = 1, cex.lab = 1.5)
+title(ylab = "Metrics of\npersistence", line = 1, cex.lab = cex_lab)
 # legend(2065, 2, legend=c("Habitat amount", "Capacity", "1 km dispersal", "500 km dispersal"), col=c("darkblue","darkgrey","darkgrey","darkgrey"), lty=c(1,1,2:3), lwd=2, cex=0.7, box.lty=0)
 legend(2060, 1.9,
     legend = c("Habitat amount", "Capacity (1 km)", "Capacity (500 km)"),
     col = c("darkblue", "darkgrey", "darkgrey"), lty = c(1:3),
-    lwd = 2, cex = 0.9, box.lty = 0
+    lwd = lwd, cex = 0.9, box.lty = 0
 )
 ## Climate only - capacity 1km -
 par(new = TRUE)
@@ -82,7 +87,7 @@ plot(capacity_QC$Time[capacity_QC$scenario == "Climate-only" &
         capacity_QC$alpha == 1],
     capacity_QC$capacity[capacity_QC$scenario == "Climate-only" &
         capacity_QC$alpha == 1],
-    type = "b", col = "darkgrey", lty = 2, lwd = 2, axes = FALSE,
+    type = "b", col = "darkgrey", lty = 2, lwd = lwd, axes = FALSE,
     bty = "n", xlab = "", ylab = "", ylim = c(-0.26, 6)
 )
 ## Climate only - capacity 500km -
@@ -91,7 +96,7 @@ plot(capacity_QC$Time[capacity_QC$scenario == "Climate-only" &
         capacity_QC$alpha == 0.002],
     capacity_QC$capacity[capacity_QC$scenario == "Climate-only" &
         capacity_QC$alpha == 0.002],
-    type = "b", col = "darkgrey", lty = 3, lwd = 2, axes = FALSE,
+    type = "b", col = "darkgrey", lty = 3, lwd = lwd, axes = FALSE,
     bty = "n", xlab = "", ylab = "", ylim = c(-0.7, 7.4)
 )
 
@@ -101,7 +106,7 @@ par(mar = c(5, 4, 1, 1))
 plot(totalArea_QC$Time[totalArea_QC$scenario == "Forest composition"],
     totalArea_QC$totalArea[totalArea_QC$scenario == "Forest composition"],
     type = "b", col = "darkorange", ylab = "", xlab = "Time",
-    cex.lab = 1.5, lwd = 2, yaxt = "n", axes = FALSE, ylim = c(0.7, 1.5)
+    cex.lab = cex_lab, lwd = lwd, yaxt = "n", axes = FALSE, ylim = c(0.7, 1.5)
 )
 ## Forest change - plot layout -
 box(bty = "l")
@@ -112,7 +117,7 @@ plot(capacity_QC$Time[capacity_QC$scenario == "Forest composition" &
         capacity_QC$alpha == 1],
     capacity_QC$capacity[capacity_QC$scenario == "Climate-only" &
         capacity_QC$alpha == 1],
-    type = "b", col = "darkgrey", lty = 2, lwd = 2, axes = FALSE,
+    type = "b", col = "darkgrey", lty = 2, lwd = lwd, axes = FALSE,
     bty = "n", xlab = "", ylab = "", ylim = c(-0.3, 3.2)
 )
 ## Forest change - capacity 500km -
@@ -121,7 +126,7 @@ plot(capacity_QC$Time[capacity_QC$scenario == "Forest composition" &
         capacity_QC$alpha == 0.002],
     capacity_QC$capacity[capacity_QC$scenario == "Forest composition" &
         capacity_QC$alpha == 0.002],
-    type = "b", col = "darkgrey", lty = 3, lwd = 2, axes = FALSE,
+    type = "b", col = "darkgrey", lty = 3, lwd = lwd, axes = FALSE,
     bty = "n", xlab = "", ylab = "", ylim = c(-0.3, 3.2)
 )
 
