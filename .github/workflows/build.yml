@@ -43,6 +43,7 @@ jobs:
           sudo apt-get install texlive-fonts-recommended
           sudo apt-get install texlive-fonts-extra
           sudo apt-get install texlive-latex-extra
+          sudo apt-get install texlive-xetex
 
       - name: Install R dependencies
         env:
