@@ -35,7 +35,8 @@
 	fig8=manuscript/img/capacity.png
 
 # Results
-	RES=./SDM/results/BITH_metrics_QC.RDS
+	RES=SDM/results/BITH_metrics_QC.RDS
+	resR=R/get_results_file.R
 	# source("./SDM/patch_metrics_functions.R")
 
 
@@ -44,13 +45,18 @@
 
 
 # render manuscript
-$(msOutput): $(META) $(BIB) $(CONF) $(fig1) $(fig2) $(fig3) $(fig4) $(fig5) $(fig6) $(fig7) $(fig8)
+$(msOutput): $(META) $(BIB) $(CONF) $(fig1) $(fig2) $(fig3) $(fig4) $(fig5) $(fig6) $(fig7) $(fig8) $(RES)
 	@bash manuscript/conf/build.sh $(msInput) $(BIB) $(META)
 
 # generate bib file
 $(BIB): $(msInput) $(bibR)
 	@echo [1] check if references are up to date
 	@Rscript -e "source('$(bibR)')"
+
+# get results
+$(RES): $(resR)
+	@echo [1] getting results
+	@Rscript -e "source('$(resR)')";
 
 # plot figure 1
 $(fig1): $(fig1R)
