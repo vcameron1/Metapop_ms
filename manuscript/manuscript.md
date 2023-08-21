@@ -182,11 +182,6 @@ Several other factors could also impact the system's response to climate warming
 
 We hope that biodiversity actors benefit from more accurate, yet accessible methods to estimate distribution changes. Correlative SDMs are most often used to project distribution changes, but metapopulation models allow a more accurate estimation of colonization and extinction rates with a multispecies perspective. Our estimation of the Bicknell’s Thrush range projected that the biotic interactions will favour the species’ persistence where it already occurs, but will limit its progression further north where firs are not as abundant despite increases in climate suitability. The resulting effect is likely to be the regional contraction of the Bicknell’s Thrush range despite more favourable climatic conditions. Our study highlights the importance of demography, dispersal and biotic interactions on distribution change to rapid environmental change and the importance of spatial structure on the interpretation of projections. 
 
-
-## Data and code availability statement
-
-We performed all analyses in the R programming language [@r_core_team_r_2019] and the code necessary to reproduce the analyses, figures, and manuscript are stored as a research compendium at <https://github.com/vcameron1/Metapop_ms>. The data that support the study are available from the Regroupement QuébecOiseaux (RQO), @mckenney_spatial_2013 and @boulanger_boreal_2021. Restrictions apply to the availability of RQO data, which were used under license for the current study, and so are not publicly available. Data are, however, available from the authors upon reasonable request and with written permission of RQO. Data from @boulanger_boreal_2021 are available from its authors upon request.
-
 \newpage
 
 
