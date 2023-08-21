@@ -13,7 +13,7 @@ localResFile <- 'SDM/results/BITH_metrics_QC.RDS'
 needDownload <- !file.exists(localResFile)
 
 # Global Res URL
-globalURL <- gsub('\"', '', gsub('results: \"', '', grep('results', readLines('metadata.yml'), value = T)))
+globalURL <- gsub('\"', '', gsub('results: \"', '', grep('results:', readLines('metadata.yml'), value = T)))
 
 # Download results only if necessary
 if(needDownload)
