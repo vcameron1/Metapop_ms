@@ -34,7 +34,7 @@ authors:
       familyname: Boulanger
       givennames: Yan
       orcid: [0000-0001-6181-8509]
-    - affiliations: [4]
+    - affiliations: [4, 5]
       email: junior.tremblay@ec.gc.ca
       familyname: Tremblay
       givennames: Junior A.
@@ -53,7 +53,9 @@ affiliations:
     - index: 3
       name: Canadian Forest Service, Laurentian Forestry Centre, Natural Resources Canada, Québec, Québec, Canada
     - index: 4
-      name: Environment and Climate Change Canada, Canadian Wildlife Service, Québec, Québec, Canada
+      name: Environment and Climate Change Canada, Wildlife Research Division, Québec, Québec, Canada
+    - index: 4
+      name: Université Laval, Département des sciences du bois et de la forêt, Québec, Canada
 
 significance: ""
 acknowledgments: ""
