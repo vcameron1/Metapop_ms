@@ -24,7 +24,7 @@ authors:
       givennames: Victor
       orcid: 0000-0003-0624-4201
       corresponding: TRUE
-    - affiliations: [1, 2]
+    - affiliations: [1, 2, 6, 7]
       email: guillaume.blanchet@USherbrooke.ca
       familyname: Blanchet
       givennames: F. Guillaume
@@ -56,6 +56,10 @@ affiliations:
       name: Environment and Climate Change Canada, Wildlife Research Division, Québec, Québec, Canada
     - index: 5
       name: Université Laval, Département des sciences du bois et de la forêt, Québec, Canada
+    - index: 6
+      name: Département de mathématiques, Université de Sherbrooke, Sherbrooke, Québec, Canada
+    - index: 7
+      name : Département des sciences de la santé communautaire, Université de Sherbrooke, Sherbrooke, Québec, Canada
 
 significance: ""
 acknowledgments: ""
