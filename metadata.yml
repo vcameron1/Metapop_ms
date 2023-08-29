@@ -24,17 +24,17 @@ authors:
       givennames: Victor
       orcid: 0000-0003-0624-4201
       corresponding: TRUE
-    - affiliations: [1, 2]
+    - affiliations: [1, 2, 3, 4]
       email: guillaume.blanchet@USherbrooke.ca
       familyname: Blanchet
       givennames: F. Guillaume
       orcid: [0000-0001-5149-2488]
-    - affiliations: [3]
+    - affiliations: [5]
       email: yan.boulanger@nrcan-rncan.gc.ca
       familyname: Boulanger
       givennames: Yan
       orcid: [0000-0001-6181-8509]
-    - affiliations: [4, 5]
+    - affiliations: [6, 7]
       email: junior.tremblay@ec.gc.ca
       familyname: Tremblay
       givennames: Junior A.
@@ -51,11 +51,15 @@ affiliations:
     - index: 2
       name: Québec Centre for Biodiversity Sciences, McGill University, Montréal, Québec, Canada
     - index: 3
-      name: Canadian Forest Service, Laurentian Forestry Centre, Natural Resources Canada, Québec, Québec, Canada
+      name: Département de mathématiques, Université de Sherbrooke, Sherbrooke, Québec, Canada
     - index: 4
-      name: Environment and Climate Change Canada, Wildlife Research Division, Québec, Québec, Canada
+      name: Département des sciences de la santé communautaire, Université de Sherbrooke, Sherbrooke, Québec, Canada
     - index: 5
-      name: Université Laval, Département des sciences du bois et de la forêt, Québec, Canada
+      name: Canadian Forest Service, Laurentian Forestry Centre, Natural Resources Canada, Québec, Québec, Canada
+    - index: 6
+      name: Environment and Climate Change Canada, Wildlife Research Division, Québec, Québec, Canada
+    - index: 7
+      name: Département des sciences du bois et de la forêt, Université Laval, Québec, Canada
 
 significance: ""
 acknowledgments: ""
