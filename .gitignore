@@ -1,6 +1,10 @@
 #### Data ####
 data_raw/*
 data_clean/*
+SDM/BITH_SDM.RDS
+SDM/RCP45_*
+SDM/biomass_*
+SDM/results/BITH_metrics_QC.RDS
 
 
 #### R ####
@@ -47,14 +51,14 @@ vignettes/*.pdf
 
 # Extra
 .DS_Store
-*.RDS
+#*.RDS
 *.grd
 *.gri
 *.gif
 *.html
-*.tif
+#*.tif
 mapSpecies/*
-graveyard/*
+#graveyard/*
 trash/*
 docs/
 
