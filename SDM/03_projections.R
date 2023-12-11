@@ -29,15 +29,20 @@ RL_cutoff <- 0.00625 # 1 indv / km2
 template <- raster::raster("./data_clean/templateRaster.tif")
 
 # Scenarios
-scenarios <- c("RCP45_2020", "RCP45_2040", "RCP45_2070", "RCP45_2100",
-               "biomass_2020", "biomass_2040", "biomass_2070", "biomass_2100")
+scenarios <- c("2020", "2040", "2070", "2100")
 
 # Compute predictions per scenario
 for (i in seq_along(scenarios)) {
 
   # # Load data
   ## Reduces greatly the pressure on the memory
-  dat <- readRDS(paste0("./SDM/",scenarios[i], "_df.rds"))
+  dat_biomass <- readRDS(paste0("./SDM/biomass_",scenarios[i], "_df.rds"))
+  dat_climate <- readRDS(paste0("./SDM/RCP45_",scenarios[i], "_df.rds"))
+  ## Merge data to build a full clim + forest projection
+  dat <- dat_biomass
+  dat$prec <- dat_climate$prec
+  dat$temp <- dat_climate$temp
+  dat$temp2 <- dat_climate$temp2
 
 
   # # Predict according to scenario
@@ -47,6 +52,8 @@ for (i in seq_along(scenarios)) {
 
   # Remove df from memory
   rm("dat")
+  rm("dat_biomass")
+  rm("dat_climate")
 
   # # Save projection
   #write.csv(intensityMap, paste0("./SDM/results/BITH_", scenarios[i], ".csv"))
@@ -71,7 +78,12 @@ for (i in seq_along(scenarios)) {
 
 # Save predictions
 filenames <- paste0("./SDM/results/BITH_", scenarios, ".tif")
-raster::writeRaster(BITH_2020_2100, filename=filenames, bylayer=TRUE, overwrite=TRUE)
+# raster::writeRaster(BITH_2020_2100, filename=filenames, bylayer=TRUE, overwrite=TRUE)
+raster::writeRaster(BITH_2020_2100[[1]], filename=filenames[1], bylayer=TRUE, overwrite=TRUE)
+raster::writeRaster(BITH_2020_2100[[2]], filename=filenames[2], bylayer=TRUE, overwrite=TRUE)
+raster::writeRaster(BITH_2020_2100[[3]], filename=filenames[3], bylayer=TRUE, overwrite=TRUE)
+raster::writeRaster(BITH_2020_2100[[4]], filename=filenames[4], bylayer=TRUE, overwrite=TRUE)
+
 
 
 # 2 - Patch metrics -------------------------------------------------------
@@ -137,13 +149,7 @@ plot.gif <- function(raster, file.name, xlim, ylim, frames.interval = 0.5, zlim 
 }
 
 # Gif for Québec
-plot.gif(BITH_2020_2100[[1:4]], file.name = "BITH_RCP45_QC.gif", xlim=c(-514009,356398), ylim=c(110389,633143), frames.interval = 0.5, zlim = c(-5,5), main = "RCP4.5")
-plot.gif(BITH_2020_2100[[5:8]], file.name = "./BITH_biomass_QC.gif", xlim=c(-514009,356398), ylim=c(110389,633143), frames.interval = 0.5, zlim = c(-5,5), main = "biomass")
+plot.gif(BITH_2020_2100[[1:4]], file.name = "BITH_RCP45_QC.gif", xlim=c(-514009,356398), ylim=c(110389,633143), frames.interval = 0.5, zlim = c(-5,5), main = "climate + biomass projection")
 
-# Gif for EasternTownships
-plot.gif(BITH_2020_2100[[1:4]], file.name = "BITH_RCP45_ET.gif", xlim=c(-356488,-115085), ylim=c(111680,234873), frames.interval = 0.5, zlim = c(-5,5), main = "RCP4.5")
-plot.gif(BITH_2020_2100[[5:8]], file.name = "./BITH_biomass_ET.gif", xlim=c(-356488,-115085), ylim=c(111680,234873), frames.interval = 0.5, zlim = c(-5,5), main = "biomass")
-
-# Gif for Réserve faunique des Laurentides
-plot.gif(BITH_2020_2100[[1:4]], file.name = "BITH_RCP45_RL.gif", xlim=c(-282986,-109983), ylim=c(311761,475079), frames.interval = 0.5, zlim = c(-5,5), main = "RCP4.5")
-plot.gif(BITH_2020_2100[[5:8]], file.name = "./BITH_biomass_RL.gif", xlim=c(-282986,-109983), ylim=c(311761,475079), frames.interval = 0.5, zlim = c(-5,5), main = "biomass")
+r <- terra::rast("SDM/results/BITH_2100.tif")
+plot(r)

@@ -61,17 +61,17 @@ plot.map <- function(scenarios = c("RCP45_2020", "biomass_2020",
     #### Loop through scenarios and plot them ####
 
     # Save plot in file
-    png(file_name, width = 207, height = 250, units='mm', res = 200, bg=bg)
+    png(file_name, width = 250, height = 50, units='mm', res = 200, bg=bg)
 
     # Set up plot layout
-    par(mfrow = c(4, 2), mar = c(1, 1, 2, 1))
+    par(mfrow = c(1, 4), mar = c(1, 1, 2, 1))
 
     # Loop
     i <- 1
     for (map in filenames) {
 
         # # Import projection
-        r <- raster::raster(map)
+        r <- raster::raster(filenames[i])
 
         # # Limit analysis to current distribution
         e <- raster::extent(extent)
@@ -132,4 +132,10 @@ plot.map <- function(scenarios = c("RCP45_2020", "biomass_2020",
     dev.off()
 }
 
-plot.map(file_name = "./manuscript/img/map_BITH.png")
+# plot.map(file_name = "./manuscript/img/map_BITH.png")
+# Full climate + forest projections
+plot.map(scenarios = c("2020", "2040", "2070", "2100"),
+    main = c("2020", "2040", "2070", "2100"),
+    RL_cutoff = 0.00625, 
+    extent = c(xmin = -514009, xmax = 356398, ymin = 110389, ymax = 633143), 
+    file_name = "./manuscript/img/map_full_BITH.png")
