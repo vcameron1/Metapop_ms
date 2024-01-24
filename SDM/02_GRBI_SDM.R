@@ -134,7 +134,7 @@ if(false){
 ##################
 
 ##################
-# Hypothesys
+# Hypotheses
 ## 3. T, P, elevation, and forest cover are important and climat interacts with elevation : "bio1 * bio12 * elevation + type_couv + cl_dens + cl_haut"
 ##################
 
@@ -146,11 +146,12 @@ cova <- c("temp + temp2 + prec + elevation + abie.balPropBiomass * abie.balBioma
 
 
 # Check VIF (colinearity)
-#VIF>2-3 is ok
-source("./SDM/vif.R")
-mat <- model.matrix(formula(paste0("~ ", cova)), explana_dat)
-vif <- vif(mat[,-1])
-
+if(FALSE){
+    #VIF>2-3 is ok
+    source("./SDM/vif.R")
+    mat <- model.matrix(formula(paste0("~ ", cova)), explana_dat)
+    vif <- vif(mat[,-1])
+}
 
 # 5 - Model ---------------------------------------------------------------
 
@@ -172,11 +173,12 @@ summary(model)
 RL_cutoff <- 0.00625 # 1 indv / km2
 
 # Plot predictions
-SDM.plot(template, model, newdata = explana_dat, logPred = TRUE, BITH, points = TRUE, main = "GLM prediction (log)")
-# Predictions for Eastern Townships
-SDM.plot(model, newdata = explana_dat, logPred = TRUE, GRBI_points, points = FALSE, main = "GLM prediction EasternTownships (log)", xlim=c(-73,-70), ylim=c(45,46))
-SDM.AUC(model, newdata=explana_dat, BITH=BITH, RL_cutoff = RL_cutoff, points = TRUE, template = template, plot_prediction = TRUE)
-
+if(FALSE){
+    SDM.plot(template, model, newdata = explana_dat, logPred = TRUE, BITH, points = TRUE, main = "GLM prediction (log)")
+    # Predictions for Eastern Townships
+    SDM.plot(model, newdata = explana_dat, logPred = TRUE, GRBI_points, points = FALSE, main = "GLM prediction EasternTownships (log)", xlim=c(-73,-70), ylim=c(45,46))
+    SDM.AUC(model, newdata=explana_dat, BITH=BITH, RL_cutoff = RL_cutoff, points = TRUE, template = template, plot_prediction = TRUE)
+}
 
 # 6 - Test model ----------------------------------------------------------
 
@@ -309,6 +311,8 @@ model.behavior <- function(model, explana_dat, RL_cutoff = NULL, ...){
 # Test model
 #########################
 
-model.elevBehavior(model, explana_dat, RL_cutoff = RL_cutoff)
-model.biomassBehavior(model, explana_dat, RL_cutoff = RL_cutoff)
-model.behavior(model, explana_dat, RL_cutoff = RL_cutoff)
+if(FALSE){
+    model.elevBehavior(model, explana_dat, RL_cutoff = RL_cutoff)
+    model.biomassBehavior(model, explana_dat, RL_cutoff = RL_cutoff)
+    model.behavior(model, explana_dat, RL_cutoff = RL_cutoff)
+}

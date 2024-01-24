@@ -1,33 +1,15 @@
-######################
-# Prepare data for model's covariables
+##############################################################################
+# Prepare data for the species distribution model
+#
 # Victor Cameron
 # October 2021
-######################
+##############################################################################
 
-
-# 1 - Useful function -----------------------------------------------------
-
-
-# Function that standardizes rasters
-standardize.raster <- function(raster, template, spacePoly, resample = FALSE){
-    # Reproject bioclim to match template (which also have a ~250m2 resolution)
-    raster <- raster::projectRaster(raster, crs = raster::crs(template))
-
-    # Crop to Québec meridional
-    raster <- raster::crop(raster, raster::extent(template))
-
-    # Resample to match template resolution
-    if (resample){
-        raster <- raster::resample(raster, template, method = 'bilinear')}
-
-    # Cut raster with polygon of the region
-    #raster <- raster::mask(raster, spacePoly)
-
-    return(raster)
-}
-
-
-# 2 - Define biomass raster as template -----------------------------------
+#==============================================================================
+# 0. Create template raster
+#
+# Biomass raster (from Boulanger and Pascual Puigdevall (2021)) is used as template
+#==============================================================================
 
 # Initiate raster based upon forest biomass projections
 load("./data_raw/RCP45_GrowthBudwormBaselineFire_ABIE.BAL_0_merged.RData")
@@ -37,21 +19,150 @@ template <- MergedRasters >= 0
 raster::writeRaster(template, filename="./data_clean/templateRaster.tif", overwrite=TRUE)
 
 
-# # Build SpatialPolygons
-# rasterForPoly <- template
-# raster::values(rasterForPoly) <- ifelse(is.na(raster::values(rasterForPoly)), NA, 1)
-# spacePoly <- raster::rasterToPolygons(rasterForPoly, na.rm = TRUE, dissolve = TRUE)
-# 
-# # Save spatialPolygons
-# saveRDS(spacePoly, "./SDM/spacePoly.RDS")
+#==============================================================================
+# 1. Prepare BITH observation data
+#
+# Generate a raster* of presences and pseudo absences
+# Return spatial points that actually are the raster cells centroids
+#==============================================================================
+
+# 1 - Import data ---------------------------------------------------------
+
+GRBI <- readxl::read_excel("./data_raw/RAPPORT QO_SOS-POP SCF_GRBI.xlsx", sheet = 2)
 
 
-# 3 - Import biomass projections ------------------------------------------
+# 2 - Explore GRBI data ---------------------------------------------------
 
+# Available variables/data
+#colnames(GRBI)
+
+# Spatial distribution of points
+#plot(GRBI$'LONGITUDE_SIGN GÉO ASSOCIÉ À LA MENTION', GRBI$'LATITUDE_SIGN GÉO ASSOCIÉ À LA MENTION')
+#NA %in% unique(GRBI$'LONGITUDE_SIGN GÉO ASSOCIÉ À LA MENTION')
+#NA %in% unique(GRBI$'LATITUDE_SIGN GÉO ASSOCIÉ À LA MENTION')
+
+# Spatial distribution of points by site
+#sunflowerplot(GRBI$LONGITUDE, GRBI$LATITUDE)
+
+# Temporal distribution of occurences
+#hist(GRBI$ANNEE) # Year 1000?
+#sort(unique(GRBI$ANNEE)) 
+#GRBI[GRBI$ANNEE < 2000, c("NOM SITE", "LATITUDE_SIGN GÉO ASSOCIÉ À LA MENTION", "LONGITUDE_SIGN GÉO ASSOCIÉ À LA MENTION", "ANNEE" )]
+#hist(GRBI$ANNEE[GRBI$ANNEE > 1990])
+
+# Distribution of precisions
+#table(GRBI$PRÉCISION)
+
+# Distribution of classifications
+#table(GRBI$CLASSIFICATION)
+
+# Distribution of usage
+#table(GRBI$USAGE)
+
+# Distribution of types of occurences
+#table(GRBI$O_CODEATLA)
+
+
+# 3 - Clean GRBI data -----------------------------------------------------
+
+# Select occurences that have coordinates data
+GRBI <- GRBI[!is.na(GRBI$'LONGITUDE_SIGN GÉO ASSOCIÉ À LA MENTION') & !is.na(GRBI$'LATITUDE_SIGN GÉO ASSOCIÉ À LA MENTION'),]
+
+# Select occurences with PRÉCISION == "S" 
+# which corresponds to coordinates precise to the second
+GRBI <- GRBI[GRBI$PRÉCISION == "S",]
+  
+# Remove recordings of absences
+GRBI <- GRBI[GRBI$O_CODEATLA != "0",]
+  
+# Select presence in habitat 
+#GRBI <- GRBI[GRBI$O_CODEATLA == c("H"),]
+
+# Select occurences with classification "R" 
+# occurences that are certain
+GRBI <- GRBI[GRBI$CLASSIFICATION == "R",]
+
+# Select nidification usage
+GRBI <- GRBI[GRBI$USAGE == "Nidification",]
+
+
+# 3 - Reproject spatial points --------------------------------------------
+
+# Load reference raster
+template <- raster::raster("./data_clean/templateRaster.tif")
+
+# Coordinates to spatial points
+GRBI_points <- sp::SpatialPoints(cbind(GRBI$'LONGITUDE_SIGN GÉO ASSOCIÉ À LA MENTION', GRBI$'LATITUDE_SIGN GÉO ASSOCIÉ À LA MENTION'), proj4string = raster::crs("+proj=longlat +datum=WGS84 +no_defs"))
+
+# Reproject points
+GRBI_points <- sp::spTransform(GRBI_points, raster::crs(template))
+
+
+# 4 - Rasterize BITH occurences -------------------------------------------
+
+# Rasterize BITH occurences as presences/absences
+#GRBI_points <- sp::SpatialPoints(cbind(GRBI$'LONGITUDE_SIGN GÉO ASSOCIÉ À LA MENTION', GRBI$'LATITUDE_SIGN GÉO ASSOCIÉ À LA MENTION'), proj4string = spacePoly@proj4string)
+GRBI <- raster::rasterize(GRBI_points, template, fun='count')
+
+
+# 5 - Crop BITH data to region of interest --------------------------------
+
+GRBI <- raster::crop(GRBI, template)
+GRBI <- raster::mask(GRBI, template)
+
+# Set presences as 1
+GRBI[GRBI > 0] <- 1
+
+
+# 6 - BITH raster back to spatialPoints -----------------------------------
+
+# Back to spatialPoints
+#GRBI_points <- raster::rasterToPoints(GRBI) # Keep cell centroids
+#GRBI_points <- sp::SpatialPoints(GRBI_points, proj4string = raster::crs(template))
+
+
+# 7 - Save rasterized BITH occurences -----------------------------------
+
+write.csv(raster::values(GRBI), "./data_clean/GRBI_rasterized.csv")
+#saveRDS(GRBI_points, "./data_clean/GRBI_rasterPoints.RDS")
+
+
+#==============================================================================
+# 2. Prepare explanatory variables for model parametrization
+#
+# Steps:
+# 1. Load data and projections
+# 2. Combine all explanatory variables in a raster object
+# 3. Save explanatory variables in one file
+#
+# Explanatory variables are saved as raster objects in RDS files.
+#==============================================================================
+
+# 1 - Useful function -----------------------------------------------------
+
+# # Function that standardizes rasters
+# standardize.raster <- function(raster, template, spacePoly, resample = FALSE){
+#     # Reproject bioclim to match template (which also have a ~250m2 resolution)
+#     raster <- raster::projectRaster(raster, crs = raster::crs(template))
+
+#     # Crop to Québec meridional
+#     raster <- raster::crop(raster, raster::extent(template))
+
+#     # Resample to match template resolution
+#     if (resample){
+#         raster <- raster::resample(raster, template, method = 'bilinear')}
+
+#     # Cut raster with polygon of the region
+#     #raster <- raster::mask(raster, spacePoly)
+
+#     return(raster)
+# }
+
+# 1 - Load biomass data and projections ------------------------------------------
 
 #biomass is expressed as g.m-2 of total pixel
 
-# Projections for 2020, 2040, 2070, 2100
+# Load projections for 2020, 2040, 2070, 2100
 proj <- c(0, 20, 50, 80)
 names <- c(2020, 2040, 2070, 2100)
 
@@ -86,9 +197,7 @@ for (i in seq_along(names(abie.bal_RCP45))[-1]){
 }
 names(propAbie.bal_RCP45) <- paste0("propAbie.bal_", names)
 
-
-# 4 - Import climate projections ------------------------------------------
-
+# 2 - Load climate data and projections ------------------------------------------
 
 # Mean from 1981-2010
 temp <- raster::raster("./data_raw/MappingQc_AnnualVar_1981_2010Tmean0.tif")
@@ -102,7 +211,7 @@ temp_RCP45_2070 <- raster::raster("./data_raw/MappingQc_AnnualVar_RCP45_2041_207
 prec_RCP45_2100 <- raster::raster("./data_raw/MappingQc_AnnualVar_RCP45_2071_2100Prcp0.tif")
 temp_RCP45_2100 <- raster::raster("./data_raw/MappingQc_AnnualVar_RCP45_2071_2100Tmean0.tif")
 
-# Standardize projections
+# Crop data to template extent
 prec_RCP45_2010 <- raster::crop(prec, raster::extent(template))
 temp_RCP45_2010 <- raster::crop(temp, raster::extent(template))
 prec_RCP45_2011_2040 <- raster::crop(prec_RCP45_2040, raster::extent(template))
@@ -123,8 +232,7 @@ prec_RCP45_2071_2100 <- raster::mask(prec_RCP45_2100, template)
 temp_RCP45_2071_2100 <- raster::mask(temp_RCP45_2100, template)
 
 
-# 5 - Import elevation data ------------------------------------------
-
+# 5 - Get elevation data ------------------------------------------
 
 ## Elevation data was downloaded at a precision of 186.803m
 
@@ -140,9 +248,7 @@ elev <- raster::resample(elev, template, method = 'bilinear')
 # Mask
 elev <- raster::mask(elev, template)
 
-
 # 6 - Combine all explanatory variables for model -------------------------
-
 
 # Stack layers
 explana_dat <- raster::stack(propAbie.bal_RCP45[[1]], abie.bal_RCP45[[1]], elev, prec_RCP45_2010, temp_RCP45_2010)
@@ -154,13 +260,24 @@ names(explana_dat) <- c("abie.balPropBiomass", "abie.balBiomass", "elevation", "
 explana_dat[["temp2"]] <- explana_dat[["temp"]]
 raster::values(explana_dat[["temp2"]]) <- raster::values(explana_dat[["temp"]])^2
 
-# Save as DF
+# 7 - Save explanatory variables in one file -------------------------
+
 explana_dat_df <- as.data.frame(raster::values(explana_dat))
 saveRDS(explana_dat_df[,-"V1"], "./SDM/explana_dat_df.rds")
 
 
-# 7 - Combine data for model projections ----------------------------------
+#==============================================================================
+# 3. Prepare parameter values (projected explanatory variables) for model projections
+#
+# Steps:
+# 0. Data was imported at previous step
+# 1. Combine all explanatory variables for RCP4.5 scenario 
+# 2. Combine all explanatory variables for biomass scenario 
+#
+# Projected explanatory variables are saved as raster objects in RDS files.
+#==============================================================================
 
+# 1 - Combine data for model projections ----------------------------------
 
 #### RCP4.5 ####
 
