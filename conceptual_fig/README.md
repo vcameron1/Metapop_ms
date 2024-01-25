@@ -5,34 +5,34 @@ The scripts in this folder contain the code to plot conceptual figures and assem
 ## Conceptual figures of the manuscript
 ---
 ### Figure 1
-Title : Basic representation of the effect of H and e/c interaction on determining the occupancy.
+Title:Graphical representation of range limits
 
-Script : intro_persistence_fig.R
+Script: `intro_persistence_fig.R`
 
-Command : 
+Command: 
 ```r
 source("./conceptual_fig/intro_persistence_fig.R")
 intro_persistence_plot()
 ```
 
-Description : Introduction to interaction of H and e/c on species occupancy and persistence.
+Description: Graphical interpretation of the system’s distribution dynamics. The distribution of the habitat specialist is defined by its intrinsic response to the environment $\frac{e}{c}$ (orange line) and by habitat occupancy ($H(E)$, green line). The habitat specialist’s occupancy $S^{*}$ declines with less favourable environmental conditions $E_{0}^{*}$ and $E_{1}^{*}$
 
 ### Figure 2
-Title : Conceptual exploration of the interaction effect of H and e/c on occupancy
+Title: Interaction of the specialist and of its habitat’s response can cause indirect distribution dynamics
 
-Script : persistence_fig.R
+Script: `concept_occ_fig.R`
 
-Command :
+Command:
 ```r
-source("./conceptual_fig/concept_occ.R")
+source("./conceptual_fig/concept_occ_fig.R")
 ```
 
-Description : Three panels figure
+Description: Change in occupancy (and persistence as shown by the grey arrows) of the habitat specialist depends on its intrinsic response to the environment $\frac{e}{c}$ (orange line) and of the habitat’s response $H(E^{*})$ (green line)
 
 ### Figure 3
-Title :
+Title: Habitat mismatch affects species distribution shifts
 
-Script :
+Script: `mismatch_fig.R`
 
 Command:
 ```r
@@ -40,25 +40,27 @@ source("./conceptual_fig/mismatch_fig.R")
 mismatch_plot()
 ```
 
-Description :
+Description: The distribution of the habitat specialist (grey area) is impacted by the functions relating the intrinsic response to the environment (orange line) to habitat occupancy ($H(E)$, full and dashed green lines)
 
 ### Figure 4
-Title :
+Title: Metapopulation dynamics may precipitate species decline
 
-Command :
+Script: `metapopEffect_fig.R`
+
+Command:
 ```r
 source("./conceptual_fig/metapopEffect_fig.R")
 metapopEffect_plot()
 ```
 
-Description :
+Description: The response of a habitat specialist to a linear environmental change in time as it would be expected with a correlative SDM (linear response; full line). Metapopulation dynamics may precipitate - or alternatively delay - the extinction of the species in a metapopulation even if there are suitable conditions (dashed line)
 
 ### Figure 5
-Title : Conceptual representation of landscape-scale effects of climate change on persistence
+Title: Conceptual representation of landscape-scale effects of climate change on persistence
 
-Script : concept_landscape_fig.R
+Script: `concept_landscape_fig.R`
 
-Command :
+Command:
 ```r
 source("./conceptual_fig/concept_landscape_fig.R")
 landscape <- get_land()
@@ -71,10 +73,25 @@ source("./conceptual_fig/patchArea_metrics.R")
 metrics <- patch_area_metrics(patches = landscape[c(1,2)], r = landscape$r)
 ```
 
-Description : Cartoon of a landscape using a graph representation of linked patches representing habitat patches and dispersal. The complex effects of landscape-scale changes to distribution by climate changes are visually demonstrated in this figure.
+Description: Species persistence is affected by changes to landscape connectivity as well as habitat amount. Black circles filled in grey delimit suitable habitat patches. The left panel presents a hypothetical mountainous landscape where suitable patches represent high elevation mountain tops and right panel the same landscape where patches contracted by an equal amount, simulating an elevation shift of climatic conditions on landscape suitability. Following patch contraction, metapopulation capacity declined by 82% whereas habitat amount only declined by 63%
 
-## Contents
----
 
-### plot_image.R 
-Function to add image to plot
+## Other scripts
+
+### plot_image
+
+Script : `plot_image.R`
+
+Description: Function to add image to plot
+
+### patchArea_metrics
+
+Script : `patchArea_metrics.R`
+
+Description: Function to compute metapopulation metrics
+
+### 2spMetapop_model
+
+Script : `2spMetapop_model.R`
+
+Description: Function to simulate metapopulation dynamics
