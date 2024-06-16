@@ -28,7 +28,7 @@ raster::writeRaster(template, filename="./data_clean/templateRaster.tif", overwr
 
 # 1 - Import data ---------------------------------------------------------
 
-GRBI <- readxl::read_excel("./data_raw/RAPPORT QO_SOS-POP SCF_GRBI.xlsx", sheet = 2)
+GRBI <- readxl::read_excel("./data_raw/RAPPORT QO_SOS-POP SCF_GRBI_subset.xlsx", sheet = 2)
 
 
 # 2 - Explore GRBI data ---------------------------------------------------
@@ -65,25 +65,24 @@ GRBI <- readxl::read_excel("./data_raw/RAPPORT QO_SOS-POP SCF_GRBI.xlsx", sheet 
 
 # 3 - Clean GRBI data -----------------------------------------------------
 
-# Select occurences that have coordinates data
-GRBI <- GRBI[!is.na(GRBI$'LONGITUDE_SIGN GÉO ASSOCIÉ À LA MENTION') & !is.na(GRBI$'LATITUDE_SIGN GÉO ASSOCIÉ À LA MENTION'),]
+# DNOTE: ata provided is the clean version of the original raw data. The following steps were followed :
 
-# Select occurences with PRÉCISION == "S" 
-# which corresponds to coordinates precise to the second
-GRBI <- GRBI[GRBI$PRÉCISION == "S",]
+# # Select occurences that have coordinates data
+# GRBI <- GRBI[!is.na(GRBI$'LONGITUDE_SIGN GÉO ASSOCIÉ À LA MENTION') & !is.na(GRBI$'LATITUDE_SIGN GÉO ASSOCIÉ À LA MENTION'),]
+
+# # Select occurences with PRÉCISION == "S" 
+# # which corresponds to coordinates precise to the second
+# GRBI <- GRBI[GRBI$PRÉCISION == "S",]
   
-# Remove recordings of absences
-GRBI <- GRBI[GRBI$O_CODEATLA != "0",]
-  
-# Select presence in habitat 
-#GRBI <- GRBI[GRBI$O_CODEATLA == c("H"),]
+# # Remove recordings of absences
+# GRBI <- GRBI[GRBI$O_CODEATLA != "0",]
 
-# Select occurences with classification "R" 
-# occurences that are certain
-GRBI <- GRBI[GRBI$CLASSIFICATION == "R",]
+# # Select occurences with classification "R" 
+# # occurences that are certain
+# GRBI <- GRBI[GRBI$CLASSIFICATION == "R",]
 
-# Select nidification usage
-GRBI <- GRBI[GRBI$USAGE == "Nidification",]
+# # Select nidification usage
+# GRBI <- GRBI[GRBI$USAGE == "Nidification",]
 
 
 # 3 - Reproject spatial points --------------------------------------------
