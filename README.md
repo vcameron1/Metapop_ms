@@ -91,9 +91,6 @@ The data that support the study are available from the Regroupement QuébecOisea
 Assuming that the user has the raw data from RQO and Boulanger and Pascual Puigdevall (2021) saved in the `data_raw` subdirectory, the analyses can be executed by running the following command in a terminal:
 
 ```bash
-# Install the dependencies
-#renv::restore()
-
 make -C SDM
 ```
 

@@ -12,11 +12,12 @@
 #==============================================================================
 
 # Initiate raster based upon forest biomass projections
-load("./data_raw/RCP45_GrowthBudwormBaselineFire_ABIE.BAL_0_merged.RData")
-template <- MergedRasters >= 0
+load("../data_raw/RCP45_GrowthBudwormBaselineFire_ABIE.BAL_0_merged.RData")
+template <- MergedRasters
+raster::values(template) <- raster::values(MergedRasters) >= 0
 
 # Save template
-raster::writeRaster(template, filename="./data_clean/templateRaster.tif", overwrite=TRUE)
+raster::writeRaster(template, filename="../data_clean/templateRaster.tif", overwrite=TRUE)
 
 
 #==============================================================================
@@ -28,7 +29,7 @@ raster::writeRaster(template, filename="./data_clean/templateRaster.tif", overwr
 
 # 1 - Import data ---------------------------------------------------------
 
-GRBI <- readxl::read_excel("./data_raw/RAPPORT QO_SOS-POP SCF_GRBI_subset.xlsx", sheet = 2)
+GRBI <- readxl::read_excel("../data_raw/RAPPORT QO_SOS-POP SCF_GRBI_pub.xlsx", sheet = 2)
 
 
 # 2 - Explore GRBI data ---------------------------------------------------
@@ -88,10 +89,10 @@ GRBI <- readxl::read_excel("./data_raw/RAPPORT QO_SOS-POP SCF_GRBI_subset.xlsx",
 # 3 - Reproject spatial points --------------------------------------------
 
 # Load reference raster
-template <- raster::raster("./data_clean/templateRaster.tif")
+template <- raster::raster("../data_clean/templateRaster.tif")
 
 # Coordinates to spatial points
-GRBI_points <- sp::SpatialPoints(cbind(GRBI$'LONGITUDE_SIGN GÉO ASSOCIÉ À LA MENTION', GRBI$'LATITUDE_SIGN GÉO ASSOCIÉ À LA MENTION'), proj4string = raster::crs("+proj=longlat +datum=WGS84 +no_defs"))
+GRBI_points <- sp::SpatialPoints(cbind(as.numeric(GRBI$'LONGITUDE_SIGN GÉO ASSOCIÉ À LA MENTION'), as.numeric(GRBI$'LATITUDE_SIGN GÉO ASSOCIÉ À LA MENTION')), proj4string = sp::CRS("+proj=longlat +datum=WGS84 +no_defs"))
 
 # Reproject points
 GRBI_points <- sp::spTransform(GRBI_points, raster::crs(template))
@@ -122,7 +123,7 @@ GRBI[GRBI > 0] <- 1
 
 # 7 - Save rasterized BITH occurences -----------------------------------
 
-write.csv(raster::values(GRBI), "./data_clean/GRBI_rasterized.csv")
+write.csv(raster::values(GRBI), "../data_clean/GRBI_rasterized.csv")
 #saveRDS(GRBI_points, "./data_clean/GRBI_rasterPoints.RDS")
 
 
@@ -168,20 +169,20 @@ names <- c(2020, 2040, 2070, 2100)
 # Abie Balsamea biomass
 filenames <- paste0("RCP45_GrowthBudwormBaselineFire_ABIE.BAL_", proj,"_merged.RData")
 
-load(paste0("./data_raw/", filenames[1]))
+load(paste0("../data_raw/", filenames[1]))
 abie.bal_RCP45 <- MergedRasters
 for(file in filenames[-1]){
-    load(paste0("./data_raw/", file))
+    load(paste0("../data_raw/", file))
     abie.bal_RCP45 <- raster::addLayer(abie.bal_RCP45, MergedRasters)
 }
 names(abie.bal_RCP45) <- paste0("abie.bal_RCP45_", names)
 
 # Total biomass
 filenames <- paste0("RCP45_GrowthBudwormBaselineFire_TotalBiomass_", proj,"_merged.RData")
-load(paste0("./data_raw/", filenames[1]))
+load(paste0("../data_raw/", filenames[1]))
 TotalBiomass_RCP45 <- MergedRasters
 for(file in filenames[-1]){
-    load(paste0("./data_raw/", file))
+    load(paste0("../data_raw/", file))
     TotalBiomass_RCP45 <- raster::addLayer(TotalBiomass_RCP45, MergedRasters)
 }
 names(TotalBiomass_RCP45) <- paste0("TotalBiomass_RCP45_", names)
@@ -199,16 +200,16 @@ names(propAbie.bal_RCP45) <- paste0("propAbie.bal_", names)
 # 2 - Load climate data and projections ------------------------------------------
 
 # Mean from 1981-2010
-temp <- raster::raster("./data_raw/MappingQc_AnnualVar_1981_2010Tmean0.tif")
-prec <- raster::raster("./data_raw/MappingQc_AnnualVar_1981_2010Prcp0.tif")
+temp <- raster::raster("../data_raw/MappingQc_AnnualVar_1981_2010Tmean0.tif")
+prec <- raster::raster("../data_raw/MappingQc_AnnualVar_1981_2010Prcp0.tif")
 
 # RCP4.5 projections
-prec_RCP45_2040 <- raster::raster("./data_raw/MappingQc_AnnualVar_AnnualVar_RCP45_2011_2040Prcp0.tif")
-temp_RCP45_2040 <- raster::raster("./data_raw/MappingQc_AnnualVar_AnnualVar_RCP45_2011_2040Tmean0.tif")
-prec_RCP45_2070 <- raster::raster("./data_raw/MappingQc_AnnualVar_RCP45_2041_2070Prcp0.tif")
-temp_RCP45_2070 <- raster::raster("./data_raw/MappingQc_AnnualVar_RCP45_2041_2070Tmean0.tif")
-prec_RCP45_2100 <- raster::raster("./data_raw/MappingQc_AnnualVar_RCP45_2071_2100Prcp0.tif")
-temp_RCP45_2100 <- raster::raster("./data_raw/MappingQc_AnnualVar_RCP45_2071_2100Tmean0.tif")
+prec_RCP45_2040 <- raster::raster("../data_raw/MappingQc_AnnualVar_AnnualVar_RCP45_2011_2040Prcp0.tif")
+temp_RCP45_2040 <- raster::raster("../data_raw/MappingQc_AnnualVar_AnnualVar_RCP45_2011_2040Tmean0.tif")
+prec_RCP45_2070 <- raster::raster("../data_raw/MappingQc_AnnualVar_RCP45_2041_2070Prcp0.tif")
+temp_RCP45_2070 <- raster::raster("../data_raw/MappingQc_AnnualVar_RCP45_2041_2070Tmean0.tif")
+prec_RCP45_2100 <- raster::raster("../data_raw/MappingQc_AnnualVar_RCP45_2071_2100Prcp0.tif")
+temp_RCP45_2100 <- raster::raster("../data_raw/MappingQc_AnnualVar_RCP45_2071_2100Tmean0.tif")
 
 # Crop data to template extent
 prec_RCP45_2010 <- raster::crop(prec, raster::extent(template))
@@ -221,14 +222,14 @@ prec_RCP45_2071_2100 <- raster::crop(prec_RCP45_2100, raster::extent(template))
 temp_RCP45_2071_2100 <- raster::crop(temp_RCP45_2100, raster::extent(template))
 
 # Mask
-prec_RCP45_2010 <- raster::mask(prec, template)
-temp_RCP45_2010 <- raster::mask(temp, template)
-prec_RCP45_2011_2040 <- raster::mask(prec_RCP45_2040, template)
-temp_RCP45_2011_2040 <- raster::mask(temp_RCP45_2040, template)
-prec_RCP45_2041_2070 <- raster::mask(prec_RCP45_2070, template)
-temp_RCP45_2041_2070 <- raster::mask(temp_RCP45_2070, template)
-prec_RCP45_2071_2100 <- raster::mask(prec_RCP45_2100, template)
-temp_RCP45_2071_2100 <- raster::mask(temp_RCP45_2100, template)
+prec_RCP45_2010 <- raster::mask(prec_RCP45_2010, template)
+temp_RCP45_2010 <- raster::mask(temp_RCP45_2010, template)
+prec_RCP45_2011_2040 <- raster::mask(prec_RCP45_2011_2040, template)
+temp_RCP45_2011_2040 <- raster::mask(temp_RCP45_2011_2040, template)
+prec_RCP45_2041_2070 <- raster::mask(prec_RCP45_2041_2070, template)
+temp_RCP45_2041_2070 <- raster::mask(temp_RCP45_2041_2070, template)
+prec_RCP45_2071_2100 <- raster::mask(prec_RCP45_2071_2100, template)
+temp_RCP45_2071_2100 <- raster::mask(temp_RCP45_2071_2100, template)
 
 
 # 5 - Get elevation data ------------------------------------------
@@ -237,7 +238,7 @@ temp_RCP45_2071_2100 <- raster::mask(temp_RCP45_2100, template)
 
 # Load elevation
 #template <- raster::raster("./data_clean/templateRaster.tif")
-elev <- elevatr::get_elev_raster(template, z = 8, clip = "bbox") # Error when downloading more precise (z > 8) elevation data
+elev <- elevatr::get_elev_raster(terra::rast(template), z = 8, clip = "bbox") # Error when downloading more precise (z > 8) elevation data
 
 
 # Standardize the raster extent and resolution
@@ -262,7 +263,7 @@ raster::values(explana_dat[["temp2"]]) <- raster::values(explana_dat[["temp"]])^
 # 7 - Save explanatory variables in one file -------------------------
 
 explana_dat_df <- as.data.frame(raster::values(explana_dat))
-saveRDS(explana_dat_df[,-"V1"], "./SDM/explana_dat_df.rds")
+saveRDS(explana_dat_df, "./explana_dat_df.rds")
 
 
 #==============================================================================
@@ -303,10 +304,10 @@ raster::values(RCP45_2100[["temp2"]]) <- raster::values(RCP45_2100[["temp"]])^2
 RCP45_2100_df <- as.data.frame(raster::values(RCP45_2100))
 
 # # Save projections as DF
-saveRDS(RCP45_2020_df[,-"V1"], "./SDM/RCP45_2020_df.rds")
-saveRDS(RCP45_2040_df[,-"V1"], "./SDM/RCP45_2040_df.rds")
-saveRDS(RCP45_2070_df[,-"V1"], "./SDM/RCP45_2070_df.rds")
-saveRDS(RCP45_2100_df[,-"V1"], "./SDM/RCP45_2100_df.rds")
+saveRDS(RCP45_2020_df, "./RCP45_2020_df.rds")
+saveRDS(RCP45_2040_df, "./RCP45_2040_df.rds")
+saveRDS(RCP45_2070_df, "./RCP45_2070_df.rds")
+saveRDS(RCP45_2100_df, "./RCP45_2100_df.rds")
 
 
 #### Biomass ####
@@ -334,7 +335,7 @@ raster::values(biomass_2100[["temp2"]]) <- raster::values(biomass_2100[["temp"]]
 biomass_2100_df <- as.data.frame(raster::values(biomass_2100))
 
 # # Save projections as DF
-saveRDS(biomass_2020_df[,-"V1"], "./SDM/biomass_2020_df.rds")
-saveRDS(biomass_2040_df[,-"V1"], "./SDM/biomass_2040_df.rds")
-saveRDS(biomass_2070_df[,-"V1"], "./SDM/biomass_2070_df.rds")
-saveRDS(biomass_2100_df[,-"V1"], "./SDM/biomass_2100_df.rds")
+saveRDS(biomass_2020_df, "./biomass_2020_df.rds")
+saveRDS(biomass_2040_df, "./biomass_2040_df.rds")
+saveRDS(biomass_2070_df, "./biomass_2070_df.rds")
+saveRDS(biomass_2100_df, "./biomass_2100_df.rds")

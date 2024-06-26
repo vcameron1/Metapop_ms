@@ -1,7 +1,7 @@
 # Scripts
-	prep_data=SDM/01_prepare_data.R
-	run_model=SDM/02_GRBI_SDM.R
-	project_model=SDM/03_projections.R
+	prep_data=01_prepare_data.R
+	run_model=02_GRBI_SDM.R
+	project_model=03_projections.R
 
 
 # 01 - Prepare data
