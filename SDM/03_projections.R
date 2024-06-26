@@ -94,19 +94,19 @@ source("./SDM/patch_metrics_functions.R")
 e <- raster::extent(c(xmin = -514009, xmax = 356398, ymin = 110389, ymax = 633143))
 BITH_2020_2100_QC <- raster::crop(BITH_2020_2100, e)
 BITH_metrics_QC <- patch.metrics(BITH_2020_2100_QC, RL_cutoff = RL_cutoff, a = c(1, 1/5, 1/50, 1/200, 1/500))
-#saveRDS(metrics_RCP45_QC, "./SDM/results/BITH_metrics_RCP45_QC.RDS")
+saveRDS(metrics_RCP45_QC, "./SDM/results/BITH_metrics_QC.RDS")
 
-# Patch metrics over EasternTownships
-e_ET <- raster::extent(c(xmin = -356488, xmax = -115085, ymin = 111680, ymax = 234873))
-BITH_2020_2100_ET <- raster::crop(BITH_2020_2100, e_ET)
-BITH_metrics_ET <- patch.metrics(BITH_2020_2100_ET, RL_cutoff = RL_cutoff, a = c(1, 1/5, 1/50, 1/200, 1/500))
-#saveRDS(BITH_metrics_ET, "./SDM/results/BITH_metrics_ET.RDS")
+# # Patch metrics over EasternTownships
+# e_ET <- raster::extent(c(xmin = -356488, xmax = -115085, ymin = 111680, ymax = 234873))
+# BITH_2020_2100_ET <- raster::crop(BITH_2020_2100, e_ET)
+# BITH_metrics_ET <- patch.metrics(BITH_2020_2100_ET, RL_cutoff = RL_cutoff, a = c(1, 1/5, 1/50, 1/200, 1/500))
+# #saveRDS(BITH_metrics_ET, "./SDM/results/BITH_metrics_ET.RDS")
 
-# Patch metrics over Réserve faunique des Laurentides
-e_RL <- raster::extent(c(xmin = -282986, xmax = -109983, ymin = 311761, ymax = 475079))
-BITH_2020_2100_RL <- raster::crop(BITH_2020_2100, e_RL)
-BITH_metrics_RL <- patch.metrics(BITH_2020_2100_RL, RL_cutoff = RL_cutoff, a = c(1, 1/5, 1/50, 1/200, 1/500))
-#saveRDS(BITH_metrics_RL, "./SDM/results/BITH_metrics_RL.RDS")
+# # Patch metrics over Réserve faunique des Laurentides
+# e_RL <- raster::extent(c(xmin = -282986, xmax = -109983, ymin = 311761, ymax = 475079))
+# BITH_2020_2100_RL <- raster::crop(BITH_2020_2100, e_RL)
+# BITH_metrics_RL <- patch.metrics(BITH_2020_2100_RL, RL_cutoff = RL_cutoff, a = c(1, 1/5, 1/50, 1/200, 1/500))
+# #saveRDS(BITH_metrics_RL, "./SDM/results/BITH_metrics_RL.RDS")
 
 
 # 3 - Plot predictions ----------------------------------------------------
