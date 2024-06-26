@@ -31,7 +31,6 @@ raster::writeRaster(template, filename="../data_clean/templateRaster.tif", overw
 
 GRBI <- readxl::read_excel("../data_raw/RAPPORT QO_SOS-POP SCF_GRBI_pub.xlsx", sheet = 2)
 
-
 # 2 - Explore GRBI data ---------------------------------------------------
 
 # Available variables/data
@@ -124,7 +123,8 @@ GRBI[GRBI > 0] <- 1
 # 7 - Save rasterized BITH occurences -----------------------------------
 
 write.csv(raster::values(GRBI), "../data_clean/GRBI_rasterized.csv")
-#saveRDS(GRBI_points, "./data_clean/GRBI_rasterPoints.RDS")
+#saveRDS(GRBI_points, "../data_clean/GRBI_rasterPoints.RDS")
+
 
 
 #==============================================================================
@@ -212,14 +212,14 @@ prec_RCP45_2100 <- raster::raster("../data_raw/MappingQc_AnnualVar_RCP45_2071_21
 temp_RCP45_2100 <- raster::raster("../data_raw/MappingQc_AnnualVar_RCP45_2071_2100Tmean0.tif")
 
 # Crop data to template extent
-prec_RCP45_2010 <- raster::crop(prec, raster::extent(template))
-temp_RCP45_2010 <- raster::crop(temp, raster::extent(template))
-prec_RCP45_2011_2040 <- raster::crop(prec_RCP45_2040, raster::extent(template))
-temp_RCP45_2011_2040 <- raster::crop(temp_RCP45_2040, raster::extent(template))
-prec_RCP45_2041_2070 <- raster::crop(prec_RCP45_2070, raster::extent(template))
-temp_RCP45_2041_2070 <- raster::crop(temp_RCP45_2070, raster::extent(template))
-prec_RCP45_2071_2100 <- raster::crop(prec_RCP45_2100, raster::extent(template))
-temp_RCP45_2071_2100 <- raster::crop(temp_RCP45_2100, raster::extent(template))
+prec <- raster::crop(prec, raster::extent(template))
+temp <- raster::crop(temp, raster::extent(template))
+prec_RCP45_2040 <- raster::crop(prec_RCP45_2040, raster::extent(template))
+temp_RCP45_2040 <- raster::crop(temp_RCP45_2040, raster::extent(template))
+prec_RCP45_2070 <- raster::crop(prec_RCP45_2070, raster::extent(template))
+temp_RCP45_2070 <- raster::crop(temp_RCP45_2070, raster::extent(template))
+prec_RCP45_2100 <- raster::crop(prec_RCP45_2100, raster::extent(template))
+temp_RCP45_2100 <- raster::crop(temp_RCP45_2100, raster::extent(template))
 
 # Mask
 prec_RCP45_2010 <- raster::mask(prec_RCP45_2010, template)
@@ -237,7 +237,7 @@ temp_RCP45_2071_2100 <- raster::mask(temp_RCP45_2071_2100, template)
 ## Elevation data was downloaded at a precision of 186.803m
 
 # Load elevation
-#template <- raster::raster("./data_clean/templateRaster.tif")
+#template <- raster::raster("../data_clean/templateRaster.tif")
 elev <- elevatr::get_elev_raster(terra::rast(template), z = 8, clip = "bbox") # Error when downloading more precise (z > 8) elevation data
 
 
@@ -263,7 +263,7 @@ raster::values(explana_dat[["temp2"]]) <- raster::values(explana_dat[["temp"]])^
 # 7 - Save explanatory variables in one file -------------------------
 
 explana_dat_df <- as.data.frame(raster::values(explana_dat))
-saveRDS(explana_dat_df, "./explana_dat_df.rds")
+saveRDS(explana_dat_df, "../SDM/explana_dat_df.rds")
 
 
 #==============================================================================
