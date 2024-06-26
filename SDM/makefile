@@ -1,7 +1,8 @@
 # Scripts
-prep_data=01_prepare_data.R
-run_model=02_GRBI_SDM.R
-project_model=03_projections.R
+
+	prep_data=01_prepare_data.R
+	run_model=02_GRBI_SDM.R
+	project_model=03_projections.R
 
 # Data
 template=../data_raw/RCP45_GrowthBudwormBaselineFire_ABIE.BAL_0_merged.RData
@@ -27,6 +28,6 @@ project_model: $(prep_data) $(run_model) $(project_model)
 
 # install dependencies
 install:
-	Rscript -e 'if (!require(raster)) install.packages("raster"); if (!require(sf)) install.packages("sf"); if (!require(sp)) install.packages("sp"); if (!require(readxl)) install.packages("readxl")'
+	Rscript -e 'if (!require(raster)) install.packages("raster"); !require(terra)) install.packages("terra"); if (!require(sf)) install.packages("sf"); if (!require(sp)) install.packages("sp"); if (!require(readxl)) install.packages("readxl")'
 
 .PHONY: all

@@ -13,8 +13,8 @@
 
 # Initiate raster based upon forest biomass projections
 load("../data_raw/RCP45_GrowthBudwormBaselineFire_ABIE.BAL_0_merged.RData")
-MergedRasters |> head()
-template <- MergedRasters >= 0
+template <- MergedRasters
+raster::values(template) <- raster::values(MergedRasters) >= 0
 
 # Save template
 raster::writeRaster(template, filename="../data_clean/templateRaster.tif", overwrite=TRUE)
@@ -29,8 +29,7 @@ raster::writeRaster(template, filename="../data_clean/templateRaster.tif", overw
 
 # 1 - Import data ---------------------------------------------------------
 
-GRBI <- readxl::read_excel("../data_raw/RAPPORT QO_SOS-POP SCF_GRBI.xlsx", sheet = 2)
-
+GRBI <- readxl::read_excel("../data_raw/RAPPORT QO_SOS-POP SCF_GRBI_pub.xlsx", sheet = 2)
 
 # 2 - Explore GRBI data ---------------------------------------------------
 
@@ -66,25 +65,24 @@ GRBI <- readxl::read_excel("../data_raw/RAPPORT QO_SOS-POP SCF_GRBI.xlsx", sheet
 
 # 3 - Clean GRBI data -----------------------------------------------------
 
-# Select occurences that have coordinates data
-GRBI <- GRBI[!is.na(GRBI$'LONGITUDE_SIGN GÉO ASSOCIÉ À LA MENTION') & !is.na(GRBI$'LATITUDE_SIGN GÉO ASSOCIÉ À LA MENTION'),]
+# DNOTE: ata provided is the clean version of the original raw data. The following steps were followed :
 
-# Select occurences with PRÉCISION == "S" 
-# which corresponds to coordinates precise to the second
-GRBI <- GRBI[GRBI$PRÉCISION == "S",]
+# # Select occurences that have coordinates data
+# GRBI <- GRBI[!is.na(GRBI$'LONGITUDE_SIGN GÉO ASSOCIÉ À LA MENTION') & !is.na(GRBI$'LATITUDE_SIGN GÉO ASSOCIÉ À LA MENTION'),]
+
+# # Select occurences with PRÉCISION == "S" 
+# # which corresponds to coordinates precise to the second
+# GRBI <- GRBI[GRBI$PRÉCISION == "S",]
   
-# Remove recordings of absences
-GRBI <- GRBI[GRBI$O_CODEATLA != "0",]
-  
-# Select presence in habitat 
-#GRBI <- GRBI[GRBI$O_CODEATLA == c("H"),]
+# # Remove recordings of absences
+# GRBI <- GRBI[GRBI$O_CODEATLA != "0",]
 
-# Select occurences with classification "R" 
-# occurences that are certain
-GRBI <- GRBI[GRBI$CLASSIFICATION == "R",]
+# # Select occurences with classification "R" 
+# # occurences that are certain
+# GRBI <- GRBI[GRBI$CLASSIFICATION == "R",]
 
-# Select nidification usage
-GRBI <- GRBI[GRBI$USAGE == "Nidification",]
+# # Select nidification usage
+# GRBI <- GRBI[GRBI$USAGE == "Nidification",]
 
 
 # 3 - Reproject spatial points --------------------------------------------
@@ -93,7 +91,7 @@ GRBI <- GRBI[GRBI$USAGE == "Nidification",]
 template <- raster::raster("../data_clean/templateRaster.tif")
 
 # Coordinates to spatial points
-GRBI_points <- sp::SpatialPoints(cbind(GRBI$'LONGITUDE_SIGN GÉO ASSOCIÉ À LA MENTION', GRBI$'LATITUDE_SIGN GÉO ASSOCIÉ À LA MENTION'), proj4string = sp::CRS("+proj=longlat +datum=WGS84 +no_defs"))
+GRBI_points <- sp::SpatialPoints(cbind(as.numeric(GRBI$'LONGITUDE_SIGN GÉO ASSOCIÉ À LA MENTION'), as.numeric(GRBI$'LATITUDE_SIGN GÉO ASSOCIÉ À LA MENTION')), proj4string = sp::CRS("+proj=longlat +datum=WGS84 +no_defs"))
 
 # Reproject points
 GRBI_points <- sp::spTransform(GRBI_points, raster::crs(template))
@@ -126,6 +124,7 @@ GRBI[GRBI > 0] <- 1
 
 write.csv(raster::values(GRBI), "../data_clean/GRBI_rasterized.csv")
 #saveRDS(GRBI_points, "../data_clean/GRBI_rasterPoints.RDS")
+
 
 
 #==============================================================================
@@ -223,14 +222,14 @@ prec_RCP45_2100 <- raster::crop(prec_RCP45_2100, raster::extent(template))
 temp_RCP45_2100 <- raster::crop(temp_RCP45_2100, raster::extent(template))
 
 # Mask
-prec_RCP45_2010 <- raster::mask(prec, template)
-temp_RCP45_2010 <- raster::mask(temp, template)
-prec_RCP45_2011_2040 <- raster::mask(prec_RCP45_2040, template)
-temp_RCP45_2011_2040 <- raster::mask(temp_RCP45_2040, template)
-prec_RCP45_2041_2070 <- raster::mask(prec_RCP45_2070, template)
-temp_RCP45_2041_2070 <- raster::mask(temp_RCP45_2070, template)
-prec_RCP45_2071_2100 <- raster::mask(prec_RCP45_2100, template)
-temp_RCP45_2071_2100 <- raster::mask(temp_RCP45_2100, template)
+prec_RCP45_2010 <- raster::mask(prec_RCP45_2010, template)
+temp_RCP45_2010 <- raster::mask(temp_RCP45_2010, template)
+prec_RCP45_2011_2040 <- raster::mask(prec_RCP45_2011_2040, template)
+temp_RCP45_2011_2040 <- raster::mask(temp_RCP45_2011_2040, template)
+prec_RCP45_2041_2070 <- raster::mask(prec_RCP45_2041_2070, template)
+temp_RCP45_2041_2070 <- raster::mask(temp_RCP45_2041_2070, template)
+prec_RCP45_2071_2100 <- raster::mask(prec_RCP45_2071_2100, template)
+temp_RCP45_2071_2100 <- raster::mask(temp_RCP45_2071_2100, template)
 
 
 # 5 - Get elevation data ------------------------------------------
@@ -239,7 +238,7 @@ temp_RCP45_2071_2100 <- raster::mask(temp_RCP45_2100, template)
 
 # Load elevation
 #template <- raster::raster("../data_clean/templateRaster.tif")
-elev <- elevatr::get_elev_raster(template, z = 8, clip = "bbox") # Error when downloading more precise (z > 8) elevation data
+elev <- elevatr::get_elev_raster(terra::rast(template), z = 8, clip = "bbox") # Error when downloading more precise (z > 8) elevation data
 
 
 # Standardize the raster extent and resolution
@@ -305,10 +304,10 @@ raster::values(RCP45_2100[["temp2"]]) <- raster::values(RCP45_2100[["temp"]])^2
 RCP45_2100_df <- as.data.frame(raster::values(RCP45_2100))
 
 # # Save projections as DF
-saveRDS(RCP45_2020_df, "../SDM/RCP45_2020_df.rds")
-saveRDS(RCP45_2040_df, "../SDM/RCP45_2040_df.rds")
-saveRDS(RCP45_2070_df, "../SDM/RCP45_2070_df.rds")
-saveRDS(RCP45_2100_df, "../SDM/RCP45_2100_df.rds")
+saveRDS(RCP45_2020_df, "./RCP45_2020_df.rds")
+saveRDS(RCP45_2040_df, "./RCP45_2040_df.rds")
+saveRDS(RCP45_2070_df, "./RCP45_2070_df.rds")
+saveRDS(RCP45_2100_df, "./RCP45_2100_df.rds")
 
 
 #### Biomass ####
@@ -336,7 +335,7 @@ raster::values(biomass_2100[["temp2"]]) <- raster::values(biomass_2100[["temp"]]
 biomass_2100_df <- as.data.frame(raster::values(biomass_2100))
 
 # # Save projections as DF
-saveRDS(biomass_2020_df, "../SDM/biomass_2020_df.rds")
-saveRDS(biomass_2040_df, "../SDM/biomass_2040_df.rds")
-saveRDS(biomass_2070_df, "../SDM/biomass_2070_df.rds")
-saveRDS(biomass_2100_df, "../SDM/biomass_2100_df.rds")
+saveRDS(biomass_2020_df, "./biomass_2020_df.rds")
+saveRDS(biomass_2040_df, "./biomass_2040_df.rds")
+saveRDS(biomass_2070_df, "./biomass_2070_df.rds")
+saveRDS(biomass_2100_df, "./biomass_2100_df.rds")
