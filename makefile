@@ -49,7 +49,7 @@ sdm: $(RES)
 	MAKE -C SDM
 
 # render manuscript
-$(msOutput): $(META) $(BIB) $(CONF) $(fig1) $(fig2) $(fig3) $(fig4) $(fig5) $(fig6) $(fig7) $(fig8) $(RES)
+manuscript: $(META) $(BIB) $(CONF) $(fig1) $(fig2) $(fig3) $(fig4) $(fig5) $(fig6) $(fig7) $(fig8) $(RES)
 	@bash manuscript/conf/build.sh $(msInput) $(BIB) $(META)
 
 # generate bib file

@@ -51,7 +51,7 @@ jobs:
         run: make install
 
       - name: build project
-        run: make
+        run: make manuscript
 
       - name: prepare deployment
         run: |
