@@ -1,10 +1,28 @@
 #### Data ####
-data_raw/*
 data_clean/*
 SDM/BITH_SDM.RDS
 SDM/RCP45_*
 SDM/biomass_*
 SDM/results/BITH_metrics_QC.RDS
+data_raw/*
+# Except for the following files
+# !*data_raw/RAPPORT QO_SOS-POP SCF_GRBI_pub.xlsx
+# !*data_raw/RCP45_GrowthBudwormBaselineFire_ABIE.BAL_0_merged.RData
+# !*data_raw/RCP45_GrowthBudwormBaselineFire_ABIE.BAL_20_merged.RData
+# !*data_raw/RCP45_GrowthBudwormBaselineFire_ABIE.BAL_50_merged.RData
+# !*data_raw/RCP45_GrowthBudwormBaselineFire_ABIE.BAL_80_merged.RData
+# !*data_raw/RCP45_GrowthBudwormBaselineFire_TotalBiomass_0_merged.RData
+# !*data_raw/RCP45_GrowthBudwormBaselineFire_TotalBiomass_20_merged.RData
+# !*data_raw/RCP45_GrowthBudwormBaselineFire_TotalBiomass_50_merged.RData
+# !*data_raw/RCP45_GrowthBudwormBaselineFire_TotalBiomass_80_merged.RData
+# !*data_raw/MappingQc_AnnualVar_1981_2010Tmean0.tif
+# !*data_raw/MappingQc_AnnualVar_1981_2010Prcp0.tif
+# !*data_raw/MappingQc_AnnualVar_AnnualVar_RCP45_2011_2040Prcp0.tif
+# !*data_raw/MappingQc_AnnualVar_AnnualVar_RCP45_2011_2040Tmean0.tif
+# !*data_raw/MappingQc_AnnualVar_RCP45_2041_2070Prcp0.tif
+# !*data_raw/MappingQc_AnnualVar_RCP45_2041_2070Tmean0.tif
+# !*data_raw/MappingQc_AnnualVar_RCP45_2071_2100Prcp0.tif
+# !*data_raw/MappingQc_AnnualVar_RCP45_2071_2100Tmean0.tif
 
 
 #### R ####

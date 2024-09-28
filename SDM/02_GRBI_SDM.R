@@ -19,17 +19,12 @@ source("./SDM/SDM_functions.R")
 
 # Rasterized BITH occurences for south of Québec
 BITH <- data.table::fread("./data_clean/GRBI_rasterized.csv")
-#GRBI_points <- readRDS("./data_clean/GRBI_rasterPoints.RDS")
 
 # Explanatory variables
 explana_dat <- readRDS("./SDM/explana_dat_df.rds")
 
 # Template
 template <- raster::raster("./data_clean/templateRaster.tif")
-
-# Polygon of the region boundaries
-#spacePoly <- rgdal::readOGR(dsn = "./SDM", layer = "spacePoly")
-#spacePoly <- readRDS("./SDM/spacePoly.RDS")
 
 
 # 2 - Explore data --------------------------------------------------------
@@ -133,17 +128,8 @@ if(false){
 ## Habitat variables: fir density, latitude, longitude, altitude (Lambert et al. 2005, Hart)
 ##################
 
-##################
-# Hypotheses
-## 3. T, P, elevation, and forest cover are important and climat interacts with elevation : "bio1 * bio12 * elevation + type_couv + cl_dens + cl_haut"
-##################
-
 # Model fomula
-#cov <- c("temp * temp2 * prec * elevation + type_couv + cl_dens + cl_haut")
-#cov <- c("temp * temp2 * prec * elevation + abie.balPropBiomass * abie.balBiomass")
 cova <- c("temp + temp2 + prec + elevation + abie.balPropBiomass * abie.balBiomass")
-#cova <- c("temp * elevation + temp2 + prec + abie.balPropBiomass * abie.balBiomass")
-
 
 # Check VIF (colinearity)
 if(FALSE){

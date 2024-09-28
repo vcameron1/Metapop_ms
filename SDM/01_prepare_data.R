@@ -31,59 +31,6 @@ raster::writeRaster(template, filename="../data_clean/templateRaster.tif", overw
 
 GRBI <- readxl::read_excel("../data_raw/RAPPORT QO_SOS-POP SCF_GRBI_pub.xlsx", sheet = 2)
 
-# 2 - Explore GRBI data ---------------------------------------------------
-
-# Available variables/data
-#colnames(GRBI)
-
-# Spatial distribution of points
-#plot(GRBI$'LONGITUDE_SIGN GÉO ASSOCIÉ À LA MENTION', GRBI$'LATITUDE_SIGN GÉO ASSOCIÉ À LA MENTION')
-#NA %in% unique(GRBI$'LONGITUDE_SIGN GÉO ASSOCIÉ À LA MENTION')
-#NA %in% unique(GRBI$'LATITUDE_SIGN GÉO ASSOCIÉ À LA MENTION')
-
-# Spatial distribution of points by site
-#sunflowerplot(GRBI$LONGITUDE, GRBI$LATITUDE)
-
-# Temporal distribution of occurences
-#hist(GRBI$ANNEE) # Year 1000?
-#sort(unique(GRBI$ANNEE)) 
-#GRBI[GRBI$ANNEE < 2000, c("NOM SITE", "LATITUDE_SIGN GÉO ASSOCIÉ À LA MENTION", "LONGITUDE_SIGN GÉO ASSOCIÉ À LA MENTION", "ANNEE" )]
-#hist(GRBI$ANNEE[GRBI$ANNEE > 1990])
-
-# Distribution of precisions
-#table(GRBI$PRÉCISION)
-
-# Distribution of classifications
-#table(GRBI$CLASSIFICATION)
-
-# Distribution of usage
-#table(GRBI$USAGE)
-
-# Distribution of types of occurences
-#table(GRBI$O_CODEATLA)
-
-
-# 3 - Clean GRBI data -----------------------------------------------------
-
-# DNOTE: ata provided is the clean version of the original raw data. The following steps were followed :
-
-# # Select occurences that have coordinates data
-# GRBI <- GRBI[!is.na(GRBI$'LONGITUDE_SIGN GÉO ASSOCIÉ À LA MENTION') & !is.na(GRBI$'LATITUDE_SIGN GÉO ASSOCIÉ À LA MENTION'),]
-
-# # Select occurences with PRÉCISION == "S" 
-# # which corresponds to coordinates precise to the second
-# GRBI <- GRBI[GRBI$PRÉCISION == "S",]
-  
-# # Remove recordings of absences
-# GRBI <- GRBI[GRBI$O_CODEATLA != "0",]
-
-# # Select occurences with classification "R" 
-# # occurences that are certain
-# GRBI <- GRBI[GRBI$CLASSIFICATION == "R",]
-
-# # Select nidification usage
-# GRBI <- GRBI[GRBI$USAGE == "Nidification",]
-
 
 # 3 - Reproject spatial points --------------------------------------------
 
@@ -113,14 +60,7 @@ GRBI <- raster::mask(GRBI, template)
 GRBI[GRBI > 0] <- 1
 
 
-# 6 - BITH raster back to spatialPoints -----------------------------------
-
-# Back to spatialPoints
-#GRBI_points <- raster::rasterToPoints(GRBI) # Keep cell centroids
-#GRBI_points <- sp::SpatialPoints(GRBI_points, proj4string = raster::crs(template))
-
-
-# 7 - Save rasterized BITH occurences -----------------------------------
+# 6 - Save rasterized BITH occurences -----------------------------------
 
 write.csv(raster::values(GRBI), "../data_clean/GRBI_rasterized.csv")
 #saveRDS(GRBI_points, "../data_clean/GRBI_rasterPoints.RDS")
@@ -137,26 +77,6 @@ write.csv(raster::values(GRBI), "../data_clean/GRBI_rasterized.csv")
 #
 # Explanatory variables are saved as raster objects in RDS files.
 #==============================================================================
-
-# 1 - Useful function -----------------------------------------------------
-
-# # Function that standardizes rasters
-# standardize.raster <- function(raster, template, spacePoly, resample = FALSE){
-#     # Reproject bioclim to match template (which also have a ~250m2 resolution)
-#     raster <- raster::projectRaster(raster, crs = raster::crs(template))
-
-#     # Crop to Québec meridional
-#     raster <- raster::crop(raster, raster::extent(template))
-
-#     # Resample to match template resolution
-#     if (resample){
-#         raster <- raster::resample(raster, template, method = 'bilinear')}
-
-#     # Cut raster with polygon of the region
-#     #raster <- raster::mask(raster, spacePoly)
-
-#     return(raster)
-# }
 
 # 1 - Load biomass data and projections ------------------------------------------
 

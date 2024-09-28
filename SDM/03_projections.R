@@ -96,18 +96,6 @@ BITH_2020_2100_QC <- raster::crop(BITH_2020_2100, e)
 BITH_metrics_QC <- patch.metrics(BITH_2020_2100_QC, RL_cutoff = RL_cutoff, a = c(1, 1/5, 1/50, 1/200, 1/500))
 saveRDS(metrics_RCP45_QC, "./SDM/results/BITH_metrics_QC.RDS")
 
-# # Patch metrics over EasternTownships
-# e_ET <- raster::extent(c(xmin = -356488, xmax = -115085, ymin = 111680, ymax = 234873))
-# BITH_2020_2100_ET <- raster::crop(BITH_2020_2100, e_ET)
-# BITH_metrics_ET <- patch.metrics(BITH_2020_2100_ET, RL_cutoff = RL_cutoff, a = c(1, 1/5, 1/50, 1/200, 1/500))
-# #saveRDS(BITH_metrics_ET, "./SDM/results/BITH_metrics_ET.RDS")
-
-# # Patch metrics over Réserve faunique des Laurentides
-# e_RL <- raster::extent(c(xmin = -282986, xmax = -109983, ymin = 311761, ymax = 475079))
-# BITH_2020_2100_RL <- raster::crop(BITH_2020_2100, e_RL)
-# BITH_metrics_RL <- patch.metrics(BITH_2020_2100_RL, RL_cutoff = RL_cutoff, a = c(1, 1/5, 1/50, 1/200, 1/500))
-# #saveRDS(BITH_metrics_RL, "./SDM/results/BITH_metrics_RL.RDS")
-
 
 # 3 - Plot predictions ----------------------------------------------------
 
@@ -139,11 +127,3 @@ plot.gif <- function(raster, file.name, xlim, ylim, frames.interval = 0.5, zlim 
 # Gif for Québec
 plot.gif(BITH_2020_2100[[1:4]], file.name = "BITH_RCP45_QC.gif", xlim=c(-514009,356398), ylim=c(110389,633143), frames.interval = 0.5, zlim = c(-5,5), main = "RCP4.5")
 plot.gif(BITH_2020_2100[[5:8]], file.name = "./BITH_biomass_QC.gif", xlim=c(-514009,356398), ylim=c(110389,633143), frames.interval = 0.5, zlim = c(-5,5), main = "biomass")
-
-# Gif for EasternTownships
-plot.gif(BITH_2020_2100[[1:4]], file.name = "BITH_RCP45_ET.gif", xlim=c(-356488,-115085), ylim=c(111680,234873), frames.interval = 0.5, zlim = c(-5,5), main = "RCP4.5")
-plot.gif(BITH_2020_2100[[5:8]], file.name = "./BITH_biomass_ET.gif", xlim=c(-356488,-115085), ylim=c(111680,234873), frames.interval = 0.5, zlim = c(-5,5), main = "biomass")
-
-# Gif for Réserve faunique des Laurentides
-plot.gif(BITH_2020_2100[[1:4]], file.name = "BITH_RCP45_RL.gif", xlim=c(-282986,-109983), ylim=c(311761,475079), frames.interval = 0.5, zlim = c(-5,5), main = "RCP4.5")
-plot.gif(BITH_2020_2100[[5:8]], file.name = "./BITH_biomass_RL.gif", xlim=c(-282986,-109983), ylim=c(311761,475079), frames.interval = 0.5, zlim = c(-5,5), main = "biomass")
