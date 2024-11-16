@@ -4,6 +4,7 @@
 	CONF=manuscript/conf/*
 	BIB=manuscript/references.bib
 	META=metadata.yml
+	SUPP=manuscript/supplementary_material_S1.md
 
 # Conceptual figures
 	# Introduction to persistence
@@ -49,8 +50,8 @@ sdm: $(RES)
 	MAKE -C SDM
 
 # render manuscript
-manuscript: $(META) $(BIB) $(CONF) $(fig1) $(fig2) $(fig3) $(fig4) $(fig5) $(fig6) $(fig7) $(fig8) $(RES)
-	@bash manuscript/conf/build.sh $(msInput) $(BIB) $(META)
+manuscript: $(META) $(BIB) $(CONF) $(fig2) $(fig3) $(fig4) $(fig5) $(fig6) $(fig8) $(RES)
+	@bash manuscript/conf/build.sh $(msInput) $(BIB) $(META) $(SUPP)
 
 # generate bib file
 $(BIB): $(msInput) $(bibR)
@@ -59,12 +60,8 @@ $(BIB): $(msInput) $(bibR)
 
 # get results
 $(RES): $(resR)
-	@echo [1] getting results
+	@echo [2] getting results
 	@Rscript -e "source('$(resR)')";
-
-# plot figure 1
-$(fig1): $(fig1R)
-	@Rscript -e "source('./conceptual_fig/intro_persistence_fig.R'); intro_persistence_plot()"
 
 # plot figure 2
 $(fig2): $(fig2R)
@@ -85,10 +82,6 @@ $(fig5): $(fig5R)
 # plot figure 6
 $(fig6): $(fig6R)
 	@Rscript -e "source('R/map_BITH_projections.R')"
-
-# plot figure 7
-$(fig7): $(fig7R) $(RES)
-	@Rscript -e "source('R/plot_spatial_configuration.R')"
 
 # plot figure 8
 $(fig8): $(fig8R) $(RES)
