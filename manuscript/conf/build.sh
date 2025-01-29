@@ -10,7 +10,7 @@
 # - $1 manuscript.md
 # - $2 references.bib
 # - $3 metadata.yml
-# - $4 ...
+# - $4 supplementary_material.md
 
 
 ###################################################################
@@ -21,6 +21,7 @@
 # - build tex
 # - build html
 # - build docx
+# - Build Supplementary material pdf
 ###################################################################
 
 
@@ -37,7 +38,7 @@ mkdir docs
 
 
 # Build pdf
-echo [1] Rendering manuscript pdf
+echo [3] Rendering manuscript pdf
 pandoc $1 -o docs/manuscript.pdf \
     --quiet \
     --metadata-file=$3 \
@@ -51,14 +52,14 @@ pandoc $1 -o docs/manuscript.pdf \
 # if double-blind, print title page separated
 if ${double_blind}
 then
-    echo [1] Rendering title page pdf
+    echo [4] Rendering title page pdf
     pandoc $1 -o docs/manuscript_title.pdf \
         --metadata-file=$3 \
         --template=manuscript/conf/templateTitle.tex
 fi
 
 # Build tex
-echo [1] Rendering manuscript tex
+echo [5] Rendering manuscript tex
 pandoc $1 -o docs/manuscript.tex \
     --quiet \
     --metadata-file=$3 \
@@ -69,7 +70,7 @@ pandoc $1 -o docs/manuscript.tex \
     --csl=manuscript/conf/ecology.csl
 
 # Build html
-echo [1] Rendering html document
+echo [6] Rendering html document
 pandoc -s --mathjax \
     -f markdown -t html \
     $1 -o docs/manuscript.html \
@@ -82,7 +83,7 @@ pandoc -s --mathjax \
 
 # Build docx
 ## This md -> tex _. word is a q&d until I create a lua filter to transform authors, afill and keywords in full text for word docx
-echo [1] Rendering docx document
+echo [7] Rendering docx document
 pandoc $1 -o manuscript.tex \
     --metadata-file=$3 \
     --template=manuscript/conf/templateWord.tex \
@@ -94,6 +95,9 @@ pandoc -s manuscript.tex -o docs/manuscript.docx \
     --reference-doc=manuscript/conf/template.docx
 	rm manuscript.tex
 
+# Build Supplementary material pdf
+echo [8] Rendering supplementary material pdf
+pandoc $4 -o docs/supplementary_material_S1.pdf --quiet
 
 # Move manuscript folder to docs so html can load figures
 cp -R manuscript docs
