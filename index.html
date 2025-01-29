@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+   <head>
+      <meta charset="utf-8">
+      <title>Spatial Structure is More Than Habitat Amount: A Metapopulation Approach is Necessary to Project Distributions Under Climate Change</title>
+      <script src="https://hypothes.is/embed.js" async></script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <!--fonts-->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha256-l85OmPOjvil/SOvVt3HnSSjzF1TUMyT9eV0c2BzEGzU=" crossorigin="anonymous" />
+      <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,600|Source+Sans+Pro:300,300i,400,400i,600,600i&display=swap&subset=greek" rel="stylesheet">
+      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+      <link rel="stylesheet" href="https://cdn.rawgit.com/jpswalsh/academicons/master/css/academicons.min.css">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.11.1/tocbot.css">
+      <script src="https://cdn.jsdelivr.net/npm/walkway.js/src/walkway.min.js"></script>
+      <style>
+         h1.title {
+            font-size: 38px;
+            text-align: center;
+         }
+
+         h4.author {
+            font-size: 18px;
+            text-align: center;
+         }
+
+         body {
+         font-size: 18px;
+         font-family: "Source Sans Pro", sans-serif;
+         }
+         body b,
+         body strong {
+         font-weight: 600;
+         }
+         body code,
+         body pre {
+         font-family: "Source Code Pro", monospace;
+         }
+         .container {
+         display: block !important;
+         margin: 0px auto;
+         padding: 3em;
+         max-width: 1000px;
+         }
+         header {
+         background-color: #f8f8f8;
+         }
+         header h1 {
+         margin-top: 1em;
+         padding-left: 0.5em;
+         }
+         a {
+         text-decoration: none;
+         color: #00667F;
+         }
+         a:hover {
+         color: #2a6496;
+         }
+         article p {
+         line-height: 150%;
+         color:#131313;
+         }
+         article.container {
+         max-width: 800px;
+         }
+         d-appendix {
+         font-size: 16px;
+         line-height: 1.3;
+         padding-left: 18px;
+         border: 1px solid rgba(0,0,0,0.1);
+         background: rgba(0, 0, 0, 0.02);
+         padding: 10px 18px;
+         color: rgba(150, 150, 150, 1);
+         overflow: hidden;
+         margin-top: -10px;
+         word-wrap: break-word;
+         display: block;
+         }
+         /* columns for appendix */
+         .row {
+         display: flex;
+         margin-left: -65px;
+         }
+         /* Create two equal columns that sits next to each other */
+         .rightColumn {
+         flex: 10%;
+         padding: 5px;
+         height: auto; /* Should be removed. Only for demonstration */
+         font-weight: 200;
+         margin-right: 110px;
+         }
+         .leftColumn {
+         padding: 5px;
+         width: 150px;
+         height: auto; /* Should be removed. Only for demonstration */
+         }
+         article h1 {
+         margin-top: 2.2em;
+         border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+         font-weight: 400;
+         }
+         article h2 {
+         margin-top: 1em;
+         margin-bottom: 0px;
+         padding-bottom: 0px;
+         font-weight: 400;
+         font-size: 1.8em;
+         }
+         article h3 {
+         font-weight: 400;
+         font-size: 1.5em;
+         margin-bottom: 0em;
+         }
+         article h4 {
+         font-weight: 400;
+         font-size: 1.25em;
+         margin-bottom: 0em;
+         }
+         .citation {
+         border-bottom: 1px #00667F;
+         }
+         figure {
+         font-size: 85%;
+         color: #767e79;
+         margin: 2em 0;
+         line-height: 1.3;
+         text-align: center;
+         }
+         figure img {
+         max-width: 100%;
+         }
+         figure figcaption {
+         text-align: left;
+         padding: 1em;
+         }
+         figure figcaption span {
+         color: #6c7670;
+         font-weight: 600;
+         }
+         nav.artifacts {
+         text-align: center;
+         background-color: #edefee;
+         padding-top: 5px;
+         padding-bottom: 9px;
+         }
+         .creators .creator {
+         margin-bottom: 0.5em;
+         padding-left: 1em;
+         }
+         .creators .creator .author {
+            display: inline-block;
+            color: #859089;
+            padding-bottom: 1em;
+         }
+         .creators .creator .affiliation {
+            display: inline-block;
+            color: #859089;
+            line-height: 1.4;
+            font-size: 85%;
+         }
+         .creators .creator .author {
+         color: #1e201f;
+         font-weight: 600;
+         }
+         .creators .creator .orcid {
+         padding-left: 2em;
+         font-family: "Source Code Pro", monospace;
+         float: right;
+         }
+         summary {
+         display: block;
+         padding-top: 2em;
+         padding-left: 1em;
+         padding-right: 3em;
+         line-height: 1.3;
+         }
+         summary::before {
+         content: "Abstract";
+         font-weight: 600;
+         }
+         /* Reference when hover */
+         .tooltip-inner{
+         max-width:750px;
+         font-size: 90%;
+         text-align: left;
+         line-height: 1.5;
+         padding:0.8rem;
+         background-color:rgb(245, 245, 245);
+         border-radius: 10px;
+         }
+         .fade{
+         opacity:0;
+         transition:opacity .15s linear
+         }
+         .fade.show{
+         opacity:1
+         }
+         .footer {
+         display: none;
+         position: fixed;
+         left: 20px;
+         bottom: 8px;
+         width: 20%;
+         text-align: left;
+         font-size: 84%;
+         font-weight: 100;
+         line-height: 0px;
+         }
+         footer.a:hover{
+         color:rgb(172, 203, 72)
+         }
+         #myBtn {
+         display: none;
+         position: fixed;
+         bottom: 10px;
+         right: 30px;
+         z-index: 99;
+         border: none;
+         outline: none;
+         background-color: transparent;
+         color: gray;
+         cursor: pointer;
+         padding: 15px;
+         border-radius: 10px;
+         font-size: 18px;
+         }
+         #myBtn:hover {
+         background-color: rgb(245, 245, 245); /* Add a dark-grey background on hover */
+         }
+         .arrowTop{
+         display: none;
+         position: fixed;
+         top: 20px;
+         right: 40px;
+         z-index: 99;
+         }
+      </style>
+   </head>
+   <body>
+      <header>
+         <section class="container">
+            <h1>Spatial Structure is More Than Habitat Amount: A Metapopulation Approach is Necessary to Project Distributions Under Climate Change</h1>
+            <section class="creators">
+            <div class="creator">
+                                 <div class="author">Victor Cameron</div>
+                  <div class="affiliation"><sup>
+                                             1,
+                                             2                  </sup></div>
+                                       <a style="font-size: 1.2em; color: rgb(172, 203, 72);"  href='https://orcid.org/0000-0003-0624-4201' target="_blank";">
+                        <i class="ai ai-orcid"></i>
+                     </a>
+                                                         <a style="font-size: 1em; color: #00667F;" href = "mailto: victor.cameron@usherbrooke.ca">
+                        <i class="fas fa-envelope"></i>
+                     </a>
+                                    &nbsp;
+                                 <div class="author">F. Guillaume Blanchet</div>
+                  <div class="affiliation"><sup>
+                                             1,
+                                             2,
+                                             3,
+                                             4                  </sup></div>
+                                       <a style="font-size: 1.2em; color: rgb(172, 203, 72);"  href='https://orcid.org/0000-0001-5149-2488' target="_blank";">
+                        <i class="ai ai-orcid"></i>
+                     </a>
+                                                      &nbsp;
+                                 <div class="author">Yan Boulanger</div>
+                  <div class="affiliation"><sup>
+                                             5                  </sup></div>
+                                       <a style="font-size: 1.2em; color: rgb(172, 203, 72);"  href='https://orcid.org/0000-0001-6181-8509' target="_blank";">
+                        <i class="ai ai-orcid"></i>
+                     </a>
+                                                      &nbsp;
+                                 <div class="author">Junior A. Tremblay</div>
+                  <div class="affiliation"><sup>
+                                             6,
+                                             7                  </sup></div>
+                                       <a style="font-size: 1.2em; color: rgb(172, 203, 72);"  href='https://orcid.org/0000-0003-4930-0939' target="_blank";">
+                        <i class="ai ai-orcid"></i>
+                     </a>
+                                                      &nbsp;
+                                 <div class="author">Dominique Gravel</div>
+                  <div class="affiliation"><sup>
+                                             1,
+                                             2                  </sup></div>
+                                       <a style="font-size: 1.2em; color: rgb(172, 203, 72);"  href='https://orcid.org/0000-0002-4498-7076' target="_blank";">
+                        <i class="ai ai-orcid"></i>
+                     </a>
+                                                      &nbsp;
+                              <br>
+                                 <div class="affiliation"><sup>1</sup> Département de biologie, Université de Sherbrooke, Sherbrooke, Québec, Canada</div><br>
+                                 <div class="affiliation"><sup>2</sup> Québec Centre for Biodiversity Sciences, McGill University, Montréal, Québec, Canada</div><br>
+                                 <div class="affiliation"><sup>3</sup> Département de mathématiques, Université de Sherbrooke, Sherbrooke, Québec, Canada</div><br>
+                                 <div class="affiliation"><sup>4</sup> Département des sciences de la santé communautaire, Université de Sherbrooke, Sherbrooke, Québec, Canada</div><br>
+                                 <div class="affiliation"><sup>5</sup> Canadian Forest Service, Laurentian Forestry Centre, Natural Resources Canada, Québec, Québec, Canada</div><br>
+                                 <div class="affiliation"><sup>6</sup> Environment and Climate Change Canada, Wildlife Research Division, Québec, Québec, Canada</div><br>
+                                 <div class="affiliation"><sup>7</sup> Département des sciences du bois et de la forêt, Université Laval, Québec, Canada</div><br>
+                           </div>
+            </section>
+            <summary>
+               Projecting species distributions under climate change requires going beyond climate suitability models. We propose that metapopulation theory can be used to leverage species distribution models while accounting for landscape spatial structure, biotic interactions and demography. While reviewing how metapopulation theory reacts to climate-induced distribution shifts, we found that habitat-climate mismatch can generate non-equilibrium dynamics, linear change in habitat occupancy generates non-linear distribution change, and the effect of environmental change on habitat can have counterintuitive effects on higher trophic levels. We illustrated our findings by developing habitat suitability models for the Bicknell’s Thrush (<em>Catharus bicknelli</em>) a red-listed bird species confined to perturbed balsam fir forests. Under climate warming, the Bicknell’s Thrush distribution shifts northwards from the effect of climate alone while the distribution of its associated vegetation remains stable despite warming. The arising mismatch between climate and vegetation changes patch size, connectivity, and habitat structure potentially to different extent, influencing species persistence and suggesting that habitat alone is not enough to characterize regional distribution changes. Our results emphasize the importance of both habitat and landscape spatial structure in assessing persistence for which metapopulation theory is an ideal framework to further advance our understanding of species distribution.
+            </summary>
+         </section>
+      </header>
+
+      <nav class="artifacts">
+         <p style="font-size: 15px; color:rgb(155, 154, 154);line-height: 0%; padding-bottom: 4px;">Generated using the <a style="color:rgb(100, 100, 100);"  href='#' target="_blank";">research-compendium-template</a></p>
+         <a href="https://github.com/vcameron1/Metapop_ms" title="Github repo" target="_blank"><img src="https://img.shields.io/badge/write-github-blue.svg" /></a>
+         <a href="manuscript.pdf" title="Github repo" target="_blank"><img src="https://img.shields.io/badge/read-pdf-green.svg" /></a>
+         <a href="manuscript.docx" title="Github repo" target="_blank"><img src="https://img.shields.io/badge/read-docx-yellow.svg" /></a>
+               </nav>
+
+      <article class="container">
+         <h1 id="introduction">Introduction</h1>
+         <p>Climate change has already prompted species to shift their range toward higher latitudes and elevations <span class="citation" data-cites="parmesan_ecological_2006 chen_rapid_2011 virkkala_patterns_2014">(Parmesan <a href="#ref-parmesan_ecological_2006" role="doc-biblioref">2006</a>; Chen et al. <a href="#ref-chen_rapid_2011" role="doc-biblioref">2011</a>; Virkkala and Lehikoinen <a href="#ref-virkkala_patterns_2014" role="doc-biblioref">2014</a>)</span>. Species persistence in response to climate change may critically depend on their ability to expand their range and track suitable environments. While most current predictive approaches ignore important biological mechanisms such as demography, dispersal, and biotic interactions, these play key roles in species response to environmental change <span class="citation" data-cites="urban_improving_2016">(Urban et al. <a href="#ref-urban_improving_2016" role="doc-biblioref">2016</a>)</span>. In response, several calls have been made for models to incorporate the processes mediating species response <span class="citation" data-cites="fordham_adapted_2013 stralberg_conservation_2015 stralberg_conservation_2019">(Fordham et al. <a href="#ref-fordham_adapted_2013" role="doc-biblioref">2013</a>; Stralberg et al. <a href="#ref-stralberg_conservation_2015" role="doc-biblioref">2015</a>, <a href="#ref-stralberg_conservation_2019" role="doc-biblioref">2019</a>)</span> and mechanistic approaches have been developed to improve the realism of projections. However, more work is required to increase accuracy and usability of mechanistic models as they remain rarely employed in conservation planning when compared to correlative species distribution models <span class="citation" data-cites="guisan_predicting_2005 franklin_mapping_2009 guisan_predicting_2013">(SDMs, Guisan and Thuiller <a href="#ref-guisan_predicting_2005" role="doc-biblioref">2005</a>; Franklin and Miller <a href="#ref-franklin_mapping_2009" role="doc-biblioref">2009</a>; Guisan et al. <a href="#ref-guisan_predicting_2013" role="doc-biblioref">2013</a>)</span>. The challenge now lies in the development of approaches that are accessible, customizable and integrate multiple processes and their interplay <span class="citation" data-cites="thuiller_road_2013 urban_improving_2016 mcintire_perfict_2022">(Thuiller et al. <a href="#ref-thuiller_road_2013" role="doc-biblioref">2013</a>; Urban et al. <a href="#ref-urban_improving_2016" role="doc-biblioref">2016</a>; McIntire et al. <a href="#ref-mcintire_perfict_2022" role="doc-biblioref">2022</a>)</span>.</p>
+         <p>Explicit modelling of the processes that underlie distribution dynamics is challenging <span class="citation" data-cites="hefley_when_2017 briscoe_can_2021">(Hefley et al. <a href="#ref-hefley_when_2017" role="doc-biblioref">2017</a>; Briscoe et al. <a href="#ref-briscoe_can_2021" role="doc-biblioref">2021</a>)</span>. Dynamic range models provide a successful example of incorporating demographic processes and dispersal to improve the accuracy of species distribution projections <span class="citation" data-cites="briscoe_can_2021">(Briscoe et al. <a href="#ref-briscoe_can_2021" role="doc-biblioref">2021</a>)</span>. They are based on niche theory, assuming that species occur at locations where the environment allows positive growth rates <span class="citation" data-cites="hutchinson_concluding_1957 godsoe_integrating_2017">(Hutchinson <a href="#ref-hutchinson_concluding_1957" role="doc-biblioref">1957</a>; Godsoe et al. <a href="#ref-godsoe_integrating_2017" role="doc-biblioref">2017</a>)</span>. However, such models are often difficult to parameterize because measuring growth rate is challenging <span class="citation" data-cites="mcgill_trees_2012">(McGill <a href="#ref-mcgill_trees_2012" role="doc-biblioref">2012</a>)</span> and requires very specific data on species response to abiotic environmental conditions. Indeed, on top of being computationally intensive <span class="citation" data-cites="snell_using_2014">(Snell et al. <a href="#ref-snell_using_2014" role="doc-biblioref">2014</a>)</span>, the data required to parameterize these models are rarely available <span class="citation" data-cites="urban_improving_2016">(Urban et al. <a href="#ref-urban_improving_2016" role="doc-biblioref">2016</a>)</span>. Furthermore, local demography on its own may be insufficient to explain broad-scale species distribution, suggesting that processes at broader scales must also be considered <span class="citation" data-cites="le_squin_climateinduced_2021">(Le Squin, Boulangeat, and Gravel <a href="#ref-le_squin_climateinduced_2021" role="doc-biblioref">2021</a>)</span>, including dispersal limitations, disturbances, and biotic interactions <span class="citation" data-cites="urban_improving_2016 stephan_positive_2021">(Urban et al. <a href="#ref-urban_improving_2016" role="doc-biblioref">2016</a>; Stephan, Mora, and Alexander <a href="#ref-stephan_positive_2021" role="doc-biblioref">2021</a>)</span>.</p>
+         <p>Another approach recently proposed is derived from metapopulation theory. Metapopulations are expected to persist in heterogenous landscapes if colonization is sufficient to balance local extinctions <span class="citation" data-cites="hanski_metapopulation_2000">(Hanski and Ovaskainen <a href="#ref-hanski_metapopulation_2000" role="doc-biblioref">2000</a>)</span>. The environment may constrain these two processes and limit metapopulation persistence. Distribution limits eventually emerge over environmental gradients at this location where persistence becomes critical. Furthermore, distributions may be constrained by the amount of suitable conditions in a region. As a result, a species may be absent from a region, or a portion of a gradient, despite the occurrence of suitable conditions if these are not abundant enough or if extinction is too high. Metapopulation theory also makes an ideal framework to incorporate several elements of complexity such as landscape heterogeneity, dispersal, and biotic interactions as it is flexible enough to integrate fundamental processes driving distribution dynamics.</p>
+         <p>Disturbances, environmental changes, and biotic interactions are processes that may cause species distribution to be constantly out of equilibrium with their niche <span class="citation" data-cites="ovaskainen_transient_2002 svenning_influence_2014 boulangeat_transient_2018">(Ovaskainen and Hanski <a href="#ref-ovaskainen_transient_2002" role="doc-biblioref">2002</a>; Svenning et al. <a href="#ref-svenning_influence_2014" role="doc-biblioref">2014</a>; Boulangeat et al. <a href="#ref-boulangeat_transient_2018" role="doc-biblioref">2018</a>)</span>. Non-equilibrium dynamics are especially marked in plants that are limited by slow demography and restricted dispersal <span class="citation" data-cites="svenning_disequilibrium_2013 savage_elevational_2015 vissault_slow_2020">(Svenning and Sandel <a href="#ref-svenning_disequilibrium_2013" role="doc-biblioref">2013</a>; Savage and Vellend <a href="#ref-savage_elevational_2015" role="doc-biblioref">2015</a>; Vissault et al. <a href="#ref-vissault_slow_2020" role="doc-biblioref">2020</a>)</span>. Representing this reality requires an adapted approach and metapopulation theory offers the opportunity to model non-equilibrium dynamics <span class="citation" data-cites="hanski_metapopulation_1997 ovaskainen_transient_2002">(Hanski and Simberloff <a href="#ref-hanski_metapopulation_1997" role="doc-biblioref">1997</a>; Ovaskainen and Hanski <a href="#ref-ovaskainen_transient_2002" role="doc-biblioref">2002</a>)</span>. Metapopulation models have shown the trailing edge of current tree distribution to be persisting despite unfavourable climatic conditions as slow demography delays the extinction of populations. At the leading edge, dispersal limitations and competition prevent trees from colonizing favourable habitats <span class="citation" data-cites="talluto_extinction_2017">(Talluto et al. <a href="#ref-talluto_extinction_2017" role="doc-biblioref">2017</a>)</span>. The ability of metapopulation models to study and describe dynamic landscapes therefore makes them particularly suitable to study persistence under changing climate.</p>
+         <p>In this paper, we show how metapopulation theory can be used to model and thus complement the interpretation of species distribution in a changing environment. In addition, we illustrate how metapopulation theory can be used to leverage species distribution models by accounting for the complexity arising from biotic interactions, demography, and landscape structure. After reviewing the theory to account for these key ecological processes in distribution modelling and present associated sources of complexity, we illustrate the effect and importance of these processes on persistence and distribution dynamics using the Bicknell’s Thrush (<em>Catharus bicknelli</em>), a red-listed bird species, as a case study <span class="citation" data-cites="iucn_catharus_2020">(IUCN <a href="#ref-iucn_catharus_2020" role="doc-biblioref">2020</a>)</span>.</p>
+         <h1 id="key-concepts-arising-from-metapopulation-theory">Key Concepts Arising From Metapopulation Theory</h1>
+         <h2 id="model-description">Model description</h2>
+         <p>The classic metapopulation model describes species distribution over a set of suitable patches of habitat connected by dispersal <span class="citation" data-cites="levins_demographic_1969 levins_mathematical_1970">(Levins <a href="#ref-levins_demographic_1969" role="doc-biblioref">1969</a>, <a href="#ref-levins_mathematical_1970" role="doc-biblioref">1970</a>)</span>. Regional dynamics are driven by colonization and extinction events, which corresponding rates depend on local environmental conditions. Together they define the species distribution limits. The dynamics may be complexified with the representation of several trophic levels, where high-trophic level species occur exclusively at locations occupied by lower-level species <span class="citation" data-cites="fordham_adapted_2013">(Fordham et al. <a href="#ref-fordham_adapted_2013" role="doc-biblioref">2013</a>)</span>. We adopt the specialist-habitat terminology throughout this study to lighten the text and fit the example, even if the results are more general and can apply to any bottom-up system (e.g., predator-prey or host-mutualist).</p>
+         <p>Consider a simplistic system composed of a specialist species tracking the spatial distribution of a dynamic favourable habitat, such as a particular type of vegetation patch providing shelter and food. The model represents the dynamics of the occupancy of three possible states: empty, occupied by the favourable habitat alone (<span class="math inline">\(H\)</span>) or in co-occurrence with the specialist (<span class="math inline">\(S\)</span>). The landscape is heterogeneous and each local patch is characterized by the abiotic environmental condition (<span class="math inline">\(E\)</span>). Dynamics of occupancy are given by the following system of differential equations:</p>
+         <p><span class="math display">\[
+         \frac{dH(E)}{dt} = c_{H}(E)H(1-H) - e_{H}(E)H
+         \]</span></p>
+         <p><span class="math display">\[
+         \frac{dS(E)}{dt} = c_{S}(E)S(H(E)-S) - e_{S}(E)S
+         \]</span></p>
+         <p>Where <span class="math inline">\(c(E)\)</span> is the function for colonization rate and <span class="math inline">\(e(E)\)</span> for the extinction rate. Both are species-specific functions of the abiotic environment such that <span class="math inline">\(H\)</span> and <span class="math inline">\(S\)</span> also depend on <span class="math inline">\(E\)</span>, the abiotic environmental conditions. A specialist persists over the landscape in a dynamic equilibrium between habitat availability (i.e., habitat occupancy over the landscape), colonization, and extinction if its occupancy <span class="math inline">\(S\)</span> is larger than zero:</p>
+         <p><span class="math display">\[
+         S(E^{*}) = H(E^{*}) - \frac{e_{S}(E^{*})}{c_{S}(E^{*})}
+         \]</span></p>
+         <p>and the distribution limit is defined by <span class="math inline">\(S(E^{*}) = 0\)</span>, such that it is located where <span class="math inline">\(H(E^{*}) = \frac{e_{S}(E^{*})}{c_{S}(E^{*})}\)</span>. Distribution limits of a habitat specialist are therefore determined by its intrinsic response to the abiotic environment (the ratio <span class="math inline">\(\frac{e_{S}(E)}{c_{S}(E)}\)</span>), in conjunction with the habitat response to the abiotic environment (<span class="math inline">\(\frac{e_{H}(E)}{c_{H}(E)}\)</span>).</p>
+         <h2 id="graphical-representation-of-range-limits">Graphical representation of range limits</h2>
+         <p>We provide three examples to illustrate how metapopulation theory can reveal some of the complexities of distribution dynamics under a changing climate.</p>
+         <p>A specialist’s persistence and therefore occupancy is jointly affected by environmental conditions and habitat availability (occupancy) such that it can be represented graphically with <span class="math inline">\(\frac{e(E)}{c(E)}\)</span> and <span class="math inline">\(H(E)\)</span> curves (Figure <a href="#fig:occ_plot">1</a>). Distribution limit occurs at the position along the environmental gradient where the habitat occupancy curve crosses the extinction to colonization ratio. The specialist’s occupancy for given environmental conditions is defined by the difference between habitat availability and the extinction to colonization ratio curves (<span class="math inline">\(S^{*} = H-\frac{e}{c}\)</span>). The difference between habitat availability and the extinction to colonization ratio curves (<span class="math inline">\(S^{*}\)</span>; shown by the arrows in Figure <a href="#fig:occ_plot">1</a> A) is reduced with increasing environmental conditions, illustrating a decrease in the specialist’s occupancy and persistence (<span class="math inline">\(S(E_{0}^{*}) &gt; S(E_{1}^{*})\)</span>).</p>
+         <h3 id="interaction-of-the-specialist-and-of-its-habitats-response-can-cause-indirect-distribution-dynamics">Interaction of the specialist and of its habitat’s response can cause indirect distribution dynamics</h3>
+         <div id="fig:occ_plot" class="fignos">
+         <figure>
+         <img src="./manuscript/img/concept_occ.png" style="width:100.0%" alt="Figure 1: Change in occupancy (and persistence as shown by the grey arrows) of the habitat specialist depends on its intrinsic response to the environment \frac{e}{c} (orange line) and of the habitat’s occupancy H(E^{*}) (green line)." /><figcaption aria-hidden="true"><span>Figure 1:</span> Change in occupancy (and persistence as shown by the grey arrows) of the habitat specialist depends on its intrinsic response to the environment <span class="math inline">\(\frac{e}{c}\)</span> (orange line) and of the habitat’s occupancy <span class="math inline">\(H(E^{*})\)</span> (green line).</figcaption>
+         </figure>
+         </div>
+         <p>In a bottom-up system such as predator-prey or a habitat specialist, the response to environmental change does not only depend on the focal species but also on the response of the associated one. The covariation in the response to the environment between the two levels is therefore of critical importance. For instance, the net effect of less favourable environmental conditions to a specialist could be detrimental (Figure <a href="#fig:occ_plot">1</a> A), without effect (Figure <a href="#fig:occ_plot">1</a> B), or favourable (Figure <a href="#fig:occ_plot">1</a> C) depending on the effect of the environment to its habitat. Thus, the interaction between trophic levels may have indirect (and counterintuitive) effects on specialist response.</p>
+         <h3 id="habitat-mismatch-affects-species-distribution-shifts">Habitat mismatch affects species distribution shifts</h3>
+         <div id="fig:concept_mismatch" class="fignos">
+         <figure>
+         <img src="./manuscript/img/concept_mismatch.png" style="width:35.0%" alt="Figure 2: The distribution of the habitat specialist (grey area) is impacted by the functions relating the intrinsic response to the environment (orange line) to habitat occupancy (H(E), full and dashed green lines). A change in the habitat occupancy at given environmental conditions (full to dashed green line) affects the specialist’s persistence and shifts its distribution on the environmental gradient (dark to light grey area)." /><figcaption aria-hidden="true"><span>Figure 2:</span> The distribution of the habitat specialist (grey area) is impacted by the functions relating the intrinsic response to the environment (orange line) to habitat occupancy (<span class="math inline">\(H(E)\)</span>, full and dashed green lines). A change in the habitat occupancy at given environmental conditions (full to dashed green line) affects the specialist’s persistence and shifts its distribution on the environmental gradient (dark to light grey area).</figcaption>
+         </figure>
+         </div>
+         <p>Range limits of a habitat specialist is jointly affected by environmental conditions and the availability (occupancy) of its habitat. Range shift in response to environmental changes is therefore not only determined by its intrinsic response to the environment, but also by the response of the habitat to the environment. As a result, a mismatch between the species response to the environment and its realized distribution may arise, in particular when different trophic levels are not responding at the same rate to environmental change (Figure <a href="#fig:concept_mismatch">2</a>). The distribution may shift in the geographic space, for instance toward the north, but it should stay the same in the environmental space if both levels respond similarly (Figure <a href="#fig:concept_mismatch">2</a>, dark shaded area). That said, if a delay or any other factor prevents the habitat from tracking the new environmental conditions, then the habitat curve will shift (Figure <a href="#fig:concept_mismatch">2</a>, green dashed line), and so will the distribution limit (light shaded area). Such mismatch could either benefit or harm the specialist distribution; in Figure <a href="#fig:concept_mismatch">2</a>, the specialist expands to less favourable environmental conditions. The response of the habitat to changing environmental conditions does influence the specialist distribution, both in extent and in the position of its distribution limits in environmental and geographical space.</p>
+         <h3 id="metapopulation-dynamics-may-precipitate-species-decline">Metapopulation dynamics may precipitate species decline</h3>
+         <div id="fig:concept_metapop" class="fignos">
+         <figure>
+         <img src="./manuscript/img/concept_metapopEffect.png" style="width:35.0%" alt="Figure 3: The response of a habitat specialist to a linear environmental change in time as it would be expected with a correlative SDM (linear response; full line). Metapopulation dynamics may precipitate - or alternatively delay - the extinction of the species in a metapopulation even if there are suitable conditions (dashed line)." /><figcaption aria-hidden="true"><span>Figure 3:</span> The response of a habitat specialist to a linear environmental change in time as it would be expected with a correlative SDM (linear response; full line). Metapopulation dynamics may precipitate - or alternatively delay - the extinction of the species in a metapopulation even if there are suitable conditions (dashed line).</figcaption>
+         </figure>
+         </div>
+         <p>The projection of range shifts with correlative SDMs assumes an instantaneous response to environmental change. An implicit assumption is also that a reduction in habitat occupancy translates into an equivalent reduction in the specialist’s range, leading to extinction <span class="citation" data-cites="thomas_extinction_2004">(Thomas et al. <a href="#ref-thomas_extinction_2004" role="doc-biblioref">2004</a>)</span>. Metapopulation dynamics may, however, precipitate the decline of a species before the complete disappearance of suitable conditions. Consider a landscape where environmental conditions are spatially heterogeneous, such as temperature in a mountainous area. The progressive change in this environment, like climate warming, will have two effects on the distribution of suitable patches: the first direct consequence is a reduction in habitat occupancy <span class="math inline">\(H(E)\)</span>, and indirectly follows the increase of the extinction rate with the shrinking of suitable patches. Some favourable patches may also disappear, thereby reducing the landscape connectivity. A non-linear decline of occupancy therefore arises from a linear change in environmental conditions as the ratio <span class="math inline">\(\frac{e(E)}{c(E)}\)</span> within the specialist’s persistence function increases (Figure <a href="#fig:concept_metapop">3</a>). This metapopulation effect may not be important at first while suitable habitat is abundant and patches are large, but increases as habitat occupancy decreases, supporting an acceleration of metapopulation prevalence loss to a constant environmental environmental shift <span class="citation" data-cites="hanski_metapopulation_2000 ovaskainen_transient_2002">(Hanski and Ovaskainen <a href="#ref-hanski_metapopulation_2000" role="doc-biblioref">2000</a>; Ovaskainen and Hanski <a href="#ref-ovaskainen_transient_2002" role="doc-biblioref">2002</a>)</span>.</p>
+         <h2 id="spatially-explicit-landscapes">Spatially explicit landscapes</h2>
+         <p>Analytical tools from metapopulation theory can be used to interpret range limits in spatially explicit heterogeneous landscapes. Metapopulation capacity can be evaluated for realistic landscapes where patch coordinates and size are considered. Metapopulation capacity is measured as the first eigenvalue of the landscape matrix <span class="math inline">\(M\)</span>, where elements <span class="math inline">\(m_{ij} = exp(-\alpha d_{ij})A_{i}A_{j}\)</span> for <span class="math inline">\(j \neq i\)</span> and <span class="math inline">\(m_{ii} = 0\)</span> <span class="citation" data-cites="hanski_metapopulation_2000">(Hanski and Ovaskainen <a href="#ref-hanski_metapopulation_2000" role="doc-biblioref">2000</a>)</span>. <span class="math inline">\(\frac{1}{\alpha}\)</span> describes the average dispersal distance, <span class="math inline">\(d_{ij}\)</span> is the distance between patch <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span>, and <span class="math inline">\(A_{i}\)</span> is the area of patch <span class="math inline">\(i\)</span> (refer to <span class="citation" data-cites="hanski_metapopulation_2000">Hanski and Ovaskainen (<a href="#ref-hanski_metapopulation_2000" role="doc-biblioref">2000</a>)</span> for the full description). Metapopulation capacity is a measure of a species’ ability to maintain itself regionally as a function of connectivity and local extinctions. It provides the means to evaluate conditions for persistence given the spatial arrangement of patches and their size.</p>
+         <p>Climate change can profoundly alter landscapes as experienced by species; not only does it influence the amount of suitable habitats, but also the capacity of species to persist when colonization and extinction prevail. Consider a mountainous landscape inhabited by a high elevation habitat specialist. The landscape is marked by a steep elevational gradient in temperature where warm temperatures at low elevations exceed the species’ tolerance. The landscape would therefore be divided between suitable cold habitats on mountain tops and unsuitable warmer habitats at the bottom. The topography will not only determine the total surface of suitable conditions, but also the frequency distribution of patch sizes and of distances among mountain tops. As a result, it will influence the connectivity of the landscape and the distribution of patch specific extinction rates.</p>
+         <p>A schematic example is provided in Figure <a href="#fig:concept_metapop_structure">4</a>, inspired by the case study that will follow in the next section. Fixing a lower climatic range limit in a hypothetical mountainous landscape, we find nine suitable habitat patches of various sizes, distributed at various distances one from another (Figure <a href="#fig:concept_metapop_structure">4</a>, left panel). Habitat patches here represent high elevation mountain tops. The warming of climatic conditions causes an elevational shift of lower range limits resulting in the contraction of habitat patches and a decline in the number of patches (Figure <a href="#fig:concept_metapop_structure">4</a>, right panel). Patches become generally smaller from contraction and fragmentation, and the smallest patches go extinct. Further, not only smaller patches are assumed to support smaller population sizes, have superior extinction risks, and produce fewer colonizers <span class="citation" data-cites="hanski_metapopulation_2000">(Hanski and Ovaskainen <a href="#ref-hanski_metapopulation_2000" role="doc-biblioref">2000</a>)</span>, but the loss and the fragmentation of patches alter species dispersal ability through the loss of connectivity <span class="citation" data-cites="huang_using_2019">(Huang, Pimm, and Giri <a href="#ref-huang_using_2019" role="doc-biblioref">2019</a>)</span>.</p>
+         <p>The decrease in metapopulation capacity surpasses that of habitat amount, adding a spatial structure perspective to the assumptions made by correlative approaches. The overall effect of climate warming is not only to modify patch areas, but to change species’ ability to colonize and occupy these patches.</p>
+         <div id="fig:concept_metapop_structure" class="fignos">
+         <figure>
+         <img src="./manuscript/img/concept_metapop_structure.png" style="width:70.0%" alt="Figure 4: Species persistence is affected by changes to landscape connectivity as well as habitat amount. Circles delimit suitable habitat patches. The left panel presents a hypothetical mountainous landscape where suitable patches represent high elevation mountain tops. The right panel illustrates the same landscape where patches’s radius contracted by an equal amount, simulating an elevation shift of climatic conditions on landscape suitability. Following patch contraction, metapopulation capacity declined by 82% whereas habitat amount only declined by 63%." /><figcaption aria-hidden="true"><span>Figure 4:</span> Species persistence is affected by changes to landscape connectivity as well as habitat amount. Circles delimit suitable habitat patches. The left panel presents a hypothetical mountainous landscape where suitable patches represent high elevation mountain tops. The right panel illustrates the same landscape where patches’s radius contracted by an equal amount, simulating an elevation shift of climatic conditions on landscape suitability. Following patch contraction, metapopulation capacity declined by 82% whereas habitat amount only declined by 63%.</figcaption>
+         </figure>
+         </div>
+         <h1 id="case-study-bicknells-thrush-in-north-eastern-america">Case Study: Bicknell’s Thrush in North-Eastern America</h1>
+         <p>We illustrate the concepts presented in the previous section with a case study of the Bicknell’s Thrush (<em>Catharus bicknelli</em>), a threatened bird species in Canada <span class="citation" data-cites="iucn_catharus_2020 cosewic_cosewic_2022">(IUCN <a href="#ref-iucn_catharus_2020" role="doc-biblioref">2020</a>; COSEWIC <a href="#ref-cosewic_cosewic_2022" role="doc-biblioref">2022</a>)</span>. Bicknell’s Thrush is the smallest Nordic thrush within the <em>Catharus</em> genus and is visually similar to the Grey-cheeked Thrush (<em>Catharus minimus</em>). It migrates in Northeastern North America from its wintering grounds in the Greater Antilles and feeds on invertebrates and small fruits <span class="citation" data-cites="billerman_bicknells_2020">(Townsend et al. <a href="#ref-billerman_bicknells_2020" role="doc-biblioref">2020</a>)</span>. Populations are small and were reported to be declining in Canada <span class="citation" data-cites="cosewic_cosewic_2022">(COSEWIC <a href="#ref-cosewic_cosewic_2022" role="doc-biblioref">2022</a>)</span>. The dispersal of Bicknell’s Thrush is not known with certainty, although it has been suggested that adults nest near the site of previous successful nesting while few yearlings are observed to come back to their site of birth <span class="citation" data-cites="rimmer_bicknells_2001 collins_spatial_2007 studds_stable-hydrogen_2012">(Rimmer et al. <a href="#ref-rimmer_bicknells_2001" role="doc-biblioref">2001</a>; Collins <a href="#ref-collins_spatial_2007" role="doc-biblioref">2007</a>; Studds et al. <a href="#ref-studds_stable-hydrogen_2012" role="doc-biblioref">2012</a>)</span>. The Bicknell’s Thrush is known to be associated with very dense balsam fir (<em>Abies Balsamea</em>) forests, mostly at high elevations, resulting in a fragmented and highly restricted range <span class="citation" data-cites="cosewic_cosewic_2022 cadieux_spatially_2019">(COSEWIC <a href="#ref-cosewic_cosewic_2022" role="doc-biblioref">2022</a>; Cadieux et al. <a href="#ref-cadieux_spatially_2019" role="doc-biblioref">2019</a>)</span>. This habitat may be ephemeral, as natural disturbances, forestry and stand succession could lead to local extinctions. Furthermore, its distribution in mountainous areas is highly contingent on climate elevation gradients. Climate change could therefore pose a major threat to the persistence of this species as favourable climatic conditions within isolated habitat patches could shrink rapidly <span class="citation" data-cites="rodenhouse_potential_2008">(Rodenhouse et al. <a href="#ref-rodenhouse_potential_2008" role="doc-biblioref">2008</a>)</span>. Unfavourable environmental conditions are predicted to increase at the edges of mountaintop fir forest patches with the warming of climate and the limited response capacity of boreal tree species <span class="citation" data-cites="talluto_extinction_2017 vissault_slow_2020">(Talluto et al. <a href="#ref-talluto_extinction_2017" role="doc-biblioref">2017</a>; Vissault et al. <a href="#ref-vissault_slow_2020" role="doc-biblioref">2020</a>)</span>.</p>
+         <p>In the following section, we project the changes to the Bicknell’s Thrush breeding range in response to climate forcing using a standard correlative approach. We then leverage the projections using the concepts developed to analyze the total amount of favourable habitat, the distribution of patch areas, their connectivity, and the metapopulation capacity. Finally, we compare Bicknell’s Thrush favourable landscapes under climate-only change and climate-induced forest change scenarios to illustrate arising climate-habitat mismatch. Thereby, we wish to reveal the joint effects of these two components of Bicknell’s Thrush’s distribution and demonstrate their importance on distribution dynamics.</p>
+         <h2 id="methods">Methods</h2>
+         <h3 id="studied-region">Studied region</h3>
+         <p>The Bicknell’s Thrush breeding range was projected for the province of Québec where the majority of the Canadian occurrences are found, specifically in the Appalachian Mountains in the southeast and the Laurentians Mountains north of the St. Lawrence River <span class="citation" data-cites="cosewic_cosewic_2022 billerman_bicknells_2020">(COSEWIC <a href="#ref-cosewic_cosewic_2022" role="doc-biblioref">2022</a>; Townsend et al. <a href="#ref-billerman_bicknells_2020" role="doc-biblioref">2020</a>)</span>. The landscape is composed of boreal, mixed and temperate forests, with their distributions mainly driven by climatic latitudinal and elevational gradients. Mean annual temperature ranges from -4.0 to 7.5 °C in this region, but the Bicknell’s Thrush occupies locations with a more restricted range because of its preference for high-elevation areas. Annual precipitation ranges from 730 to 950 mm.</p>
+         <h3 id="data">Data</h3>
+         <p>Distribution data consisted of 6,079 confirmed observations of nesting behavior, with geographic precision to ~30 m (1 second of latitude/longitude), sampled from 1994 to 2020. Data were provided by the Regroupement QuébecOiseaux <span class="citation" data-cites="sos-pop_banque_2021">(SOS-POP <a href="#ref-sos-pop_banque_2021" role="doc-biblioref">2021</a>)</span>. It contains observations from various sources, including scientific surveys and citizen science. The region of interest was rasterized on a grid of 250 x 250 m cells, where an observation within a cell was defined as a presence. We considered the locations where one or more observations were made as a single presence, accounting for any potential effects of temporal and spatial pseudo-replication resulting, for example, from multiple sightings of the one individual in the same location.</p>
+         <p>Mean annual temperature, total annual precipitation, elevation, and balsam fir biomass were used to model occurrences following <span class="citation" data-cites="cosewic_cosewic_2022">COSEWIC (<a href="#ref-cosewic_cosewic_2022" role="doc-biblioref">2022</a>)</span> and <span class="citation" data-cites="billerman_bicknells_2020">Townsend et al. (<a href="#ref-billerman_bicknells_2020" role="doc-biblioref">2020</a>)</span>. Mean annual temperature and total annual precipitation were interpolated from climate station records for the 1981-2010 period to produce a time series of annual means <span class="citation" data-cites="mckenney_spatial_2013">(McKenney et al. <a href="#ref-mckenney_spatial_2013" role="doc-biblioref">2013</a>)</span>. Data from a georeferenced 10 km climate grid <span class="citation" data-cites="mckenney_spatial_2013">(McKenney et al. <a href="#ref-mckenney_spatial_2013" role="doc-biblioref">2013</a>)</span> were projected to each 250 m grid cell centroid and adjusted for differences in latitude, longitude and elevation with spatial regression using BioSIM v11 <span class="citation" data-cites="regniere_stochastic_2007 regniere_biosim_2017">(R’egni‘ere and St-Amant <a href="#ref-regniere_stochastic_2007" role="doc-biblioref">2007</a>; R’egni‘ere et al. <a href="#ref-regniere_biosim_2017" role="doc-biblioref">2017</a>)</span>. Forest composition in individual grid cells was obtained from LANDIS-II biomass outputs which was initialized using ecoforestry provincial maps and temporary forest inventory plots <span class="citation" data-cites="boulanger_boreal_2021">(see Boulanger and Pascual Puigdevall <a href="#ref-boulanger_boreal_2021" role="doc-biblioref">2021</a>)</span>. Absolute fir biomass was considered along with relative biomass to describe Bicknell’s Thrush preference for dense fir stands <span class="citation" data-cites="cadieux_spatially_2019">(Cadieux et al. <a href="#ref-cadieux_spatially_2019" role="doc-biblioref">2019</a>)</span>. Elevation data was obtained using the elevatr R package, then was rasterized at a 250 m resolution <span class="citation" data-cites="hollister_elevatr_2021">(Hollister et al. <a href="#ref-hollister_elevatr_2021" role="doc-biblioref">2021</a>)</span>.</p>
+         <h3 id="breeding-range-model">Breeding range model</h3>
+         <p>We estimated the number of observations per cell of the Bicknell’s Thrush using downweighted Poisson regression <span class="citation" data-cites="renner_point_2015">(Renner et al. <a href="#ref-renner_point_2015" role="doc-biblioref">2015</a>)</span>; a point process model for presence-only data where locations of presences and of quadrature points (spatially random data points necessary to estimate the species distribution) are modelled as a function of environmental variables. In a downweighted Poisson regression, large weights are assigned to quadrature points and small weights to observations such that presence location points comprise a very small portion of the data used to estimate the model. The effect is similar to applying a spatial scaling so that the response is modelled as the number of observations per cell.</p>
+         <p>We modelled observation records as a function of climate, elevation, and forest composition with 250m resolution as</p>
+         <p><span class="math display">\[
+         \log(\lambda) = \alpha + \beta_1(\text{temperature}) + \beta_2(\text{temperature}^{2})
+         \]</span></p>
+         <p><span class="math display">\[
+         + \beta_3(\text{precipitation}) + \beta_4(\text{elevation}) + \beta_5(\text{fir biomass}) + \beta_6(\text{fir relative biomass})
+         \]</span></p>
+         <p><span class="math display">\[
+         + \beta_7(\text{fir biomass} \times \text{fir relative biomass})
+         \]</span></p>
+         <p>where <span class="math inline">\(\lambda\)</span> is the number of observations that is expected to be made of the Bicknell’s thrush. Temperature was considered quadratically to describe both warm and cold limits. Other variables are taught to describe broad preferences and were therefore considered as linear relationships <span class="citation" data-cites="cosewic_cosewic_2022 billerman_bicknells_2020">(COSEWIC <a href="#ref-cosewic_cosewic_2022" role="doc-biblioref">2022</a>; Townsend et al. <a href="#ref-billerman_bicknells_2020" role="doc-biblioref">2020</a>)</span>. Absolute fir biomass was also considered in interaction with relative biomass to describe both stand development and composition. To estimate the model, we randomly positioned quadrature points to cover most environmental variability and to maximize the accuracy of the likelihood estimation <span class="citation" data-cites="renner_point_2015">(Renner et al. <a href="#ref-renner_point_2015" role="doc-biblioref">2015</a>)</span>. We used the fitted model to predict the number of observations per cell that we then converted into the Bicknell’s Thrush breeding range. The breeding range consists of all cells with a predicted density of observation superior to 1 individual per <span class="math inline">\(km^2\)</span> (i.e., 0.00625 observations per cell).</p>
+         <p>We assessed model predictive performance using the area under the receiver operating characteristic curve <span class="citation" data-cites="guisan_predicting_2005">(AUC, Guisan and Thuiller <a href="#ref-guisan_predicting_2005" role="doc-biblioref">2005</a>)</span>. AUC is essentially a diagnostic tool to measure the quality of prediction of a model. A perfect prediction yields an AUC of 1 while a random prediction yields an AUC of 0.5 <span class="citation" data-cites="robin_proc_2011">(the calculation of the AUC was performed with the <em>auc</em> function of the R package <em>pROC</em>, Robin et al. <a href="#ref-robin_proc_2011" role="doc-biblioref">2011</a>)</span>.</p>
+         <h3 id="scenarios">Scenarios</h3>
+         <p>We projected the Bicknell’s thrush breeding range for two scenarios to contrast the impacts of climate with forest composition dynamics over the 2020-2100 period.</p>
+         <p>The Bicknell’s Thrush breeding range distribution was first projected over time using the RCP 4.5 climate forcing scenario <span class="citation" data-cites="van_vuuren_representative_2011">(van Vuuren et al. <a href="#ref-van_vuuren_representative_2011" role="doc-biblioref">2011</a>)</span>, while keeping forest composition and elevation constant. Future temperature and precipitation projections for 2021-2040, 2041-2070 and 2071-2100 periods were obtained for the RCP 4.5 scenario from the Canadian Earth System Model version 2 (CanESM2). Such anthropogenic climate forcing is increasingly considered as one of the most likely scenarios given current and pledged global climate policies <span class="citation" data-cites="hausfather_emissions_2020">(Hausfather and Peters <a href="#ref-hausfather_emissions_2020" role="doc-biblioref">2020</a>)</span>. Projections were first downscaled to a 10 km resolution using the ANUSPLIN method, and then the BioSIM v11 model was used to interpolate them to a 250 m resolution <span class="citation" data-cites="regniere_stochastic_2007 mckenney_customized_2011">(R’egni‘ere and St-Amant <a href="#ref-regniere_stochastic_2007" role="doc-biblioref">2007</a>; McKenney et al. <a href="#ref-mckenney_customized_2011" role="doc-biblioref">2011</a>)</span>. As BioSIM stochastically generate future daily weather time series using 30-yrs future climate normals, we averaged results from 30 BioSIM simulations to compute future climate variables that were assigned to the last year of the projection period (e.g., 2021-2040 period became 2040).</p>
+         <p>Second, we projected Bicknell’s Thrush breeding range over time by only considering climate-induced changes in forest composition (hereafter forest change) under RCP 4.5, i.e., keeping climate variables and elevation constant in the model. Projections of forest composition for the commercial forests of Québec in 2040, 2070, and 2100 were obtained from <span class="citation" data-cites="boulanger_boreal_2021">Boulanger and Pascual Puigdevall (<a href="#ref-boulanger_boreal_2021" role="doc-biblioref">2021</a>)</span> which were produced using the LANDIS-II forest landscape model <span class="citation" data-cites="scheller_design_2007">(FLM, Scheller et al. <a href="#ref-scheller_design_2007" role="doc-biblioref">2007</a>)</span>. We used tree biomass projections considering climate-induced changes in stand dynamics as well as in wildfires, business-as-usual harvesting and spruce budworm outbreaks. More details about model parameterization, calibration and results can be found in <span class="citation" data-cites="boulanger_boreal_2021">Boulanger and Pascual Puigdevall (<a href="#ref-boulanger_boreal_2021" role="doc-biblioref">2021</a>)</span>.</p>
+         <h3 id="analyses">Analyses</h3>
+         <p>We assessed the impacts of climate-only change and forest change on Bicknell’s Thrush persistence by contrasting different aspects of landscape structure from the original and forecasted landscapes. Analyses were run for the southern part of the Québec Province. Breeding range may change with respect to habitat occupancy (here, fir-stand occupancy), the spatial structure of suitable patches, or the species’ ability to occupy available suitable patches. Isolating the effect of these different elements helps to identify the drivers and their respective importance on distribution dynamics. We decomposed the landscape spatial structure into three complementary elements: the number of patches, the patch areas, and the inter-patch distances.</p>
+         <p>We further compared temporal trends in habitat amount <span class="citation" data-cites="fahrig_rethinking_2013">(sensu Fahrig <a href="#ref-fahrig_rethinking_2013" role="doc-biblioref">2013</a>)</span> and persistence using metapopulation capacity <span class="citation" data-cites="hanski_spatially_2001">(Hanski <a href="#ref-hanski_spatially_2001" role="doc-biblioref">2001</a>)</span>. We contrasted habitat amount, metapopulation capacity without dispersal constraints, and metapopulation capacity with strong dispersal constraints to reveal how accounting for metapopulation dynamics can better inform us on the Bicknell’s Thrush distribution as discussed in section 2. Note that because we do not have a good knowledge of the Bicknell’s Thrush dispersal kernel, we therefore compared metapopulation capacity for extreme scenarios of dispersal within the range of plausible kernels. We thus evaluated metapopulation capacity for high dispersal limitations (average dispersal distance of 1 km) and for long average dispersal distance (average dispersal distance of 500 km).</p>
+         <h2 id="results-connectivity-in-addition-to-habitat-amount-define-realized-range">Results: Connectivity in addition to habitat amount define realized range</h2>
+         <p>The model had high performance and accurate breeding range prediction with an AUC of 0.95. Proportional fir biomass (slope ± standard error, <span class="math inline">\(\beta_6 = 3.39 \pm 0.46\)</span>) and mean annual temperature (<span class="math inline">\(\beta_1 = 1.56 \pm 0.27\)</span>) are best predictors of the breeding range. Furthermore, the quadratic temperature term is significantly negative (<span class="math inline">\(\beta_2 = -0.28 \pm 0.025\)</span>) such that the model estimates maximum occupancy at 2.7 Celsius (mean annual temperature). Total annual precipitation (<span class="math inline">\(\beta_3 = -0.0064 \pm 0.00024\)</span>) and elevation (<span class="math inline">\(\beta_4 = 0.018 \pm 0.00029\)</span>) also have significant effects on occupancy. Fir biomass was not a significant predictor (<span class="math inline">\(\beta_5 = 0.0082 \pm 0.0081\)</span>) but its interactions with fir relative abundance (<span class="math inline">\(\beta_7 = -0.048 \pm 0.012\)</span>) and proportional fir biomass were such that stands of dense fir forest are associated with greater occupancy. The model shows a decrease in Bicknell’s thrush predicted occupancy at low elevations of the southern and the northern edge of its distribution area (Figure <a href="#fig:map_BITH">5</a>).</p>
+         <div id="fig:map_BITH" class="fignos">
+         <figure>
+         <img src="./manuscript/img/map_BITH.png" style="width:80.0%" alt="Figure 5: Projected Bicknell’s thrush breeding range between 2020 and 2100 for climate-only and climate-induced forest change scenarios. Projected breeding ranges are presented as colonized, persistent, and extinct patches with 2020 initial distribution as reference." /><figcaption aria-hidden="true"><span>Figure 5:</span> Projected Bicknell’s thrush breeding range between 2020 and 2100 for climate-only and climate-induced forest change scenarios. Projected breeding ranges are presented as colonized, persistent, and extinct patches with 2020 initial distribution as reference.</figcaption>
+         </figure>
+         </div>
+         <h3 id="climate-and-habitat-mismatch">Climate and habitat mismatch</h3>
+         <p>Our model projected varying effects of climate change on Bicknell’s Thrush breeding range within the study region (Figure <a href="#fig:map_BITH">5</a>). The magnitude of change differed between climate-only and climate-induced forest change scenarios. Shifts at the range edges were more pronounced than within the range under the climate-only scenario, with contraction at the southern edge and expansion at the northern edge. Under the climate-only scenario, extensive expansion was projected as soon as 2040 at high elevation (&gt;600 m) and in rapidly warming (up to 3 °C between 2020 and 2040) regions. Multiple northward patches became momentarily suitable with climate warming at moderate elevation areas (500 to 600 m) because of the narrow range of suitable climatic conditions at these lower elevations. Important contraction was projected at the southern range edge with high elevation mountain tops insufficient to cope with temperature increase. Conversely, changes in forest composition are limited due to the slow demography and the limited dispersal of trees <span class="citation" data-cites="vissault_slow_2020">(Vissault et al. <a href="#ref-vissault_slow_2020" role="doc-biblioref">2020</a>)</span>. As a result, the projected changes to the breeding range under the forest change scenario were much more limited (Figure <a href="#fig:map_BITH">5</a>).</p>
+         <h3 id="changes-in-the-spatial-structure">Changes in the spatial structure</h3>
+         <p>Projections show that climate and forest changes have major consequences on the spatial structure of suitable patches (Figure <a href="#fig:persistence">6</a>, Suppl. Mat. S1). The number of patches within the breeding range in the climate-only scenario supports the initial observation of range expansion followed by a rapid contraction with a peak in number of patches in 2040, while the forest change scenario shows a decline in number of patches. Overall, median patch area for both scenarios varied between 0.125 and 0.312 <span class="math inline">\(km^2\)</span> (minimum and maximum patch area = 0.0625 and 7805 <span class="math inline">\(km^2\)</span> respectively) and indicates a skewed distribution with a dominance of small patches and few very large ones. On the other hand, the median inter-patch distance varied between 218 and 280 km (minimum and maximum inter-patch distance = 0.25 and 809 km respectively) and shows a more balanced distribution with the landscape composed of distanced groups of regionally close patches. Although the distribution of patch areas in the climate-only scenario appears to remain constant through time, important decreases in the interpatch distances indicate the loss of small, isolated patches, the addition of geographically close patches, and the fragmentation of large patches. Despite the apparent stability of the breeding range under the climate-induced forest change scenario, important changes in its spatial structure were observed (Figure <a href="#fig:persistence">6</a>). We observed a rapid decline in the number of patches and, in contrast to changes under the climate-only scenario, the median patch area constantly increased between 2020 and 2100, and the inter-patch distance marginally increased. Results indicate that close patches became connected to form fewer, but larger patches in addition to the loss of small, isolated patches (Suppl. Mat. S1).</p>
+         <h3 id="persistence">Persistence</h3>
+         <div id="fig:persistence" class="fignos">
+         <figure>
+         <img src="./manuscript/img/capacity.png" style="width:75.0%" alt="Figure 6: Changes in metrics of metapopulation persistence presented as metapopulation capacity (dashed lines) and habitat amount (full lines) from 2020 to 2100. Curves are scaled and centred to the same value in 2020 for comparison. Metapopulation capacity is presented under restricted dispersal distance (1 km) and an approximation of the mean field assumption (500 km). Panel A presents climate-only scenario results and panel B the climate-induced forest change scenario." /><figcaption aria-hidden="true"><span>Figure 6:</span> Changes in metrics of metapopulation persistence presented as metapopulation capacity (dashed lines) and habitat amount (full lines) from 2020 to 2100. Curves are scaled and centred to the same value in 2020 for comparison. Metapopulation capacity is presented under restricted dispersal distance (1 km) and an approximation of the mean field assumption (500 km). Panel A presents climate-only scenario results and panel B the climate-induced forest change scenario.</figcaption>
+         </figure>
+         </div>
+         <p>We observed an initial increase of 64% (11,743 to 19,344 <span class="math inline">\(km^2\)</span>) in habitat amount under the climate-only scenario (total change of +9% between 2020 and 2100; Figure <a href="#fig:persistence">6</a> A, full blue line) while habitat amount remained almost stable with only a slight initial decrease of 11% (11,742 to 10,416 <span class="math inline">\(km^2\)</span>) under the climate-induced forest change scenario (total change of -15% between 2020 and 2100; Figure <a href="#fig:persistence">6</a> B, full orange line). Changes in Bicknell’s Thrush metapopulation capacity approximated those in habitat amount under long average dispersal distance (approximating mean field assumption, Figure <a href="#fig:persistence">6</a>). However, metapopulation persistence accounting for patch size alone (long-distance dispersal) was closely approximated by habitat amount but differed when accounting for both patch size and connectivity (limited dispersal) when changes in the spatial structure of the breeding range were not explained by habitat amount alone.</p>
+         <h1 id="perspectives">Perspectives</h1>
+         <p>Using theory and a case study, we show that the climate-induced changes in distribution are likely to be impacted by bottom-up interactions, demography, and landscape structure. We first derived three observations from metapopulation theory. i) A specialist’s range is impacted by changes in habitat occupancy and a habitat-environment mismatch affects the range limits of the specialist. ii) The interplay between habitat shrinking and connectivity loss is likely to yield precipitated range contraction and could potentially lead to extinction. iii) The direction and amplitude of the specialist’s response to environmental change vary with the degree of environmental response correlation between trophic levels. We projected the suitable environmental conditions for a well-known bird species whose distribution is jointly affected by climate and vegetation and we analyzed its spatial structure. We showed that climate-induced changes to the distribution of suitable climatic conditions differed from that of its biotic habitat. Furthermore, both the amount of habitat and the spatial structure distribution of the favourable environmental and biotic conditions are predicted to be impacted by climate change. Thus, we expect the persistence of this species under climate change to be fundamentally affected by metapopulation dynamics. We show that the metapopulation approach complements the understanding of distribution changes by correlative SDMs. The metapopulation dynamics are fundamental to account for changes in distributions’ spatial structure and contribute to accurately capturing climate-induced change in species distribution.</p>
+         <h2 id="applications-of-the-metapopulation-approach">Applications of the metapopulation approach</h2>
+         <p>Many studies have investigated distribution change using metapopulation theory <span class="citation" data-cites="fordham_adapted_2013 schnell_estimating_2013 talluto_extinction_2017 huang_using_2019 vissault_slow_2020">(Fordham et al. <a href="#ref-fordham_adapted_2013" role="doc-biblioref">2013</a>; Schnell et al. <a href="#ref-schnell_estimating_2013" role="doc-biblioref">2013</a>; Talluto et al. <a href="#ref-talluto_extinction_2017" role="doc-biblioref">2017</a>; Huang, Pimm, and Giri <a href="#ref-huang_using_2019" role="doc-biblioref">2019</a>; Vissault et al. <a href="#ref-vissault_slow_2020" role="doc-biblioref">2020</a>)</span>, but few have considered the complexity arising from biotic interactions and dispersal in context of rapid environmental change. Some aspects have, however, been explored, starting with the development of the theoretical basis for metapopulation dynamics on heterogeneous landscapes. Spatially realistic metapopulation theory has allowed modelling of distribution dynamics in species living in fragmented landscapes <span class="citation" data-cites="hanski_metapopulation_1998 hanski_habitat_1999 hanski_spatially_2001">(Hanski <a href="#ref-hanski_metapopulation_1998" role="doc-biblioref">1998</a>, <a href="#ref-hanski_habitat_1999" role="doc-biblioref">1999</a>, <a href="#ref-hanski_spatially_2001" role="doc-biblioref">2001</a>)</span>. The coupling of spatially explicit metapopulation models with dynamic climate change represents a significant conceptual advancement toward realistic projections <span class="citation" data-cites="anderson_dynamics_2009">(Anderson et al. <a href="#ref-anderson_dynamics_2009" role="doc-biblioref">2009</a>)</span>. Our analysis reveals distribution dynamics that previous methods fail to capture, demonstrating the importance of integrating dynamic processes. The metapopulation framework that we propose here proposes to simultaneously project changes in demography and dispersal in response to climate change and the multi-species effects of biotic interactions on the distribution of species.</p>
+         <p>Metapopulation theory and models influence how conservation priorities are defined at various scales today. Metapopulation theory predicts the scaling of extinction risk with increasing habitat isolation, which non-spatially explicit approaches do not consider. We further show that a species’ ability to access suitable habitat is a determining factor of its persistence. Assisted colonization and habitat restoration are proposed as means to support species persistence by increasing colonization rates and habitat occupancy, respectively <span class="citation" data-cites="ricciardi_assisted_2009 willis_assisted_2009 fordham_adapted_2013">(Ricciardi and Simberloff <a href="#ref-ricciardi_assisted_2009" role="doc-biblioref">2009</a>; Willis et al. <a href="#ref-willis_assisted_2009" role="doc-biblioref">2009</a>; Fordham et al. <a href="#ref-fordham_adapted_2013" role="doc-biblioref">2013</a>)</span>. Ultimately, metapopulation theory’s main contribution to current conservation initiatives has been to highlight the effect of landscape spatial structure and dispersal on species persistence.</p>
+         <h2 id="metapopulation-dynamics">Metapopulation dynamics</h2>
+         <p>We have shown using a metapopulation approach that a change in the occupancy of a habitat along an abiotic environmental gradient may impact the distribution of higher levels, such as predators or, here, habitat specialists. Therefore, a mismatch between the distribution of the habitat and of the favourable environmental conditions may affect the position of the specialist’s range edge along an environmental gradient. This is the result of local increases or decreases in colonization and extinction rates from changes in habitat occupancy. Indeed, we observed the Bicknell’s Thrush breeding range projection from climate-induced forest change to remain stable despite important climate change. Less contraction than expected from climate-only projections were observed at the warm edge of southern local habitat patches, indicating the establishment of a mismatch. The high elevation coniferous patches persisted into warmer conditions, increasing fir occupancy under environmental conditions where it was previously rare or absent. Furthermore, we observed no range expansion of the specialist where the climate-only scenario predicts northern expansion, revealing a decrease in habitat occupancy for climatic conditions where it was previously available. This observation is likely the result of prolonged persistence (i.e., extinction debt) of the Bicknell’s Thrush where it is already observed despite less favourable environmental conditions, and the reduction of occupancy in favourable environmental conditions where it is initially observed (i.e., colonization credit). As a result, non-equilibrium dynamics in Bicknell’s Thrush distribution change are predicted to be an important source of complexity. Forested habitat-environment, or resource-environment mismatch in response to environmental change is to be expected in natural systems from limitations in dispersal ability and demography <span class="citation" data-cites="svenning_influence_2014">(Svenning et al. <a href="#ref-svenning_influence_2014" role="doc-biblioref">2014</a>)</span>. Conversely, habitats that shift faster than abiotic environmental conditions may instead decrease specialist persistence in its current range and favour environmental, but not geographical range stability. It is clear that non-equilibrium dynamics in species distributions are key elements of complexity. Hence, predictions are likely to be biased without proper models to account for it.</p>
+         <p>Correlative SDMs predict direct response of species’ range to habitat amount variations such that a decrease in habitat amount causes an equivalent contraction of the species’ range. However, we have shown that a metapopulation framework offers complementary information to extract from habitat projections. The contraction of a species’ range may be accelerated (or slowed) by metapopulation dynamics. Here, the effect of landscape connectivity interacts with habitat occupancy to generate dynamics of greater complexity. We observed changes in the Bicknell’s Thrush distribution projections in both habitat amount and in spatial structure of habitat patches. Landscape connectivity was affected by newly suitable habitat patches, the extinction of the smallest habitat patches, the fragmentation of the larger ones, and the dispersal distance. In concordance with our intuition, changes in Bicknell’s Thrush persistence were affected by metapopulation dynamics. Persistence could not be explained by changes in habitat amount alone contrasting with the assumption made by correlative SDMs (Figure <a href="#fig:persistence">6</a>). Furthermore, our results support <span class="citation" data-cites="hanski_habitat_2015">Hanski (<a href="#ref-hanski_habitat_2015" role="doc-biblioref">2015</a>)</span> in that connectivity is fundamental to species regional distribution, abundance, and biodiversity in opposition to the habitat amount hypothesis <span class="citation" data-cites="fahrig_rethinking_2013">(Fahrig <a href="#ref-fahrig_rethinking_2013" role="doc-biblioref">2013</a>)</span>. That is because the species’ ability to use all available habitat is affected by dispersal, which habitat amount alone does not represent.</p>
+         <p>More favourable abiotic environmental conditions can have unexpected negative impacts on specialists if their habitats are negatively affected. We described this phenomenon as the effect of environmental response correlation between trophic levels (see <em>Key concepts</em> section). It is a concept unique to process-based approaches that cannot be observed directly using a correlative SDM approach as it originates from the joint effects of species-specific environmental performance and of biotic interactions. Although we have not been able to measure it directly with the Bicknell’s Thrush case, we observed an important contrast between its response to climate-only change and to climate-induced forest change: the habitat amount increased in the first scenario and declined in the second. We showed that regionally more favourable climatic conditions to the Bicknell’s Thrush may have, even if only temporarily due to colonization or extinction lags, the opposite effect on its habitat. Therefore, the resulting distribution dynamics from the interplay between trophic levels are complex to predict. Counterintuitive dynamics can arise from species’ environmental correlation. Indeed, the Bicknell’s thrush example illustrates the necessity of documenting the response between trophic levels to a rapidly changing environment as they can produce non-equilibrium dynamics when considered together. It is when the lower trophic level affects the specialist’s colonization and extinction rates asymmetrically that non-equilibrium distribution dynamics are observed. Because metapopulation models can incorporate such dynamics on specialists’ population dynamics, the resulting projections may be of greater realism.</p>
+         <h2 id="limitations-of-the-current-approach">Limitations of the current approach</h2>
+         <p>Metapopulation models require few parameters making them relatively easy to parameterize. Even in the absence of a calibrated model, the metapopulation approach offers tools to interpret projections outputs from correlative SDMs. We showed that different aspects of the landscape’s structure could easily be described and studied. An integrated interpretation of distribution changes can be gained from scenarios of dispersal and extinction. Such scenarios can then be used to evaluate species persistence.</p>
+         <p>Several other factors could also impact the system’s response to climate warming. The model described here is best suited for habitat specialists whose presence depends on the prior establishment of another species that they do not impact, but it could also be generalized to other types of interactions <span class="citation" data-cites="gravel_trophic_2011">(Gravel et al. <a href="#ref-gravel_trophic_2011" role="doc-biblioref">2011</a>)</span>. The concepts developed in this study are more general than the specialist-habitat context in which they are presented and can apply to any bottom-up system. Positive and negative effects of the specialist on its habitat could influence the system’s response to climate change differently. For example, habitat (i.e., resource) removal by the specialist may reduce competition of habitat types and decrease response lag, accelerating the specialist’s decline at the scale of the landscape <span class="citation" data-cites="vissault_slow_2020">(Vissault et al. <a href="#ref-vissault_slow_2020" role="doc-biblioref">2020</a>)</span>. Prolonged occupancy of the habitat by the specialist may, on the other hand, increase habitat mismatch and support source-sink dynamics <span class="citation" data-cites="pulliam_sources_1988">(Pulliam <a href="#ref-pulliam_sources_1988" role="doc-biblioref">1988</a>)</span>. In addition to biotic interactions, metapopulation dynamics at the landscape level could be affected by the interaction of climate change and natural disturbances. For instance, wildfires and insect outbreak regimes are expected to be strongly altered under climate change <span class="citation" data-cites="boulanger_boreal_2021">(Boulanger and Pascual Puigdevall <a href="#ref-boulanger_boreal_2021" role="doc-biblioref">2021</a>)</span>, and associated biodiversity (see <span class="citation" data-cites="tremblay_harvesting_2018">Tremblay et al. (<a href="#ref-tremblay_harvesting_2018" role="doc-biblioref">2018</a>)</span> for a case study). Both are important drivers of forest dynamics, and our results show that modification in habitat distribution is associated with the specialist response.</p>
+         <p>We hope that biodiversity actors benefit from more accurate, yet accessible methods to estimate distribution changes. Correlative SDMs are most often used to project distribution changes, but metapopulation models allow a more accurate estimation of colonization and extinction rates with a multispecies perspective. Our estimation of the Bicknell’s Thrush range projected that the biotic interactions will favour the species’ persistence where it already occurs, but will limit its progression further north where firs are not as abundant despite increases in climate suitability. The resulting effect is likely to be the regional contraction of the Bicknell’s Thrush range despite more favourable climatic conditions. Our study highlights the importance of demography, dispersal and biotic interactions on distribution change to rapid environmental change and the importance of spatial structure on the interpretation of projections.</p>
+         <h1 class="unnumbered" id="references">References</h1>
+         <div id="refs" class="references hanging-indent" role="doc-bibliography">
+         <div id="ref-anderson_dynamics_2009">
+         <p>Anderson, B. J, H. R Akçakaya, M. B Ara’ujo, D. A Fordham, E Martinez-Meyer, W Thuiller, and B. W Brook. 2009. “Dynamics of Range Margins for Metapopulations Under Climate Change.” <em>Proceedings of the Royal Society B: Biological Sciences</em> 276 (1661): 1415–20. <a href="https://doi.org/10.1098/rspb.2008.1681">https://doi.org/10.1098/rspb.2008.1681</a>.</p>
+         </div>
+         <div id="ref-boulangeat_transient_2018">
+         <p>Boulangeat, Isabelle, Jens Christian Svenning, Tanguy Daufresne, Mathieu Leblond, and Dominique Gravel. 2018. “The Transient Response of Ecosystems to Climate Change Is Amplified by Trophic Interactions.” <em>Oikos</em> 127 (12): 1822–33. <a href="https://doi.org/10.1111/oik.05052">https://doi.org/10.1111/oik.05052</a>.</p>
+         </div>
+         <div id="ref-boulanger_boreal_2021">
+         <p>Boulanger, Yan, and Jesus Pascual Puigdevall. 2021. “Boreal Forests Will Be More Severely Affected by Projected Anthropogenic Climate Forcing Than Mixedwood and Northern Hardwood Forests in Eastern Canada.” <em>Landscape Ecology</em> 36 (6): 1725–40. <a href="https://doi.org/10.1007/s10980-021-01241-7">https://doi.org/10.1007/s10980-021-01241-7</a>.</p>
+         </div>
+         <div id="ref-briscoe_can_2021">
+         <p>Briscoe, Natalie J., Damaris Zurell, Jane Elith, Christian König, Guillermo Fandos, AnneNANAKathleen Malchow, Marc K’ery, Hans Schmid, and Gurutzeta GuillerNAaNAArroi. 2021. “Can Dynamic Occupancy Models Improve Predictions of Species’ Range Dynamics? A Test Using Swiss Birds.” <em>Global Change Biology</em> 27 (18): 4269–82. <a href="https://doi.org/10.1111/gcb.15723">https://doi.org/10.1111/gcb.15723</a>.</p>
+         </div>
+         <div id="ref-cadieux_spatially_2019">
+         <p>Cadieux, Philippe, Yan Boulanger, Dominic Cyr, Anthony R. Taylor, David T. Price, and Junior A. Tremblay. 2019. “Spatially Explicit Climate Change Projections for the Recovery Planning of Threatened Species: The Bicknell’s Thrush (Catharus Bicknelli) as a Case Study.” <em>Global Ecology and Conservation</em> 17 (January): e00530. <a href="https://doi.org/10.1016/j.gecco.2019.e00530">https://doi.org/10.1016/j.gecco.2019.e00530</a>.</p>
+         </div>
+         <div id="ref-chen_rapid_2011">
+         <p>Chen, I. Ching, Jane K. Hill, Ralf Ohlemüller, David B. Roy, and Chris D. Thomas. 2011. “Rapid Range Shifts of Species Associated with High Levels of Climate Warming.” <em>Science</em> 333 (6045): 1024–6. <a href="https://doi.org/10.1126/science.1206432">https://doi.org/10.1126/science.1206432</a>.</p>
+         </div>
+         <div id="ref-collins_spatial_2007">
+         <p>Collins, B. B. 2007. “Spatial Analysis of Home Range, Movement Patterns, and Behavioral Ecology of Bicknell’s Thrush, Catharus Bicknelli, in Vermont.” Master’s thesis, Antioch University, Keene (New Hampshire): Antioch University.</p>
+         </div>
+         <div id="ref-cosewic_cosewic_2022">
+         <p>COSEWIC. 2022. “COSEWIC Assessment and Status Report on the Bicknell’s Thrush Catharus Bicknelli in Canada.” Ottawa: Committee on the Status of Endangered Wildlife in Canada. <a href="https://www.canada.ca/en/environment-climate-change/services/species-risk-public-registry.html">https://www.canada.ca/en/environment-climate-change/services/species-risk-public-registry.html</a>.</p>
+         </div>
+         <div id="ref-fahrig_rethinking_2013">
+         <p>Fahrig, Lenore. 2013. “Rethinking Patch Size and Isolation Effects: The Habitat Amount Hypothesis.” Edited by Kostas Triantis. <em>Journal of Biogeography</em> 40 (9): 1649–63. <a href="https://doi.org/10.1111/jbi.12130">https://doi.org/10.1111/jbi.12130</a>.</p>
+         </div>
+         <div id="ref-fordham_adapted_2013">
+         <p>Fordham, D. A., H. R. Akçakaya, B. W. Brook, A. Rodr’ıguez, P. C. Alves, E. Civantos, M. Triviño, M. J. Watts, and M. B. Ara’ujo. 2013. “Adapted Conservation Measures Are Required to Save the Iberian Lynx in a Changing Climate.” <em>Nature Climate Change</em> 3 (10): 899–903. <a href="https://doi.org/10.1038/nclimate1954">https://doi.org/10.1038/nclimate1954</a>.</p>
+         </div>
+         <div id="ref-franklin_mapping_2009">
+         <p>Franklin, Janet, and Jennifer A. Miller. 2009. <em>Mapping Species Distributions: Spatial Inference and Prediction</em>. Ecology, Biodiversity and Conservation. Cambridge ; New York: Cambridge University Press.</p>
+         </div>
+         <div id="ref-godsoe_integrating_2017">
+         <p>Godsoe, William, Jill Jankowski, Robert D. Holt, and Dominique Gravel. 2017. “Integrating Biogeography with Contemporary Niche Theory.” <em>Trends in Ecology and Evolution</em> 32 (7): 488–99. <a href="https://doi.org/10.1016/j.tree.2017.03.008">https://doi.org/10.1016/j.tree.2017.03.008</a>.</p>
+         </div>
+         <div id="ref-gravel_trophic_2011">
+         <p>Gravel, Dominique, François Massol, Elsa Canard, David Mouillot, and Nicolas Mouquet. 2011. “Trophic Theory of Island Biogeography.” <em>Ecology Letters</em> 14 (10): 1010–6. <a href="https://doi.org/10.1111/j.1461-0248.2011.01667.x">https://doi.org/10.1111/j.1461-0248.2011.01667.x</a>.</p>
+         </div>
+         <div id="ref-guisan_predicting_2005">
+         <p>Guisan, Antoine, and Wilfried Thuiller. 2005. “Predicting Species Distribution: Offering More Than Simple Habitat Models.” <em>Ecology Letters</em> 8 (9): 993–1009. <a href="https://doi.org/10.1111/j.1461-0248.2005.00792.x">https://doi.org/10.1111/j.1461-0248.2005.00792.x</a>.</p>
+         </div>
+         <div id="ref-guisan_predicting_2013">
+         <p>Guisan, Antoine, Reid Tingley, John B. Baumgartner, Ilona NaujokaitisNANALewis, Patricia R. Sutcliffe, Ayesha I. T. Tulloch, Tracey J. Regan, et al. 2013. “Predicting Species Distributions for Conservation Decisions.” Edited by Hector Arita. <em>Ecology Letters</em> 16 (12): 1424–35. <a href="https://doi.org/10.1111/ele.12189">https://doi.org/10.1111/ele.12189</a>.</p>
+         </div>
+         <div id="ref-hanski_metapopulation_1998">
+         <p>Hanski, Ilkka. 1998. “Metapopulation Dynamics.” <em>Nature</em> 396 (6706): 41–49. <a href="https://doi.org/10.1038/23876">https://doi.org/10.1038/23876</a>.</p>
+         </div>
+         <div id="ref-hanski_habitat_1999">
+         <p>———. 1999. “Habitat Connectivity , Habitat Continuity , and Metapopulations in Dynamic Landscapes.” <em>Oikos, Nordic Society</em> 87 (2): 209–19.</p>
+         </div>
+         <div id="ref-hanski_spatially_2001">
+         <p>———. 2001. “Spatially Realistic Theory of Metapopulation Ecology.” <em>Naturwissenschaften</em> 88 (9): 372–81.</p>
+         </div>
+         <div id="ref-hanski_habitat_2015">
+         <p>———. 2015. “Habitat Fragmentation and Species Richness.” Edited by Kostas Triantis. <em>Journal of Biogeography</em> 42 (5): 989–93. <a href="https://doi.org/10.1111/jbi.12478">https://doi.org/10.1111/jbi.12478</a>.</p>
+         </div>
+         <div id="ref-hanski_metapopulation_2000">
+         <p>Hanski, Ilkka, and Otso Ovaskainen. 2000. “The Metapopulation Capacity of a Fragmented Landscape.” <em>Nature</em> 404 (6779): 755–58. <a href="https://doi.org/10.1038/35008063">https://doi.org/10.1038/35008063</a>.</p>
+         </div>
+         <div id="ref-hanski_metapopulation_1997">
+         <p>Hanski, Ilkka, and Daniel Simberloff. 1997. “The Metapopulation Approach, Its History, Conceptual Domain, and Application to Conservation.” In <em>Metapopulation Biology</em>, edited by Ilkka Hanski and Michael E. Gilpin, 5–26. San Diego: Academic Press. <a href="https://www.sciencedirect.com/science/article/pii/B9780123234452500031">https://www.sciencedirect.com/science/article/pii/B9780123234452500031</a>.</p>
+         </div>
+         <div id="ref-hausfather_emissions_2020">
+         <p>Hausfather, Zeke, and Glen P. Peters. 2020. “Emissions – the ‘Business as Usual’ Story Is Misleading.” <em>Nature</em> 577 (7792): 618–20. <a href="https://doi.org/10.1038/d41586-020-00177-3">https://doi.org/10.1038/d41586-020-00177-3</a>.</p>
+         </div>
+         <div id="ref-hefley_when_2017">
+         <p>Hefley, Trevor J., Mevin B. Hooten, Robin E. Russell, Daniel P. Walsh, and James A. Powell. 2017. “When Mechanism Matters: Bayesian Forecasting Using Models of Ecological Diffusion.” Edited by Frederick Adler. <em>Ecology Letters</em> 20 (5): 640–50. <a href="https://doi.org/10.1111/ele.12763">https://doi.org/10.1111/ele.12763</a>.</p>
+         </div>
+         <div id="ref-hollister_elevatr_2021">
+         <p>Hollister, Jeffrey W, Alec L. Robitaille, Marcus W Beck, MikeJohnson-NOAA, and Tarak Shah. 2021. “Elevatr: Access Elevation Data from Various APIs.” Zenodo. <a href="https://doi.org/10.5281/ZENODO.5119662">https://doi.org/10.5281/ZENODO.5119662</a>.</p>
+         </div>
+         <div id="ref-huang_using_2019">
+         <p>Huang, Ryan, Stuart L. Pimm, and Chandra Giri. 2019. “Using Metapopulation Theory for Practical Conservation of Mangrove Endemic Birds.” <em>Conservation Biology</em> 34 (1): 266–75. <a href="https://doi.org/10.1111/cobi.13364">https://doi.org/10.1111/cobi.13364</a>.</p>
+         </div>
+         <div id="ref-hutchinson_concluding_1957">
+         <p>Hutchinson, G. E. 1957. “Concluding Remarks.” <em>Cold Spring Harbor Symposia on Quantitative Biology</em> 22: 415–27.</p>
+         </div>
+         <div id="ref-iucn_catharus_2020">
+         <p>IUCN. 2020. “Catharus Bicknelli: BirdLife International: The IUCN Red List of Threatened Species 2020: E.T22728467A180783383.” <a href="https://doi.org/10.2305/IUCN.UK.2020-3.RLTS.T22728467A180783383.en">https://doi.org/10.2305/IUCN.UK.2020-3.RLTS.T22728467A180783383.en</a>.</p>
+         </div>
+         <div id="ref-le_squin_climateinduced_2021">
+         <p>Le Squin, Amaël, Isabelle Boulangeat, and Dominique Gravel. 2021. “Climate‐induced Variation in the Demography of 14 Tree Species Is Not Sufficient to Explain Their Distribution in Eastern North America.” Edited by Benjamin Blonder. <em>Global Ecology and Biogeography</em> 30 (2): 352–69. <a href="https://doi.org/10.1111/geb.13209">https://doi.org/10.1111/geb.13209</a>.</p>
+         </div>
+         <div id="ref-levins_mathematical_1970">
+         <p>Levins, Richard. 1970. “Some Mathematical Questions in Biology.” In <em>Some Mathematical Questions in Biology</em>.</p>
+         </div>
+         <div id="ref-levins_demographic_1969">
+         <p>Levins, Robert. 1969. “Some Demographic and Genetic Consequences of Environmental Heterogeneity for Biological Control.” <em>Bulletin of the Entomological Society of America</em> 15 (3): 237–40. <a href="https://doi.org/10.1093/besa/15.3.237">https://doi.org/10.1093/besa/15.3.237</a>.</p>
+         </div>
+         <div id="ref-mcgill_trees_2012">
+         <p>McGill, B. J. 2012. “Trees Are Rarely Most Abundant Where They Grow Best.” <em>Journal of Plant Ecology</em> 5 (1): 46–51. <a href="https://doi.org/10.1093/jpe/rtr036">https://doi.org/10.1093/jpe/rtr036</a>.</p>
+         </div>
+         <div id="ref-mcintire_perfict_2022">
+         <p>McIntire, Eliot J. B., Alex M. Chubaty, Steven G. Cumming, Dave Andison, Ceres Barros, C’eline Boisvenue, Samuel Hach’e, Yong Luo, Tatiane Micheletti, and Frances E. C. Stewart. 2022. “PERFICT: A Re‐imagined Foundation for Predictive Ecology.” Edited by Timoth’ee Poisot. <em>Ecology Letters</em> 25 (6): 1345–51. <a href="https://doi.org/10.1111/ele.13994">https://doi.org/10.1111/ele.13994</a>.</p>
+         </div>
+         <div id="ref-mckenney_spatial_2013">
+         <p>McKenney, Daniel, John Pedlar, Michael Hutchinson, Pia Papadopol, Kevin Lawrence, Kathy Campbell, Ewa Milewska, Ron F. Hopkinson, and David Price. 2013. “Spatial Climate Models for Canada’s Forestry Community.” <em>The Forestry Chronicle</em> 89 (05): 659–63. <a href="https://doi.org/10.5558/tfc2013-118">https://doi.org/10.5558/tfc2013-118</a>.</p>
+         </div>
+         <div id="ref-mckenney_customized_2011">
+         <p>McKenney, Daniel W., Michael F. Hutchinson, Pia Papadopol, Kevin Lawrence, John Pedlar, Kathy Campbell, Ewa Milewska, Ron F. Hopkinson, David Price, and Tim Owen. 2011. “Customized Spatial Climate Models for North America.” <em>Bulletin of the American Meteorological Society</em> 92 (12): 1611–22. <a href="https://doi.org/10.1175/2011BAMS3132.1">https://doi.org/10.1175/2011BAMS3132.1</a>.</p>
+         </div>
+         <div id="ref-ovaskainen_transient_2002">
+         <p>Ovaskainen, Otso, and Ilkka Hanski. 2002. “Transient Dynamics in Metapopulation Response to Perturbation.” <em>Theoretical Population Biology</em> 61 (3): 285–95. <a href="https://doi.org/10.1006/tpbi.2002.1586">https://doi.org/10.1006/tpbi.2002.1586</a>.</p>
+         </div>
+         <div id="ref-parmesan_ecological_2006">
+         <p>Parmesan, Camille. 2006. “Ecological and Evolutionary Responses to Recent Climate Change.” <em>Annual Review of Ecology, Evolution, and Systematics</em> 37 (1): 637–69. <a href="https://doi.org/10.1146/annurev.ecolsys.37.091305.110100">https://doi.org/10.1146/annurev.ecolsys.37.091305.110100</a>.</p>
+         </div>
+         <div id="ref-pulliam_sources_1988">
+         <p>Pulliam, H. Ronald. 1988. “Sources, Sinks, and Population Regulation.” <em>The American Naturalist</em> 132 (5): 652–61. <a href="https://doi.org/10.1086/284880">https://doi.org/10.1086/284880</a>.</p>
+         </div>
+         <div id="ref-regniere_biosim_2017">
+         <p>R’egni‘ere, Jacques, R’emi Saint-Amant, Ariane B’echard, and Ahmed Moutaoufik. 2017. <em>BioSIM 11 User’s Manual</em>. Québec, Canada: Natural Resources Canada, Canadian Forest Services, Laurentian Forestry Center.</p>
+         </div>
+         <div id="ref-regniere_stochastic_2007">
+         <p>R’egni‘ere, Jacques, and R’emi St-Amant. 2007. “Stochastic Simulation of Daily Air Temperature and Precipitation from Monthly Normals in North America North of Mexico.” <em>International Journal of Biometeorology</em> 51 (5): 415–30. <a href="https://doi.org/10.1007/s00484-006-0078-z">https://doi.org/10.1007/s00484-006-0078-z</a>.</p>
+         </div>
+         <div id="ref-renner_point_2015">
+         <p>Renner, Ian W., Jane Elith, Adrian Baddeley, William Fithian, Trevor Hastie, Steven J. Phillips, Gordana Popovic, and David I. Warton. 2015. “Point Process Models for Presence‐only Analysis.” Edited by Robert B. O’Hara. <em>Methods in Ecology and Evolution</em> 6 (4): 366–79. <a href="https://doi.org/10.1111/2041-210X.12352">https://doi.org/10.1111/2041-210X.12352</a>.</p>
+         </div>
+         <div id="ref-ricciardi_assisted_2009">
+         <p>Ricciardi, Anthony, and Daniel Simberloff. 2009. “Assisted Colonization Is Not a Viable Conservation Strategy.” <em>Trends in Ecology &amp; Evolution</em> 24 (5): 248–53. <a href="https://doi.org/10.1016/j.tree.2008.12.006">https://doi.org/10.1016/j.tree.2008.12.006</a>.</p>
+         </div>
+         <div id="ref-rimmer_bicknells_2001">
+         <p>Rimmer, Christopher C., J. Daniel Lambert, Kent P. Mcfarl, and Dan Busby. 2001. “Bicknell’s Thrush: Catharus Bicknelli.” In <em>The Birds of North America, 592. The Birds of North</em>. America, Inc.</p>
+         </div>
+         <div id="ref-robin_proc_2011">
+         <p>Robin, Xavier, Natacha Turck, Alexandre Hainard, Fr’ed’erique Lisacek, and Jean-Charles Sanchez. 2011. “pROC: An Open-Source Package for R and S+ to Analyze and Compare ROC Curves.” <em>BMC Bioinformatics</em> 12 (77): 1–8. <a href="https://doi.org/10.1186/1471-2105-12-77">https://doi.org/10.1186/1471-2105-12-77</a>.</p>
+         </div>
+         <div id="ref-rodenhouse_potential_2008">
+         <p>Rodenhouse, N. L., S. N. Matthews, K. P. McFarland, J. D. Lambert, L. R. Iverson, A. Prasad, T. S. Sillett, and R. T. Holmes. 2008. “Potential Effects of Climate Change on Birds of the Northeast.” <em>Mitigation and Adaptation Strategies for Global Change</em> 13 (5-6): 517–40. <a href="https://doi.org/10.1007/s11027-007-9126-1">https://doi.org/10.1007/s11027-007-9126-1</a>.</p>
+         </div>
+         <div id="ref-savage_elevational_2015">
+         <p>Savage, Jos’ee, and Mark Vellend. 2015. “Elevational Shifts, Biotic Homogenization and Time Lags in Vegetation Change During 40 Years of Climate Warming.” <em>Ecography</em> 38 (6): 546–55. <a href="https://doi.org/10.1111/ecog.01131">https://doi.org/10.1111/ecog.01131</a>.</p>
+         </div>
+         <div id="ref-scheller_design_2007">
+         <p>Scheller, Robert M., James B. Domingo, Brian R. Sturtevant, Jeremy S. Williams, Arnold Rudy, Eric J. Gustafson, and David J. Mladenoff. 2007. “Design, Development, and Application of LANDIS-II, a Spatial Landscape Simulation Model with Flexible Temporal and Spatial Resolution.” <em>Ecological Modelling</em> 201 (3-4): 409–19. <a href="https://doi.org/10.1016/j.ecolmodel.2006.10.009">https://doi.org/10.1016/j.ecolmodel.2006.10.009</a>.</p>
+         </div>
+         <div id="ref-schnell_estimating_2013">
+         <p>Schnell, Jessica K., Grant M. Harris, Stuart L. Pimm, and Gareth J. Russell. 2013. “Estimating Extinction Risk with Metapopulation Models of Large-Scale Fragmentation.” <em>Conservation Biology</em> 27 (3): 520–30. <a href="https://doi.org/10.1111/cobi.12047">https://doi.org/10.1111/cobi.12047</a>.</p>
+         </div>
+         <div id="ref-snell_using_2014">
+         <p>Snell, R. S., A. Huth, J. E. M. S. Nabel, G. Bocedi, J. M. J. Travis, Dominique Gravel, H. Bugmann, et al. 2014. “Using Dynamic Vegetation Models to Simulate Plant Range Shifts.” <em>Ecography</em> 37 (12): 1184–97. <a href="https://doi.org/10.1111/ecog.00580">https://doi.org/10.1111/ecog.00580</a>.</p>
+         </div>
+         <div id="ref-sos-pop_banque_2021">
+         <p>SOS-POP. 2021. <em>Banque de Données Sur Les Populations d’oiseaux En Situation Précaire Au Québec. Données Issues Du Programme de Suivi Des Sites Importants Pour La Conservation Des Populations d’oiseaux En Péril Du Québec</em>. Montréal, Québec: QuébecOiseaux.</p>
+         </div>
+         <div id="ref-stephan_positive_2021">
+         <p>Stephan, Pauline, Bernat Bramon Mora, and Jake M. Alexander. 2021. “Positive Species Interactions Shape Species’ Range Limits.” <em>Oikos</em>, June, 1611–25. <a href="https://doi.org/10.1111/oik.08146">https://doi.org/10.1111/oik.08146</a>.</p>
+         </div>
+         <div id="ref-stralberg_conservation_2015">
+         <p>Stralberg, Diana, Erin M. Bayne, Steven G. Cumming, P’eter S’olymos, Samantha J. Song, and Fiona K. A. Schmiegelow. 2015. “Conservation of Future Boreal Forest Bird Communities Considering Lags in Vegetation Response to Climate Change: A Modified Refugia Approach.” Edited by Rafael Loyola. <em>Diversity and Distributions</em> 21 (9): 1112–28. <a href="https://doi.org/10.1111/ddi.12356">https://doi.org/10.1111/ddi.12356</a>.</p>
+         </div>
+         <div id="ref-stralberg_conservation_2019">
+         <p>Stralberg, Diana, Dominique Berteaux, C. Ronnie Drever, Mark Drever, Ilona Naujokaitis-Lewis, Fiona K. A. Schmiegelow, and Junior A. Tremblay. 2019. “Conservation Planning for Boreal Birds in a Changing Climate: A Framework for Action.” <em>Avian Conservation and Ecology</em> 14 (1): art13. <a href="https://doi.org/10.5751/ACE-01363-140113">https://doi.org/10.5751/ACE-01363-140113</a>.</p>
+         </div>
+         <div id="ref-studds_stable-hydrogen_2012">
+         <p>Studds, Colin E., Kent P. McFarland, Yves Aubry, Christopher C. Rimmer, Keith A. Hobson, Peter P. Marra, and Leonard I. Wassenaar. 2012. “Stable-Hydrogen Isotope Measures of Natal Dispersal Reflect Observed Population Declines in a Threatened Migratory Songbird.” <em>Diversity and Distributions</em> 18 (9): 919–30. <a href="https://doi.org/10.1111/j.1472-4642.2012.00931.x">https://doi.org/10.1111/j.1472-4642.2012.00931.x</a>.</p>
+         </div>
+         <div id="ref-svenning_disequilibrium_2013">
+         <p>Svenning, J. C., and Brody Sandel. 2013. “Disequilibrium Vegetation Dynamics Under Future Climate Change.” <em>American Journal of Botany</em> 100 (7): 1266–86. <a href="https://doi.org/10.3732/ajb.1200469">https://doi.org/10.3732/ajb.1200469</a>.</p>
+         </div>
+         <div id="ref-svenning_influence_2014">
+         <p>Svenning, Jens Christian, Dominique Gravel, Robert D. Holt, Frank M. Schurr, Wilfried Thuiller, Tamara Münkemüller, Katja H. Schiffers, et al. 2014. “The Influence of Interspecific Interactions on Species Range Expansion Rates.” <em>Ecography</em> 37 (12): 1198–1209. <a href="https://doi.org/10.1111/j.1600-0587.2013.00574.x">https://doi.org/10.1111/j.1600-0587.2013.00574.x</a>.</p>
+         </div>
+         <div id="ref-talluto_extinction_2017">
+         <p>Talluto, Matthew V., Isabelle Boulangeat, Steve Vissault, Wilfried Thuiller, and Dominique Gravel. 2017. “Extinction Debt and Colonization Credit Delay Range Shifts of Eastern North American Trees.” <em>Nature Ecology &amp; Evolution</em> 1 (7): 0182–82. <a href="https://doi.org/10.1038/s41559-017-0182">https://doi.org/10.1038/s41559-017-0182</a>.</p>
+         </div>
+         <div id="ref-thomas_extinction_2004">
+         <p>Thomas, Chris D, Alison Cameron, Guy F Midgley, Andrew Townsend Peterson, Stephen E Williams, Alison Cameron, Rhys E Green, and Michel Bakkenes. 2004. “Extinction Risk from Climate Change.” <em>Nature</em> 427 (6970): 145–48. <a href="https://doi.org/10.1038/nature02121">https://doi.org/10.1038/nature02121</a>.</p>
+         </div>
+         <div id="ref-thuiller_road_2013">
+         <p>Thuiller, Wilfried, Tamara Münkemüller, S’ebastien Lavergne, David Mouillot, Nicolas Mouquet, Katja Schiffers, and Dominique Gravel. 2013. “A Road Map for Integrating Eco-Evolutionary Processes into Biodiversity Models.” Edited by Marcel Holyoak. <em>Ecology Letters</em> 16 (May): 94–105. <a href="https://doi.org/10.1111/ele.12104">https://doi.org/10.1111/ele.12104</a>.</p>
+         </div>
+         <div id="ref-billerman_bicknells_2020">
+         <p>Townsend, Jason M., Kent P. McFarland, Christopher C. Rimmer, Walter G. Ellison, and James E. Goetz. 2020. “Bicknell’s Thrush (Catharus Bicknelli).” In <em>Birds of the World</em>, edited by Shawn M. Billerman, Brooke K. Keeney, Paul G. Rodewald, and Thomas S. Schulenberg. Cornell Lab of Ornithology. <a href="https://doi.org/10.2173/bow.bicthr.01">https://doi.org/10.2173/bow.bicthr.01</a>.</p>
+         </div>
+         <div id="ref-tremblay_harvesting_2018">
+         <p>Tremblay, Junior A., Yan Boulanger, Dominic Cyr, Anthony R. Taylor, David T. Price, and Martin-Hugues St-Laurent. 2018. “Harvesting Interacts with Climate Change to Affect Future Habitat Quality of a Focal Species in Eastern Canada’s Boreal Forest.” Edited by Jian Yang. <em>PLOS ONE</em> 13 (2): e0191645. <a href="https://doi.org/10.1371/journal.pone.0191645">https://doi.org/10.1371/journal.pone.0191645</a>.</p>
+         </div>
+         <div id="ref-urban_improving_2016">
+         <p>Urban, M. C., G. Bocedi, A. P. Hendry, J. B. Mihoub, G. Pe’er, A. Singer, J. R. Bridle, et al. 2016. “Improving the Forecast for Biodiversity Under Climate Change.” <em>Science</em> 353 (6304): aad8466. <a href="https://doi.org/10.1126/science.aad8466">https://doi.org/10.1126/science.aad8466</a>.</p>
+         </div>
+         <div id="ref-van_vuuren_representative_2011">
+         <p>van Vuuren, Detlef P., Jae Edmonds, Mikiko Kainuma, Keywan Riahi, Allison Thomson, Kathy Hibbard, George C. Hurtt, et al. 2011. “The Representative Concentration Pathways: An Overview.” <em>Climatic Change</em> 109 (1-2): 5–31. <a href="https://doi.org/10.1007/s10584-011-0148-z">https://doi.org/10.1007/s10584-011-0148-z</a>.</p>
+         </div>
+         <div id="ref-virkkala_patterns_2014">
+         <p>Virkkala, Raimo, and Aleksi Lehikoinen. 2014. “Patterns of Climate-Induced Density Shifts of Species: Poleward Shifts Faster in Northern Boreal Birds Than in Southern Birds.” <em>Global Change Biology</em> 20 (10): 2995–3003. <a href="https://doi.org/10.1111/gcb.12573">https://doi.org/10.1111/gcb.12573</a>.</p>
+         </div>
+         <div id="ref-vissault_slow_2020">
+         <p>Vissault, Steve, Matthew V Talluto, Isabelle Boulangeat, and Dominique Gravel. 2020. “Slow Demography and Limited Dispersal Constrain the Expansion of North-Eastern Temperate Forests Under Climate Change.” <em>Journal of Biogeography</em> 47 (12): 2645–56.</p>
+         </div>
+         <div id="ref-willis_assisted_2009">
+         <p>Willis, Stephen G., Jane K. Hill, Chris D. Thomas, David B. Roy, Richard Fox, David S. Blakeley, and Brian Huntley. 2009. “Assisted Colonization in a Changing Climate: A Test-Study Using Two U.K. Butterflies.” <em>Conservation Letters</em> 2 (1): 46–52. <a href="https://doi.org/10.1111/j.1755-263X.2008.00043.x">https://doi.org/10.1111/j.1755-263X.2008.00043.x</a>.</p>
+         </div>
+         </div>
+      </article>
+
+      <button onclick="topFunction(300)" id="myBtn" title="Go to top"><i class="fas fa-chevron-up"></i></button>
+
+      <d-appendix>
+         <sections class="container">
+                        <div class="row">
+               <div class="leftColumn">
+                  <p>Supporting information</p>
+               </div>
+               <div class="rightColumn">
+                  <p>Additional supporting information can be found <a href="https://willvieira.github.io/ms_STM-managed/docs/supplementary_material_S1.pdf.html">here</a>.</p>
+               </div>
+            </div>
+                                                <div class="row">
+               <div class="leftColumn">
+                  <p>Data availability</p>
+               </div>
+               <div class="rightColumn">
+                  <p>We performed all analyses in the R programming language and the code necessary to reproduce the analyses, figures, and manuscript are stored as a research compendium at <a href="https://github.com/vcameron1/Metapop_ms" class="uri">https://github.com/vcameron1/Metapop_ms</a>. The data that support the study are available from the Regroupement QuébecOiseaux (RQO), <span class="citation" data-cites="mckenney_spatial_2013">McKenney et al. (<a href="#ref-mckenney_spatial_2013" role="doc-biblioref">2013</a>)</span> and <span class="citation" data-cites="boulanger_boreal_2021">Boulanger and Pascual Puigdevall (<a href="#ref-boulanger_boreal_2021" role="doc-biblioref">2021</a>)</span>. Restrictions apply to the availability of RQO data, which were used under license for the current study, and so are not publicly available. Data are, however, available from the authors upon reasonable request and with written permission of RQO. Data from <span class="citation" data-cites="boulanger_boreal_2021">Boulanger and Pascual Puigdevall (<a href="#ref-boulanger_boreal_2021" role="doc-biblioref">2021</a>)</span> are available from its authors upon request.</p>
+               </div>
+            </div>
+                                    <div class="row">
+               <div class="leftColumn">
+                  <p>Funding</p>
+               </div>
+               <div class="rightColumn">
+                  <p>This research was supported by the BIOS² NSERC CREATE program. D.G. was supported by research grants from the Canada Research Chair program and the Natural Sciences and Engineering Research Council of Canada (NSERC).</p>
+               </div>
+            </div>
+                                    <div class="row">
+               <div class="leftColumn">
+                  <p>Authorship</p>
+               </div>
+               <div class="rightColumn">
+                  <p>VC and DG designed the study. VC, DG, and GB conceived the case-study model and YB and JT contributed expert knowledge in its development. VC developed the scripts to run the model and analyze the simulations, and wrote the first draft of the manuscript. All authors contributed to revisions.</p>
+               </div>
+            </div>
+                                    <div class="row">
+               <div class="leftColumn">
+                  <p>Conflicts of interest</p>
+               </div>
+               <div class="rightColumn">
+                  <p>The authors declare no conflict of interest.</p>
+               </div>
+            </div>
+                        <div class="row">
+               <div class="leftColumn">
+                  <p>References</p>
+               </div>
+                  <div class="rightColumn", id = 'newrefs'>
+               </div>
+            </div>
+         </sections>
+      </d-appendix>
+
+      <svg class="arrowTop" id="arrowTop" xmlns="http://www.w3.org/2000/svg" width="98" height="80"><g fill="none" stroke="#00667F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10"><path d="M2.012 47.458c2.254-15.748 7.447-21.81 23.566-21.434 22.829.533 36.483-4.221 53.935-19.566"/><path d="M80.435 14.297c-.592-4.348 2.294-7.566 2.554-11.755-2.997 1.132-9.175 3.154-12.46 2.399"/></g></svg>
+      
+      </div>
+      <div class="footer">
+         <p><a onMouseOver="this.style.color='#00667F'"onMouseOut="this.style.color='grey'" style='color:grey' href="https://github.com/vcameron1/Metapop_ms/issues" target="_blank"><i class="fas fa-exclamation-circle"></i> Report issues</a></p>
+         <p><a onMouseOver="this.style.color='#00667F'"onMouseOut="this.style.color='grey'" style='color:grey' href="https://twitter.com/intent/tweet?text=Spatial Structure is More Than Habitat Amount: A Metapopulation Approach is Necessary to Project Distributions Under Climate Change%20https://github.com/vcameron1/Metapop_ms"" target="_blank"><i class="fab fa-twitter"></i> Tweet this page</a></p>
+         <p><a onMouseOver="this.style.color='#00667F'"onMouseOut="this.style.color='grey'" style='color:grey' href="javascript:void(0)" onclick="openAnnotate()"><i class="fas fa-comments"></i> Leave a comment</a></p>
+      </div>
+
+   </body>
+   <script type="text/javascript" src="https://code.jquery.com/jquery-latest.min.js"></script>
+   <script type="text/javascript">
+      // Remove References h1
+      document.getElementById("references").remove();
+      // Move the references from body to appendix
+      var theNewRefs = document.getElementById("newrefs");
+      var theRefs = document.getElementById("refs");
+      theNewRefs.appendChild(theRefs);
+   </script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/less.js/3.9.0/less.min.js" ></script>
+   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+   <script>
+      document.querySelectorAll('[role="doc-biblioref"]').forEach(function (el){
+
+         // get info from reference (to be used in tittle of hover)
+         var refID = el.href.replace(/.*#ref-/, '');
+         var ref = document.getElementById('ref-'.concat(refID));
+         // Title
+         if(/“(.*?)”/g.test(ref.textContent)) {
+            var title = ref.textContent.match(/“(.*?)”/g)[0];
+            title = title.replace(/“/, '').replace(/”/, '').replace(/\./, '');
+         } else {
+            var title = ref.querySelector('em').textContent;
+            var journal = '';
+         }
+         // Journal
+         if(typeof journal == "undefined" & ref.querySelector('em') != null) {
+            var journal = ref.querySelector('em').textContent;
+         }
+         // DOI
+         if(ref.querySelector('a') != null) {
+            var DOI = ref.querySelector('a').textContent;
+            title = "<a href='" + DOI + "' target='_blank';>" + title + "</a>"
+         }
+         // Year
+         uglyYear = ref.textContent.match(/\. \d{4}\./g)[0];
+         var year = uglyYear.replace(/\. /, '').replace(/\./, '');
+         // Authors
+         var re = new RegExp ('(.*?)' + uglyYear, 'g');
+         var authors = ref.textContent.match(re)[0].replace(uglyYear, '').replace(/\s\s+/g, '');
+
+         // Create reference "title" content
+         var refTitle = "<b>" + title + "</b><br>" + authors + "<br>" +
+                        (journal == "" ? "" : journal + ", " ) +
+                        year;
+
+         // add "Tooltips" attributes to the link tag
+         el.setAttribute("data-toggle", "tooltip");
+         el.setAttribute("data-html", "true");
+         el.setAttribute("data-placement", "bottom");
+         el.setAttribute("title", refTitle);
+
+         // remove link href to references
+         el.removeAttribute("href");
+      });
+   </script>
+   <script>
+      $(function () {
+         $('[data-toggle="tooltip"]').tooltip({delay: {show: 300, hide: 500}})
+      })
+   </script>
+   <script>
+      $(window).scroll(function() {
+         if ($(this).scrollTop()>300)
+         {
+            $('.footer').show(1000);
+         }
+         else
+         {
+            $('.footer').hide(1000);
+         }
+      });
+   </script>
+   <script>
+      //Get the button: (and the footer too)
+      mybutton = document.getElementById("myBtn");
+
+      // When the user scrolls down 20px from the top of the document, show the button
+      window.onscroll = function() {scrollFunction()};
+
+      function scrollFunction() {
+         if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+            mybutton.style.display = "block";
+         } else {
+            mybutton.style.display = "none";
+         }
+      }
+
+      function topFunction (duration) {
+         // cancel if already on top
+         if (document.scrollingElement.scrollTop === 0) return;
+
+         const totalScrollDistance = document.scrollingElement.scrollTop;
+         let scrollY = totalScrollDistance, oldTimestamp = null;
+
+         function step (newTimestamp) {
+            if (oldTimestamp !== null) {
+                  // if duration is 0 scrollY will be -Infinity
+                  scrollY -= totalScrollDistance * (newTimestamp - oldTimestamp) / duration;
+                  if (scrollY <= 0) return document.scrollingElement.scrollTop = 0;
+                  document.scrollingElement.scrollTop = scrollY;
+            }
+            oldTimestamp = newTimestamp;
+            window.requestAnimationFrame(step);
+         }
+         window.requestAnimationFrame(step);
+      };
+   </script>
+   <script>
+      // animation of top arrow
+      var svg = new Walkway({
+         selector: '#arrowTop',
+         duration: '500',
+         // can pass in a function or a string like 'easeOutQuint'
+         easing: function (t) {
+            return t * t;
+         }
+      });
+   </script>
+   <script>
+         function openAnnotate() {
+            // Sleeping function
+            var delay = ( function() {
+               var timer = 0;
+               return function(callback, ms) {
+                  clearTimeout (timer);
+                  timer = setTimeout(callback, ms);
+               };
+            })();
+
+            // first change display of arrow to block (none by defaut)
+            var arrow = document.getElementById("arrowTop");
+            arrow.style.display = "block";
+
+            // create animation
+            svg.draw();
+
+            // wait 2 secs until remove arrow
+            delay(function(){
+               arrow.style.display = "none";
+            }, 2000 );
+         }
+   </script>
+   <!-- Global site tag (gtag.js) - Google Analytics -->
+   <script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+   <script>
+   window.dataLayer = window.dataLayer || [];
+   function gtag(){dataLayer.push(arguments);}
+   gtag('js', new Date());
+
+   gtag('config', '');
+   </script>
+</html>
